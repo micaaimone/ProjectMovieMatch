@@ -16,7 +16,7 @@ import java.util.List;
 public abstract class ContenidoEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_contenido;
 
     @JsonProperty("Title")
