@@ -1,11 +1,11 @@
 package com.example.demo.model.mappers;
 
-
 import com.example.demo.model.DTOs.PeliculaDTO;
 import com.example.demo.model.DTOs.RatingDTO;
+import com.example.demo.model.DTOs.SerieDTO;
 import com.example.demo.model.entities.PeliculaEntity;
 import com.example.demo.model.entities.RatingEntity;
-import org.apache.catalina.mapper.Mapper;
+import com.example.demo.model.entities.SerieEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,18 +13,17 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-//implements Mapper<PeliculaEntity, PeliculaDTO> ??
-public class PeliculaMapper {
+public class SerieMapper {
 
     @Autowired
     private ModelMapper modelMapper;
 
-    public PeliculaDTO convertToDTO(PeliculaEntity peliculaEntity)
+    public SerieDTO convertToDTO(SerieEntity serieEntity)
     {
-        PeliculaDTO dto = modelMapper.map(peliculaEntity, PeliculaDTO.class);
+        SerieDTO dto = modelMapper.map(serieEntity, SerieDTO.class);
 
-        if (peliculaEntity.getRatings() != null) {
-            List<RatingDTO> ratingDTOs = peliculaEntity.getRatings()
+        if (serieEntity.getRatings() != null) {
+            List<RatingDTO> ratingDTOs = serieEntity.getRatings()
                     .stream()
                     .map(rating -> modelMapper.map(rating, RatingDTO.class))
                     .toList();
@@ -35,12 +34,12 @@ public class PeliculaMapper {
         return dto;
     }
 
-    public PeliculaEntity convertToEntity(PeliculaDTO peliculaDTO)
+    public SerieEntity convertToEntity(SerieDTO serieDTO)
     {
-        PeliculaEntity entity = modelMapper.map(peliculaDTO, PeliculaEntity.class);
+        SerieEntity entity = modelMapper.map(serieDTO, SerieEntity.class);
 
-        if (peliculaDTO.getRatings() != null) {
-            List<RatingEntity> ratingEntities = peliculaDTO.getRatings()
+        if (serieDTO.getRatings() != null) {
+            List<RatingEntity> ratingEntities = serieDTO.getRatings()
                     .stream()
                     .map(ratingDTO -> modelMapper.map(ratingDTO, RatingEntity.class))
                     .toList();

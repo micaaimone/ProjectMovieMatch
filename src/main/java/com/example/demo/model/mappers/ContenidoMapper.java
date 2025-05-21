@@ -1,11 +1,11 @@
 package com.example.demo.model.mappers;
 
-
+import com.example.demo.model.DTOs.ContenidoDTO;
 import com.example.demo.model.DTOs.PeliculaDTO;
 import com.example.demo.model.DTOs.RatingDTO;
+import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.PeliculaEntity;
 import com.example.demo.model.entities.RatingEntity;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,18 +13,16 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-//implements Mapper<PeliculaEntity, PeliculaDTO> ??
-public class PeliculaMapper {
-
+public class ContenidoMapper {
     @Autowired
     private ModelMapper modelMapper;
 
-    public PeliculaDTO convertToDTO(PeliculaEntity peliculaEntity)
+    public ContenidoDTO convertToDTO(ContenidoEntity contenidoEntity)
     {
-        PeliculaDTO dto = modelMapper.map(peliculaEntity, PeliculaDTO.class);
+        ContenidoDTO dto = modelMapper.map(contenidoEntity, PeliculaDTO.class);
 
-        if (peliculaEntity.getRatings() != null) {
-            List<RatingDTO> ratingDTOs = peliculaEntity.getRatings()
+        if (contenidoEntity.getRatings() != null) {
+            List<RatingDTO> ratingDTOs = contenidoEntity.getRatings()
                     .stream()
                     .map(rating -> modelMapper.map(rating, RatingDTO.class))
                     .toList();
@@ -35,12 +33,12 @@ public class PeliculaMapper {
         return dto;
     }
 
-    public PeliculaEntity convertToEntity(PeliculaDTO peliculaDTO)
+    public ContenidoEntity convertToEntity(ContenidoDTO contenidoDTO)
     {
-        PeliculaEntity entity = modelMapper.map(peliculaDTO, PeliculaEntity.class);
+        ContenidoEntity entity = modelMapper.map(contenidoDTO, PeliculaEntity.class);
 
-        if (peliculaDTO.getRatings() != null) {
-            List<RatingEntity> ratingEntities = peliculaDTO.getRatings()
+        if (contenidoDTO.getRatings() != null) {
+            List<RatingEntity> ratingEntities = contenidoDTO.getRatings()
                     .stream()
                     .map(ratingDTO -> modelMapper.map(ratingDTO, RatingEntity.class))
                     .toList();
