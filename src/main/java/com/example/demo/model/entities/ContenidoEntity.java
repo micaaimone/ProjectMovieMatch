@@ -58,7 +58,9 @@ public abstract class ContenidoEntity {
     @JsonProperty("Poster")
     private String poster;
 
-    @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    //usamos eager porque en las consultas principales se requiere de la vista de ratings
+    //eager hace q cuando se consulta a la entidad principal (contenidos) esta tabla tmbn cargue automaticamente
     @JsonProperty("Ratings")
     private List<RatingEntity> ratings;
 
@@ -78,11 +80,4 @@ public abstract class ContenidoEntity {
     @JsonProperty("Response")
     private String respuesta;
 
-    public String getImdbId() {
-        return imdbId;
-    }
-
-    public List<RatingEntity> getRatings() {
-        return ratings;
-    }
 }
