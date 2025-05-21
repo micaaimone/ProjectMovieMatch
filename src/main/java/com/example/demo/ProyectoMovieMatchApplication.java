@@ -8,17 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class ProyectoMovieMatchApplication {
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.configure().load();
-
-		System.setProperty("API_KEY",
-				dotenv.get("API_KEY"));
-
-		System.setProperty("MERCADOPAGO_ACCESS_TOKEN",
-				dotenv.get("MERCADOPAGO_ACCESS_TOKEN"));
-
 		SpringApplication.run(ProyectoMovieMatchApplication.class, args);
-
-		String port = dotenv.get("PORT");
-		System.out.println("Puerto: " + port);	}
+	}
 
 }
