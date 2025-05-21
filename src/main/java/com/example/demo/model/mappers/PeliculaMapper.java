@@ -5,7 +5,6 @@ import com.example.demo.model.DTOs.PeliculaDTO;
 import com.example.demo.model.DTOs.RatingDTO;
 import com.example.demo.model.entities.PeliculaEntity;
 import com.example.demo.model.entities.RatingEntity;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-//implements Mapper<PeliculaEntity, PeliculaDTO> ??
 public class PeliculaMapper {
 
     @Autowired
