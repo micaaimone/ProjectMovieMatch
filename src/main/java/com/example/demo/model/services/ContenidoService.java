@@ -1,8 +1,13 @@
 package com.example.demo.model.services;
 
-import com.example.demo.model.entities.ContenidoEntity;
+import com.example.demo.model.DTOs.ContenidoDTO;
+import com.example.demo.model.DTOs.PeliculaDTO;
+import com.example.demo.model.DTOs.SerieDTO;
 import com.example.demo.model.entities.PeliculaEntity;
 import com.example.demo.model.entities.SerieEntity;
+import com.example.demo.model.mappers.ContenidoMapper;
+import com.example.demo.model.mappers.PeliculaMapper;
+import com.example.demo.model.mappers.SerieMapper;
 import com.example.demo.model.repositories.ContenidoRepository;
 import com.example.demo.model.repositories.PeliculaRepository;
 import com.example.demo.model.repositories.RatingRepository;
@@ -24,6 +29,21 @@ public class ContenidoService {
     private final PeliculaRepository peliculaRepository;
     private final SerieRepository serieRepository;
     private final RatingRepository ratingRepository;
+    private final PeliculaMapper peliculaMapper;
+    private final SerieMapper serieMapper;
+    private final ContenidoMapper contenidoMapper;
+
+    @Autowired
+    public ContenidoService(APIMovieService apiMovieService, ContenidoRepository contenidoRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository, RatingRepository ratingRepository, PeliculaMapper peliculaMapper, SerieMapper serieMapper, ContenidoMapper contenidoMapper) {
+        this.apiMovieService = apiMovieService;
+        this.contenidoRepository = contenidoRepository;
+        this.peliculaRepository = peliculaRepository;
+        this.serieRepository = serieRepository;
+        this.ratingRepository = ratingRepository;
+        this.peliculaMapper = peliculaMapper;
+        this.serieMapper = serieMapper;
+        this.contenidoMapper = contenidoMapper;
+    }
 
     // Listas de títulos de prueba
     private final List<String> peliculas = List.of(
@@ -31,25 +51,30 @@ public class ContenidoService {
             "The Godfather",
             "The Dark Knight",
             "Pulp Fiction",
-            "Fight Club"
+            "Fight Club",
+            "Inception",
+            "Interstellar",
+            "Forrest Gump",
+            "The Matrix",
+            "Gladiator"
     );
+
 
     private final List<String> series = List.of(
             "Breaking Bad",
             "Game of Thrones",
             "Stranger Things",
             "The Office",
-            "Sherlock"
+            "Sherlock",
+            "The Sopranos",
+            "Friends",
+            "The Crown",
+            "The Mandalorian",
+            "House of Cards"
     );
 
-    @Autowired
-    public ContenidoService(APIMovieService apiMovieService, ContenidoRepository contenidoRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository, RatingRepository ratingRepository) {
-        this.apiMovieService = apiMovieService;
-        this.contenidoRepository = contenidoRepository;
-        this.peliculaRepository = peliculaRepository;
-        this.serieRepository = serieRepository;
-        this.ratingRepository = ratingRepository;
-    }
+
+
 
     public boolean checkPeliBDD(String imdbId) {
         return peliculaRepository.findAll().stream()
@@ -61,7 +86,7 @@ public class ContenidoService {
                 .anyMatch(s -> s.getImdbId().equals(imdbId));
     }
 
-    public List<SerieEntity> traerSeriesAPI(){
+    public void traerSeriesAPI(){
         List<SerieEntity> contenidoSerie = new ArrayList<>();
         List<String> titulos = new ArrayList<>();
 
@@ -84,11 +109,10 @@ public class ContenidoService {
                     contenidoSerie.add(serie);
                 });
 
-        return contenidoSerie;
     }
 
 
-    public List<PeliculaEntity> traerPeliculaAPI()
+    public void traerPeliculaAPI()
     {
         List<PeliculaEntity> contenidoPelicula = new ArrayList<>();
 
@@ -113,25 +137,27 @@ public class ContenidoService {
                     contenidoPelicula.add(pelicula);// guardamos en la bdd
                 });
 
-        return contenidoPelicula;
     }
 
-    public Page<PeliculaEntity> datosPeliculaBDD(Pageable pageable)
+    public Page<PeliculaDTO> datosPeliculaBDD(Pageable pageable)
     {
         traerPeliculaAPI();
-        return peliculaRepository.findAll(pageable);
+        return peliculaRepository.findAll(pageable)
+                .map(peliculaMapper::convertToDTO);
     }
 
-    public Page<SerieEntity> datosSerieBDD(Pageable pageable)
+    public Page<SerieDTO> datosSerieBDD(Pageable pageable)
     {
         traerSeriesAPI();
-        return  serieRepository.findAll(pageable);
+        return  serieRepository.findAll(pageable)
+                .map(serieMapper::convertToDTO);
     }
 
-    public Page<ContenidoEntity> datosBDD(Pageable pageable)
+    public Page<ContenidoDTO> datosBDD(Pageable pageable)
     {
         traerPeliculaAPI();
         traerSeriesAPI();
-        return contenidoRepository.findAll(pageable);
+        return contenidoRepository.findAll(pageable)
+                .map(contenidoMapper::convertToDTO);
     }
 }
