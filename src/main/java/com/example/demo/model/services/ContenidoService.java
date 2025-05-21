@@ -2,8 +2,10 @@ package com.example.demo.model.services;
 
 import com.example.demo.model.DTOs.ContenidoDTO;
 import com.example.demo.model.DTOs.PeliculaDTO;
+import com.example.demo.model.DTOs.RatingDTO;
 import com.example.demo.model.DTOs.SerieDTO;
 import com.example.demo.model.entities.PeliculaEntity;
+import com.example.demo.model.entities.RatingEntity;
 import com.example.demo.model.entities.SerieEntity;
 import com.example.demo.model.mappers.ContenidoMapper;
 import com.example.demo.model.mappers.PeliculaMapper;
@@ -20,6 +22,13 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+
+//FALTA HACER QUE CUMPLA PRINCIPIOS SOLID
+/*
+*
+* Crear PeliculaService, SerieService y RatingService separados, y que ContenidoService coordine.
+* Evitar tener List<String> peliculas y List<String> series hardcodeadas en el service. me gustaria integrarlo al config de environment.*/
 
 @Service
 public class ContenidoService {
@@ -92,23 +101,25 @@ public class ContenidoService {
 
         titulos.addAll(series);
 
-        // uso streams para recorrer la lista
-        titulos.stream()
+        for (SerieEntity serie : titulos.stream()
                 .map(apiMovieService::findSerieByTitle)
-                .filter(Objects::nonNull) // filtro nulos por si alguna consulta falla
-                .filter(serie -> !checkSerieBDD(serie.getImdbId()))
-                .forEach(serie -> {
-                    System.out.println(serie);
-                    // verifico  la lista de ratings no está vacía,
-                    // sino, guarda cada uno de los ratings
-                    if (serie.getRatings() != null) {
-                        serie.getRatings()
-                                .forEach(ratingRepository::save);
-                    }
-                    serieRepository.save(serie);// Guardar en su repo correcto
-                    contenidoSerie.add(serie);
-                });
+                .filter(Objects::nonNull)
+                .filter(s -> !checkSerieBDD(s.getImdbId()))
+                .toList()) {
 
+            // guardo la serie primero para obtener su id_contenido
+            serieRepository.save(serie);
+
+            // guardo sus ratings y los asocio a la serie guardada
+            if (serie.getRatings() != null) {
+                for (RatingEntity rating : serie.getRatings()) {
+                    rating.setContenido(serie);
+                    ratingRepository.save(rating);
+                }
+            }
+
+            contenidoSerie.add(serie);
+        }
     }
 
 
@@ -120,22 +131,25 @@ public class ContenidoService {
         titulos.addAll(peliculas);
 
         // uso streams para recorrer la lista
-        titulos.stream()
+        for (PeliculaEntity pelicula : titulos.stream()
                 .map(apiMovieService::findPeliculaByTitle)
-                .filter(Objects::nonNull) // filtro nulos por si alguna consulta falla
-                .filter(peli -> !checkPeliBDD(peli.getImdbId()))
-                .forEach(pelicula -> {
-                    System.out.println(pelicula);
-                    // verifico  la lista de ratings no está vacía,
-                    // sino, guarda cada uno de los ratings
-                    if (pelicula.getRatings() != null) {
-                        pelicula.getRatings()
-                                .forEach(ratingRepository::save);
-                    }
-                    peliculaRepository.save(pelicula);
+                .filter(Objects::nonNull)
+                .filter(p -> !checkPeliBDD(p.getImdbId()))
+                .toList()) {
 
-                    contenidoPelicula.add(pelicula);// guardamos en la bdd
-                });
+            // guardo la serie primero para obtener su id_contenido
+            peliculaRepository.save(pelicula);
+
+            // guardo sus ratings y los asocio a la serie guardada
+            if (pelicula.getRatings() != null) {
+                for (RatingEntity rating : pelicula.getRatings()) {
+                    rating.setContenido(pelicula);
+                    ratingRepository.save(rating);
+                }
+            }
+
+            contenidoPelicula.add(pelicula);
+        }
 
     }
 
@@ -160,4 +174,5 @@ public class ContenidoService {
         return contenidoRepository.findAll(pageable)
                 .map(contenidoMapper::convertToDTO);
     }
+
 }
