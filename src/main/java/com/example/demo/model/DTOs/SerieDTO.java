@@ -1,6 +1,5 @@
 package com.example.demo.model.DTOs;
 
-import com.example.demo.model.entities.RatingEntity;
 import lombok.*;
 
 import java.util.List;
@@ -10,8 +9,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PeliculaDTO extends ContenidoDTO{
-
-    private String metascore;
+public class SerieDTO extends ContenidoDTO {
+    private String totalSeasons;
 
 }
