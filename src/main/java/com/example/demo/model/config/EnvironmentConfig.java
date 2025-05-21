@@ -1,8 +1,6 @@
 package com.example.demo.model.config;
 
-import com.example.demo.ProyectoMovieMatchApplication;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;

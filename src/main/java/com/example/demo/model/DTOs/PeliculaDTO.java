@@ -1,9 +1,7 @@
 package com.example.demo.model.DTOs;
 
-import com.example.demo.model.entities.RatingEntity;
 import lombok.*;
 
-import java.util.List;
 
 @Getter
 @Setter
