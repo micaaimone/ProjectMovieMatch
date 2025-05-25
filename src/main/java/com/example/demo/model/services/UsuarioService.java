@@ -8,8 +8,10 @@ import com.example.demo.model.exceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -39,10 +41,6 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-//    public UsuarioEntity save(UsuarioEntity u){
-//        return usuarioRepository.save(u);
-//    }
-
     public Optional<UsuarioEntity> findById(long id){
         return usuarioRepository.findById(id);
     }
@@ -55,27 +53,51 @@ public class UsuarioService {
         }
         usuarioRepository.deleteById(id);
     }
-//    public void deleteById(long id){
-//        usuarioRepository.deleteById(id);
-//    }
+
+    public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity nuevosDatos) {
+        UsuarioEntity existente = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+
+        existente.setNombre(nuevosDatos.getNombre());
+        existente.setEmail(nuevosDatos.getEmail());
+
+        return usuarioRepository.save(existente);
+    }
+
+    public void cambiarEstadoUsuario(Long id, boolean activo) {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+
+        usuario.setActivo(activo);
+        usuarioRepository.save(usuario);
+    }
 
     public List<UsuarioEntity> usuariosMayores(int edad){
         return usuarioRepository.findByEdadGreaterThan(edad);
     }
 
-    // crear el DTO model
-    public UsuarioDTO getUsuarioDTO(Long id){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(id).orElseThrow();
-        return usuarioMapper.convertToDTO(usuarioEntity);
+
+    public UsuarioDTO convertirAUsuarioDTO(UsuarioEntity u) {
+        return new UsuarioDTO(
+                u.getUsername(),
+                u.getEmail(),
+                u.getCredencial(),
+                u.getLikes()
+                // tmb suscripcion
+        );
+    }
+    public UsuarioDTO getUsuarioDTO(Long id) {
+        UsuarioEntity usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        return convertirAUsuarioDTO(usuario);
     }
 
-    public List<UsuarioDTO> getAllDTO(){
-        List<UsuarioEntity> usuarios = usuarioRepository.findAll();
-
-        return usuarios.stream()
-                .map(usuarioMapper::convertToDTO)
-                .collect(Collectors.toList());
+    public Page<UsuarioDTO> obtenerUsuariosPaginados(Pageable pageable) {
+        Page<UsuarioEntity> page = usuarioRepository.findAll(pageable);
+        return page.map(this::convertirAUsuarioDTO);
     }
+
 
     // agregar findById, por eso está comentado
 //    public void darLike(Long idUsuario, Long idContenido){
