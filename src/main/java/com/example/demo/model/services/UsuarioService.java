@@ -6,18 +6,23 @@ import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class UsuarioService {
 
     private UsuarioMapper usuarioMapper;
 
-    // cambiarlo al constructor
     @Autowired
+    public UsuarioService(UsuarioMapper usuarioMapper) {
+        this.usuarioMapper = usuarioMapper;
+    }
+
     private UsuarioRepository usuarioRepository;
     private ContenidoService contenidoService;
 
@@ -58,26 +63,26 @@ public class UsuarioService {
     }
 
     // agregar findById, por eso está comentado
-//    public void darLike(Long idUsuario, Long idContenido){
-//        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-//        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
-//                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
-//
-//        usuarioEntity.getLikes().add(contenidoEntity);
-//        usuarioRepository.save(usuarioEntity);
-//    }
-//
-//    public void quitarLike(Long idUsuario, Long idContenido){
-//        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-//        // agregar find by id
-//        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
-//                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
-//
-//        usuarioEntity.getLikes().remove(contenidoEntity);
-//        usuarioRepository.save(usuarioEntity);
-//    }
+    public void darLike(Long idUsuario, Long idContenido){
+        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
+                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+
+        usuarioEntity.getLikes().add(contenidoEntity);
+        usuarioRepository.save(usuarioEntity);
+    }
+
+    public void quitarLike(Long idUsuario, Long idContenido){
+        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        // agregar find by id
+        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
+                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+
+        usuarioEntity.getLikes().remove(contenidoEntity);
+        usuarioRepository.save(usuarioEntity);
+    }
 
     public Set<ContenidoEntity> listarLikes(Long id){
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id)

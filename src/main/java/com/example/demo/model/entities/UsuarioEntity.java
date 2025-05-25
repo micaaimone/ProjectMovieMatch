@@ -46,9 +46,9 @@ public class UsuarioEntity {
     @JoinColumn(name = "id_credencial")
     private CredencialEntity credencial;
 
-    @OneToOne
-    @JoinColumn(name = "id_suscripcion")
-    private SuscripcionEntity suscripcion;
+//    @OneToOne
+//    @JoinColumn(name = "id_suscripcion")
+//    private SuscripcionEntity suscripcion;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
