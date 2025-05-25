@@ -46,33 +46,23 @@ public class UsuarioController {
     }
 
 
-    @PostMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> darLike(@PathVariable long idUsuario, @PathVariable long idContenido){
-        usuarioService.darLike(idUsuario,idContenido);
-        return ResponseEntity.ok("Like guardado");
-    }
-
-    @DeleteMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> quitarLike(@PathVariable long idUsuario, @PathVariable long idContenido){
-        usuarioService.quitarLike(idUsuario,idContenido);
-        return ResponseEntity.ok("Like eliminado");
-    }
+//    @PostMapping("/{idUsuario}/like/{idContenido}")
+//    public ResponseEntity<String> darLike(@PathVariable long idUsuario, @PathVariable long idContenido){
+//        usuarioService.darLike(idUsuario,idContenido);
+//        return ResponseEntity.ok("Like guardado");
+//    }
+//
+//    @DeleteMapping("/{idUsuario}/like/{idContenido}")
+//    public ResponseEntity<String> quitarLike(@PathVariable long idUsuario, @PathVariable long idContenido){
+//        usuarioService.quitarLike(idUsuario,idContenido);
+//        return ResponseEntity.ok("Like eliminado");
+//    }
 
 
     @GetMapping("/{usuarioId}/likes")
     public ResponseEntity<Set<ContenidoEntity>> obtenerLikes(@PathVariable Long idUsuario){
         return ResponseEntity.ok(usuarioService.listarLikes(idUsuario));
     }
-
-
-    // usar dto?
-//    @GetMapping("/usuarios/{id}")
-//    public EntityModel<UsuarioDTO> obtenerUsuarioPerfil(@PathVariable Long id){
-//        UsuarioDTO usuario = usuarioService.getUsuarioDTO(id);
-//                //.orElseThrow(()-> new RuntimeException("error"));
-//
-//
-//    }
 
 
 }

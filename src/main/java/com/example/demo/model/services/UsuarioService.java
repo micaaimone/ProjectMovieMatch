@@ -63,26 +63,26 @@ public class UsuarioService {
     }
 
     // agregar findById, por eso está comentado
-    public void darLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
-                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
-
-        usuarioEntity.getLikes().add(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    public void quitarLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        // agregar find by id
-        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
-                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
-
-        usuarioEntity.getLikes().remove(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
+//    public void darLike(Long idUsuario, Long idContenido){
+//        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
+//                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+//
+//        usuarioEntity.getLikes().add(contenidoEntity);
+//        usuarioRepository.save(usuarioEntity);
+//    }
+//
+//    public void quitarLike(Long idUsuario, Long idContenido){
+//        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//        // agregar find by id
+//        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
+//                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+//
+//        usuarioEntity.getLikes().remove(contenidoEntity);
+//        usuarioRepository.save(usuarioEntity);
+//    }
 
     public Set<ContenidoEntity> listarLikes(Long id){
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
