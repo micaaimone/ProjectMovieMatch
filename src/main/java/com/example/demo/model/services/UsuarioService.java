@@ -21,14 +21,15 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private UsuarioMapper usuarioMapper;
-
-    @Autowired
-    public UsuarioService(UsuarioMapper usuarioMapper) {
-        this.usuarioMapper = usuarioMapper;
-    }
-
     private UsuarioRepository usuarioRepository;
     private ContenidoService contenidoService;
+
+    @Autowired
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository) {
+        this.usuarioMapper = usuarioMapper;
+        this.usuarioRepository = usuarioRepository;
+        //this.contenidoService = contenidoService;
+    }
 
     public List<UsuarioEntity> findAll(){
         return usuarioRepository.findAll();
