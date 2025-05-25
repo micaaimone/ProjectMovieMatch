@@ -1,6 +1,7 @@
 package com.example.demo.model.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.Set;

@@ -3,6 +3,8 @@ package com.example.demo.model.services;
 import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.exceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +32,16 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
-    public void save(UsuarioEntity u){
-        usuarioRepository.save(u);
+    public UsuarioEntity save(UsuarioEntity usuario) {
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new UsuarioYaExisteException(usuario.getEmail());
+        }
+        return usuarioRepository.save(usuario);
     }
+
+//    public UsuarioEntity save(UsuarioEntity u){
+//        return usuarioRepository.save(u);
+//    }
 
     public Optional<UsuarioEntity> findById(long id){
         return usuarioRepository.findById(id);
@@ -40,9 +49,15 @@ public class UsuarioService {
 
     public UsuarioEntity findByUsername(String username){return usuarioRepository.findByUsername(username);}
 
-    public void deleteById(long id){
+    public void deleteById(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new UsuarioNoEncontradoException(id);
+        }
         usuarioRepository.deleteById(id);
     }
+//    public void deleteById(long id){
+//        usuarioRepository.deleteById(id);
+//    }
 
     public List<UsuarioEntity> usuariosMayores(int edad){
         return usuarioRepository.findByEdadGreaterThan(edad);

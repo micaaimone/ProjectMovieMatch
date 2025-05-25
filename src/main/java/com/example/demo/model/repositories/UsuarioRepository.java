@@ -10,5 +10,6 @@ import java.util.List;
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long> {
     public List<UsuarioEntity> findByEdadGreaterThan(int edad);
     public UsuarioEntity findByUsername(String username);
+    boolean existsByEmail(String email);
     // public UsuarioEntity findByEmail(String email);
 }

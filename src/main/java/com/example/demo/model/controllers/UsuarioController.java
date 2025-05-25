@@ -4,7 +4,9 @@ import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.services.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,25 +23,31 @@ public class UsuarioController {
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
-    // manejar excepciones y usar dtos
 
-    @GetMapping("/listar")
+    // cambiar nombre
+    @GetMapping("/listarCrudo")
     public List<UsuarioEntity> obtenerListaUsuarios(){
         return usuarioService.findAll();
     }
 
-    // cambiar nombre
     @GetMapping("/listar")
     public List<UsuarioDTO> obtenerListaDTOs(){
         return usuarioService.getAllDTO();
     }
 
     @PostMapping("/registrar")
-    public void agregarUsuario(@RequestParam UsuarioEntity u){
-        usuarioService.save(u);
+    public ResponseEntity<UsuarioEntity> agregarUsuario(@Valid @RequestBody UsuarioEntity u) {
+        UsuarioEntity usuarioGuardado = usuarioService.save(u);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioGuardado);
     }
 
-    @GetMapping("/{id}")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminarUsuario(@PathVariable Long id) {
+        usuarioService.deleteById(id);
+        return ResponseEntity.ok("Usuario eliminado con éxito.");
+    }
+
+    @GetMapping("/ver/{id}")
     public UsuarioDTO obtenerUsuario(@RequestParam long id){
 
         return usuarioService.getUsuarioDTO(id);
