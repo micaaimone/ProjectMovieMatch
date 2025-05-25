@@ -1,16 +1,20 @@
 package com.example.demo.model.services;
 
+import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UsuarioService {
-    //private UsuarioMapper usuarioMapper;
+
+    private UsuarioMapper usuarioMapper;
 
     // cambiarlo al constructor
     @Autowired
@@ -40,18 +44,18 @@ public class UsuarioService {
     }
 
     // crear el DTO model
-//    public UsuarioDTO getUsuarioDTO(Long id){
-//        UsuarioEntity usuarioEntity = usuarioRepository.findById(id).orElseThrow();
-//        return usuarioMapper.toDTO(usuarioEntity);
-//    }
-//
-//    public List<UsuarioDTO> getAllDTO(){
-//        List<UsuarioEntity> usuarios = usuarioRepository.findAll();
-//
-//        return usuarios.stream()
-//                .map(usuarioMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
+    public UsuarioDTO getUsuarioDTO(Long id){
+        UsuarioEntity usuarioEntity = usuarioRepository.findById(id).orElseThrow();
+        return usuarioMapper.convertToDTO(usuarioEntity);
+    }
+
+    public List<UsuarioDTO> getAllDTO(){
+        List<UsuarioEntity> usuarios = usuarioRepository.findAll();
+
+        return usuarios.stream()
+                .map(usuarioMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     // agregar findById, por eso está comentado
 //    public void darLike(Long idUsuario, Long idContenido){
