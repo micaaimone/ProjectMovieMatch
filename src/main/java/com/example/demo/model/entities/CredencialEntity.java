@@ -19,6 +19,10 @@ public class CredencialEntity {
     @Column(name = "rango", nullable = false, unique = true)
     private E_Cargo cargo;
 
+    // ver todos los usuarios que tienen esta credencial
+//    @OneToMany(mappedBy = "credencial")
+//    private List<Usuario> usuarios;
+
     public CredencialEntity() {
     }
 

@@ -46,8 +46,8 @@ public class UsuarioEntity {
     @Column(nullable = false)
     private boolean activo = true;
 
-    @OneToOne
-    @JoinColumn(name = "id_credencial")
+    @ManyToOne
+    @JoinColumn(name = "id_credencial", nullable = false)
     private CredencialEntity credencial;
 
 //    @OneToOne
