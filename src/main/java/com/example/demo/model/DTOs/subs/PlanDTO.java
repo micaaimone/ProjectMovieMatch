@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -14,5 +16,5 @@ import lombok.Setter;
 public class PlanDTO {
     private TipoSuscripcion tipo;
     private float precio;
-    private OfertaEntity oferta;
+    private List<OfertaDTO> oferta;
 }

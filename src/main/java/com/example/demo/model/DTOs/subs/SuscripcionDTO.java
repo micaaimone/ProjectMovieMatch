@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,4 +17,5 @@ public class SuscripcionDTO {
     private LocalDate fecha_fin;
     private boolean estado;
     private float monto;
+    private List<PagoDTO> pagos;
 }
