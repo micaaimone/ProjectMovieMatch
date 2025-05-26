@@ -3,6 +3,9 @@ package com.example.demo.model.entities.subs;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name = "plan_suscripcion")
@@ -16,18 +19,16 @@ public class PlanSuscripcionEntity {
 
     private float precio;
 
-    @OneToOne
-    @JoinColumn(name = "id_oferta", nullable = true)
-    private OfertaEntity oferta;
+    @OneToMany(mappedBy = "plan")
+    private List <OfertaEntity> ofertas;
 
     //---------------------------------------
 
 
-    public PlanSuscripcionEntity(Long id, TipoSuscripcion tipo, float precio, OfertaEntity oferta) {
-        this.id = id;
+    public PlanSuscripcionEntity( TipoSuscripcion tipo, float precio) {
         this.tipo = tipo;
         this.precio = precio;
-        this.oferta = oferta;
+        this.ofertas = new ArrayList<>();
     }
 
     public PlanSuscripcionEntity() {
@@ -57,11 +58,11 @@ public class PlanSuscripcionEntity {
         this.precio = precio;
     }
 
-    public OfertaEntity getOferta() {
-        return oferta;
+    public List<OfertaEntity> getOfertas() {
+        return ofertas;
     }
 
-    public void setOferta(OfertaEntity oferta) {
-        this.oferta = oferta;
+    public void setOfertas(List<OfertaEntity> ofertas) {
+        this.ofertas = ofertas;
     }
 }

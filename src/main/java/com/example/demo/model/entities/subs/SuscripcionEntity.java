@@ -8,13 +8,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name ="suscripciones")
 public class SuscripcionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idSuscripcion;
+    private Long id_suscripcion;
 
     @OneToOne
     @JoinColumn(name = "id_usuario", unique = true, nullable = false)
@@ -27,28 +29,39 @@ public class SuscripcionEntity {
 
     @ManyToOne
     private PlanSuscripcionEntity plan;
+
+    @OneToMany(mappedBy = "suscripcion")
+    private List<PagoEntity> pagos;
     //----------------------------------------------
 
 
-    public SuscripcionEntity(int idSuscripcion, UsuarioEntity usuario, LocalDate fecha_inicio, LocalDate fecha_fin, boolean estado, float monto, PlanSuscripcionEntity plan) {
-        this.idSuscripcion = idSuscripcion;
+    public SuscripcionEntity(UsuarioEntity usuario, LocalDate fecha_inicio, LocalDate fecha_fin, boolean estado, float monto, PlanSuscripcionEntity plan) {
         this.usuario = usuario;
         this.fecha_inicio = fecha_inicio;
         this.fecha_fin = fecha_fin;
         this.estado = estado;
         this.monto = monto;
         this.plan = plan;
+        this.pagos = new ArrayList<>();
     }
 
     public SuscripcionEntity() {
     }
 
-    public int getIdSuscripcion() {
-        return idSuscripcion;
+    public List<PagoEntity> getPagos() {
+        return pagos;
     }
 
-    public void setIdSuscripcion(int idSuscripcion) {
-        this.idSuscripcion = idSuscripcion;
+    public void setPagos(List<PagoEntity> pagos) {
+        this.pagos = pagos;
+    }
+
+    public Long getId_suscripcion() {
+        return id_suscripcion;
+    }
+
+    public void setId_suscripcion(Long id_suscripcion) {
+        this.id_suscripcion = id_suscripcion;
     }
 
     public UsuarioEntity getUsuario() {

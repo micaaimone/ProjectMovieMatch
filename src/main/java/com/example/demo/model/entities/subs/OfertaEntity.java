@@ -20,17 +20,18 @@ public class OfertaEntity {
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;
 
-    @OneToOne
-    @JoinColumn(name = "id_plan", nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "plan_id")
     private PlanSuscripcionEntity plan;
+
 //-------------------------------------
 
 
     public OfertaEntity() {
     }
 
-    public OfertaEntity(Long id_oferta, String descripcion, float descuento, LocalDate fecha_inicio, LocalDate fecha_fin, PlanSuscripcionEntity plan) {
-        this.id_oferta = id_oferta;
+    public OfertaEntity(String descripcion, float descuento, LocalDate fecha_inicio, LocalDate fecha_fin, PlanSuscripcionEntity plan) {
+
         this.descripcion = descripcion;
         this.descuento = descuento;
         this.fecha_inicio = fecha_inicio;

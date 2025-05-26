@@ -1,4 +1,4 @@
-package com.example.demo.model.repositories;
+package com.example.demo.model.repositories.subs;
 
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
