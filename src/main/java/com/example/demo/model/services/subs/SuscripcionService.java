@@ -1,60 +1,66 @@
 package com.example.demo.model.services.subs;
 
+import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
-import com.example.demo.model.repositories.OfertaRepository;
-import com.example.demo.model.repositories.PlanRepository;
-import com.example.demo.model.repositories.SuscripcionRepository;
+import com.example.demo.model.mappers.subs.SuscripcionMapper;
+import com.example.demo.model.repositories.subs.PlanRepository;
+import com.example.demo.model.repositories.subs.SuscripcionRepository;
+import com.example.demo.model.repositories.UsuarioRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
+
 import java.util.Optional;
 
 @Service
-public class SuscripcionService { private final SuscripcionRepository suscripcionRepository;
+public class SuscripcionService {
 
+    private final SuscripcionRepository suscripcionRepository;
     private final PlanRepository planRepository;
-    private final OfertaRepository ofertaRepository;
-   // private final UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
     private final PlanService planService;
+    private final SuscripcionMapper suscripcionMapper;
 
-    public SuscripcionService(SuscripcionRepository suscripcionRepository, PlanRepository planRepository, OfertaRepository ofertaRepository,/* UsuarioRepository usuarioRepository,*/ PlanService planService) {
+
+    public SuscripcionService(SuscripcionRepository suscripcionRepository, PlanRepository planRepository,UsuarioRepository usuarioRepository, PlanService planService, SuscripcionMapper suscripcionMapper) {
         this.suscripcionRepository = suscripcionRepository;
         this.planRepository = planRepository;
-        this.ofertaRepository = ofertaRepository;
-       // this.usuarioRepository = usuarioRepository;
+        this.usuarioRepository = usuarioRepository;
         this.planService = planService;
+        this.suscripcionMapper = suscripcionMapper;
+
+    }
+
+//mostrar todos
+    public Page<SuscripcionDTO> findAll(Pageable pageable) {
+        return suscripcionRepository.findAll(pageable)
+                .map(suscripcionMapper::convertToDTO);
+    }
+
+    public SuscripcionDTO findById(Long id) {
+        SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("No se encontro el id del suscripcion"));
+        return suscripcionMapper.convertToDTO(suscripcion);
     }
 
 
-    public List<SuscripcionEntity> findAll() {
-        return suscripcionRepository.findAll();
-    }
+    public SuscripcionEntity save(Long id_usuario, TipoSuscripcion dato) {
 
-    public Optional<SuscripcionEntity> findById(Long id) {
-        return suscripcionRepository.findById(id);
-    }
-
-    public void delete(SuscripcionEntity dato) {
-        suscripcionRepository.delete(dato);
-    }
-
-    //
-    public String save(Long id_usuario, TipoSuscripcion dato) {
-
-        //UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
-            //    .orElseThrow(() -> new RuntimeException("No se encontró el usuario"));
+        UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
+                .orElseThrow(()-> new RuntimeException("no se encontro el usuario"));
 
         //buscamos el plan
         PlanSuscripcionEntity plan = planRepository.findByTipo(dato)
                 .orElseThrow(() -> new RuntimeException("no se enocntro el plan"));
 
         //buscamos oferta activa
-        OfertaEntity oferta = ofertaRepository.buscarOferta(plan.getId(), LocalDate.now());
+        Optional<OfertaEntity> oferta = planService.getOfertaActiva(plan);
 
 
         //creamos la sub
@@ -62,22 +68,18 @@ public class SuscripcionService { private final SuscripcionRepository suscripcio
         //todaia no esta activada hasta que se concrete el pago
         suscripcion.setEstado(false);
 
-        if(oferta != null){
-            suscripcion.setMonto(planService.precioFinal(plan.getPrecio(), oferta.getDescuento()));
-        }else{
-            suscripcion.setMonto(plan.getPrecio());
-        }
+        float precioFinal = oferta
+                .map(ofertaEntity -> planService.precioFinal(plan.getPrecio(), ofertaEntity.getDescuento()))
+                .orElse(plan.getPrecio());
 
+
+        suscripcion.setMonto(precioFinal);
         suscripcion.setPlan(plan);
-        //suscripcion.setUsuario(usuario);
+        suscripcion.setUsuario(usuario);
         suscripcion.setFecha_inicio(LocalDate.now());
         suscripcion.setFecha_fin(calcularFechaFin(dato));
-
-        //creamos el pago
         suscripcionRepository.save(suscripcion);
-
-
-        return null;//mercadoPagoService.crearPreferenciaDePrueba(dato.name(), suscripcion.getMonto());
+        return suscripcion;
     }
 
     //indica cuando se terminara la sub segun el tipo
@@ -101,17 +103,15 @@ public class SuscripcionService { private final SuscripcionRepository suscripcio
                 .orElseThrow(()-> new RuntimeException("no existe la suscripcion"));
 
         if(vencio(sub)){
-            System.out.println("⛔ La suscripción ya venció.");
             sub.setEstado(false);
             suscripcionRepository.save(sub);
-        }else{
-            System.out.println("✅ La suscripción aún está activa.");
         }
     }
 
     //listar activos
-    public List<SuscripcionEntity> findActivos(){
-        return suscripcionRepository.findActivos();
+    public Page<SuscripcionDTO> mostrarActivos(Pageable pageable) {
+        return suscripcionRepository.findActivos(pageable)
+                .map(suscripcionMapper::convertToDTO);
     }
 
     //activar la sub cuando se concrete el pago
