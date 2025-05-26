@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
+import java.util.HashSet;
 import java.util.Set;
 
 //@Getter
@@ -47,7 +48,7 @@ public class UsuarioEntity {
     private boolean activo = true;
 
     @ManyToOne
-    @JoinColumn(name = "id_credencial", nullable = false)
+    @JoinColumn(name = "id_credencial", referencedColumnName = "id")
     private CredencialEntity credencial;
 
 //    @OneToOne
@@ -73,7 +74,7 @@ public class UsuarioEntity {
         this.username = username;
         this.activo = activo;
         this.credencial = credencial;
-        this.likes = likes;
+        this.likes = new HashSet<>();
     }
 
     public UsuarioEntity() {
