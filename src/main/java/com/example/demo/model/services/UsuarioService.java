@@ -36,9 +36,9 @@ public class UsuarioService {
     }
 
     public UsuarioEntity save(UsuarioEntity usuario) {
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new UsuarioYaExisteException(usuario.getEmail());
-        }
+//        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+//            throw new UsuarioYaExisteException(usuario.getEmail());
+//        }
         return usuarioRepository.save(usuario);
     }
 
@@ -60,7 +60,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
 
         existente.setNombre(nuevosDatos.getNombre());
-        existente.setEmail(nuevosDatos.getEmail());
+//        existente.setEmail(nuevosDatos.getEmail());
 
         return usuarioRepository.save(existente);
     }
@@ -81,7 +81,6 @@ public class UsuarioService {
     public UsuarioDTO convertirAUsuarioDTO(UsuarioEntity u) {
         return new UsuarioDTO(
                 u.getUsername(),
-                u.getEmail(),
                 u.getCredencial(),
                 u.getLikes()
                 // tmb suscripcion

@@ -17,9 +17,8 @@ public class UsuarioDTO {
     //  private SuscripcionEntity suscripcion;
     private Set<ContenidoEntity> likes;
 
-    public UsuarioDTO(String username, String email, CredencialEntity credencial, Set<ContenidoEntity> likes) {
+    public UsuarioDTO(String username, CredencialEntity credencial, Set<ContenidoEntity> likes) {
         this.username = username;
-        this.email = email;
         this.credencial = credencial;
         this.likes = likes;
     }

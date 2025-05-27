@@ -4,7 +4,6 @@ import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.services.UsuarioService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +45,7 @@ public class UsuarioController {
     // agregar listar por filtros
 
     @PostMapping("/registrar")
-    public ResponseEntity<UsuarioEntity> agregarUsuario(@Valid @RequestBody UsuarioEntity u) {
+    public ResponseEntity<UsuarioEntity> agregarUsuario(@RequestBody UsuarioEntity u) {
         UsuarioEntity usuarioGuardado = usuarioService.save(u);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioGuardado);
     }
@@ -64,7 +63,7 @@ public class UsuarioController {
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<UsuarioEntity> actualizarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioEntity usuarioActualizado) {
+    public ResponseEntity<UsuarioEntity> actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioEntity usuarioActualizado) {
         UsuarioEntity actualizado = usuarioService.actualizarUsuario(id, usuarioActualizado);
         return ResponseEntity.ok(actualizado);
     }

@@ -1,17 +1,10 @@
 package com.example.demo.model.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
 
 import java.util.HashSet;
 import java.util.Set;
+import jakarta.persistence.*;
 
-//@Getter
-//@Setter
-//@ToString
-//@RequiredArgsConstructor
-//@NoArgsConstructor
 @Entity
 @Table(name = "usuarios")
 public class UsuarioEntity {
@@ -26,21 +19,15 @@ public class UsuarioEntity {
     @Column
     private String apellido;
 
-    @Email
-    @Column
-    private String email;
-
     @Column
     private int edad;
 
     @Column
     private long telefono;
 
-    @Size(min = 6, max = 30)
     @Column(nullable = false, length = 30)
     private String contrasenia;
 
-    @Size(min = 4)
     @Column(name = "username", unique = true)
     private String username;
 
@@ -63,11 +50,10 @@ public class UsuarioEntity {
     )
     private Set<ContenidoEntity> likes;
 
-    public UsuarioEntity(Long id, String nombre, String apellido, String email, int edad, long telefono, String contrasenia, String username, boolean activo, CredencialEntity credencial) {
+    public UsuarioEntity(Long id, String nombre, String apellido, int edad, long telefono, String contrasenia, String username, boolean activo, CredencialEntity credencial) {
         this.id = id;
         this.nombre = nombre;
         this.apellido = apellido;
-        this.email = email;
         this.edad = edad;
         this.telefono = telefono;
         this.contrasenia = contrasenia;
@@ -106,13 +92,6 @@ public class UsuarioEntity {
         this.apellido = apellido;
     }
 
-    public @Email String getEmail() {
-        return email;
-    }
-
-    public void setEmail(@Email String email) {
-        this.email = email;
-    }
 
     public int getEdad() {
         return edad;
@@ -130,19 +109,19 @@ public class UsuarioEntity {
         this.telefono = telefono;
     }
 
-    public @Size(min = 6, max = 30) String getContrasenia() {
+    public String getContrasenia() {
         return contrasenia;
     }
 
-    public void setContrasenia(@Size(min = 6, max = 30) String contrasenia) {
+    public void setContrasenia( String contrasenia) {
         this.contrasenia = contrasenia;
     }
 
-    public @Size(min = 4) String getUsername() {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(@Size(min = 4) String username) {
+    public void setUsername(String username) {
         this.username = username;
     }
 
