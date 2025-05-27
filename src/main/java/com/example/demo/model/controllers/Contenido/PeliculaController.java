@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.services.Contenido.PeliculaService;
 import org.springframework.data.domain.Page;
@@ -31,5 +32,13 @@ public class PeliculaController {
     public ResponseEntity<PeliculaDTO> findByID(@PathVariable Long id)
     {
         return ResponseEntity.ok(peliculaService.buscarByID(id));
+    }
+
+    @GetMapping("/puntuacion")
+    public ResponseEntity<Page<PeliculaDTO>> byPuntuacion(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(peliculaService.filtrarPorPuntuacion(pageable));
     }
 }
