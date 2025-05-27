@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs;
+package com.example.demo.model.DTOs.Contenido;
 
 import lombok.*;
 
@@ -20,7 +20,12 @@ public class ContenidoDTO {
     private String sinopsis;
     //lo traemos porue nos sirve para la interfaz en un futuro
     //private String poster;
-    private List<RatingDTO> ratings;
-    private String imdbRating;
-    private String imdbVotos;
+
+    //lo comento porque no creo q al usuario le interese de donde sale la puntuacion api
+//    private List<RatingDTO> ratings;
+    private double puntuacionApi;
+    //hace falta crear un atributo para puntuacion de nuestros usuarios
+
+    //importan los votos de la puntuacion api???
+//    private String imdbVotos;
 }
