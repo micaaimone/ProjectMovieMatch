@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs;
+package com.example.demo.model.DTOs.Contenido;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PeliculaDTO extends ContenidoDTO{
+public class PeliculaDTO extends ContenidoDTO {
 
     private String metascore;
 

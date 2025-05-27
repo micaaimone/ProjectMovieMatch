@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs;
+package com.example.demo.model.DTOs.Contenido;
 
 import lombok.*;
 
