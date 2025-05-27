@@ -1,6 +1,8 @@
 package com.example.demo.model.services.subs;
 
+import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
+import com.example.demo.model.mappers.subs.SuscripcionMapper;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
@@ -35,9 +37,8 @@ public class MPService {
     }
 
 
-
     public String crearPreferencia(SuscripcionEntity sub) throws MPException, MPApiException {
-        String ngrokUrl = "https://1c72-2803-9800-9995-6e65-9d3d-c712-2470-7380.ngrok-free.app";
+        String ngrokUrl = "https://52bb-2803-9800-9995-6e65-70d1-1a7f-3fb8-a29a.ngrok-free.app";
         BigDecimal pf = BigDecimal.valueOf(sub.getMonto());
 
                 MercadoPagoConfig.setAccessToken(MERCADOPAGO_ACCESS_TOKEN);
@@ -82,9 +83,9 @@ public class MPService {
                 BigDecimal monto = payment.getTransactionAmount();
                 Long idSub = Long.valueOf(payment.getExternalReference());
                 suscripcionService.activarSuscripion(idSub);
-                SuscripcionEntity user = suscripcionService.findById(idSub)
-                        .orElseThrow(() -> new RuntimeException("no se encontró la suscripción"));
-                pagoService.anadirPago(user, monto);
+                SuscripcionEntity sub = suscripcionService.findByIdEntity(idSub);
+
+                pagoService.anadirPago(sub, monto);
 
                 /*posible idea para hacerlo mas especifico
                 switch (payment.getStatus()) {

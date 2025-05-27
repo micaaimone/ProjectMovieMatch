@@ -49,7 +49,13 @@ public class SuscripcionService {
         return suscripcionMapper.convertToDTO(suscripcion);
     }
 
+    public SuscripcionEntity findByIdEntity(Long id) {
+        SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("No se encontro el id del suscripcion"));
+        return suscripcion;
+    }
 
+    //crear sub nueva
     public SuscripcionEntity save(Long id_usuario, TipoSuscripcion dato) {
 
         UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
@@ -80,6 +86,21 @@ public class SuscripcionService {
         suscripcion.setFecha_fin(calcularFechaFin(dato));
         suscripcionRepository.save(suscripcion);
         return suscripcion;
+    }
+
+    public SuscripcionEntity renovar (Long id){
+        SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
+                .orElseThrow(()-> new RuntimeException("Suscripcion no encontrada"));
+
+        if(suscripcion.getFecha_inicio().isBefore(suscripcion.getFecha_fin())){
+            suscripcion.setEstado(true);
+        }else{
+            suscripcion.setEstado(false);
+        }
+        suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getPlan().getTipo()));
+        suscripcionRepository.save(suscripcion);
+        return suscripcion;
+
     }
 
     //indica cuando se terminara la sub segun el tipo

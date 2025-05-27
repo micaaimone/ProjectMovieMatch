@@ -33,6 +33,12 @@ public class SuscripcionController {
         return ResponseEntity.ok(init);
     }
 
+    @PostMapping("/renovar")
+    public ResponseEntity<String> renovarSuscripcion(@RequestParam Long idUsuario) throws MPException, MPApiException {
+        String init = mpService.crearPreferencia(suscripcionService.renovar(idUsuario));
+        return ResponseEntity.ok(init);
+    }
+
     @GetMapping("/mostrarTodos")
     public Page<SuscripcionDTO> mostrarSuscripciones(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size);

@@ -41,6 +41,10 @@ public class PagoService {
     public PagoDTO findById(Long id) {
         PagoEntity pagoEntity = pagoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("No encontrado"));
-        return pagoMapper.convertToDTO(pagoEntity);
+
+        PagoDTO pagoDTO = pagoMapper.convertToDTO(pagoEntity);
+        System.out.println("monto: "+pagoDTO.getMonto_pago());
+        return pagoDTO;
+       // return pagoMapper.convertToDTO(pagoEntity);
     }
 }

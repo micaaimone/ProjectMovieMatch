@@ -16,7 +16,7 @@ public class MPController {
     }
 
     @PostMapping("/notification")
-    public ResponseEntity <?> recibirNoti(@RequestBody Map<String, Object> body){
+    public ResponseEntity <Void> recibirNoti(@RequestBody Map<String, Object> body){
         try {
             if ("payment".equals(body.get("type"))) {
                 Map<String, Object> data = (Map<String, Object>) body.get("data");

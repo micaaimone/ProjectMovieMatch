@@ -13,5 +13,5 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    
+
 }
