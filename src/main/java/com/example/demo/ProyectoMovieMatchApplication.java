@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -9,6 +8,8 @@ public class ProyectoMovieMatchApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProyectoMovieMatchApplication.class, args);
+
+		//desactivar cors y csrf de security
 	}
 
 }
