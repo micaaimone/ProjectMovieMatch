@@ -30,5 +30,4 @@ public class EnvironmentConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
-
 }
