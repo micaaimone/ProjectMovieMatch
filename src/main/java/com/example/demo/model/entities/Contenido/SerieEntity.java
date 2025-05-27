@@ -1,4 +1,4 @@
-package com.example.demo.model.entities;
+package com.example.demo.model.entities.Contenido;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
@@ -14,7 +14,7 @@ import lombok.*;
 @Entity
 @Table(name = "series")
 @PrimaryKeyJoinColumn(name = "serie_id")
-public class SerieEntity extends ContenidoEntity{
+public class SerieEntity extends ContenidoEntity {
 
     @JsonProperty("totalSeasons")
     private String totalSeasons;

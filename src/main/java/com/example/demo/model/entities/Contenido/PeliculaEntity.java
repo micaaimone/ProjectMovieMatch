@@ -1,4 +1,4 @@
-package com.example.demo.model.entities;
+package com.example.demo.model.entities.Contenido;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
@@ -14,7 +14,7 @@ import lombok.*;
 @Entity
 @Table(name = "peliculas")
 @PrimaryKeyJoinColumn(name = "pelicula_id")
-public class PeliculaEntity extends ContenidoEntity{
+public class PeliculaEntity extends ContenidoEntity {
 
     @JsonProperty("Director")
     private String director;
