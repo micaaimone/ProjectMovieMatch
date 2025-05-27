@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.services.Contenido.SerieService;
@@ -30,5 +31,13 @@ public class SerieController {
     public ResponseEntity<SerieDTO> findByID(@PathVariable Long id)
     {
         return ResponseEntity.ok(serieService.buscarByID(id));
+    }
+
+    @GetMapping("/puntuacion")
+    public ResponseEntity<Page<SerieDTO>> byPuntuacion(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(serieService.filtrarPorPuntuacion(pageable));
     }
 }

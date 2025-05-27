@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoNotFound;
@@ -35,6 +36,13 @@ public class PeliculaService implements IContenido<PeliculaDTO>{
     @Override
     public PeliculaDTO buscarByID(Long id) {
         return peliculaRepository.findById(id).map(peliculaMapper::convertToDTO)
-                .orElseThrow(() -> new PeliculaNotFound("No existe una pelicula con ese ID"));    }
+                .orElseThrow(() -> new PeliculaNotFound("No existe una pelicula con ese ID"));
+    }
 
+
+    public Page<PeliculaDTO> filtrarPorPuntuacion(Pageable pageable)
+    {
+        return  peliculaRepository.findByEstadoOrderByPuntuacionDesc(0,pageable)
+                .map(peliculaMapper::convertToDTO);
+    }
 }

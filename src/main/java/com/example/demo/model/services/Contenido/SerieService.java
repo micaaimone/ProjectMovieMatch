@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
@@ -32,5 +33,13 @@ public class SerieService implements IContenido<SerieDTO>{
 
     public Page<SerieDTO> datosBDD(Pageable pageable) {
         return  serieRepository.findByEstado(0,pageable)
-                .map(serieMapper::convertToDTO);    }
+                .map(serieMapper::convertToDTO);
+    }
+
+    public Page<SerieDTO> filtrarPorPuntuacion(Pageable pageable)
+    {
+        return  serieRepository.findByEstadoOrderByPuntuacionDesc(0,pageable)
+                .map(serieMapper::convertToDTO);
+    }
 }
+

@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 
@@ -51,13 +50,19 @@ public class ContenidoService implements IContenido<ContenidoDTO> {
                 .map(contenidoMapper::convertToDTO);
     }
 
-    public Page<ContenidoDTO> filtrarPorAnio(int anio, Pageable pageable) {
+    public Page<ContenidoDTO> filtrarPorAnio(String anio, Pageable pageable) {
         return contenidoRepository.findByAnioAndEstado(anio, 0, pageable)
                 .map(contenidoMapper::convertToDTO);
     }
 
     public Page<ContenidoDTO> filtrarPorTituloParcial(String tituloParcial, Pageable pageable) {
         return contenidoRepository.findByTituloContainingIgnoreCaseAndEstado(tituloParcial, 0, pageable)
+                .map(contenidoMapper::convertToDTO);
+    }
+
+    public Page<ContenidoDTO> filtrarPorPuntuacion(Pageable pageable)
+    {
+        return  contenidoRepository.findByEstadoOrderByPuntuacionDesc(0,pageable)
                 .map(contenidoMapper::convertToDTO);
     }
 
@@ -81,6 +86,8 @@ public class ContenidoService implements IContenido<ContenidoDTO> {
         }
         return eliminado;
     }
+
+
 
     public boolean darDeAltaBDD(long id)
     {
