@@ -1,11 +1,11 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Contenido;
 
 
 
-import com.example.demo.model.entities.ContenidoEntity;
-import com.example.demo.model.entities.PeliculaEntity;
-import com.example.demo.model.entities.SerieEntity;
-import com.example.demo.model.repositories.ContenidoRepository;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.Contenido.PeliculaEntity;
+import com.example.demo.model.entities.Contenido.SerieEntity;
+import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
