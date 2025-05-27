@@ -1,12 +1,12 @@
 package com.example.demo.model.config;
 
-import com.example.demo.model.entities.PeliculaEntity;
-import com.example.demo.model.entities.RatingEntity;
-import com.example.demo.model.entities.SerieEntity;
-import com.example.demo.model.repositories.PeliculaRepository;
-import com.example.demo.model.repositories.RatingRepository;
-import com.example.demo.model.repositories.SerieRepository;
-import com.example.demo.model.services.APIMovieService;
+import com.example.demo.model.entities.Contenido.PeliculaEntity;
+import com.example.demo.model.entities.Contenido.RatingEntity;
+import com.example.demo.model.entities.Contenido.SerieEntity;
+import com.example.demo.model.repositories.Contenido.PeliculaRepository;
+import com.example.demo.model.repositories.Contenido.RatingRepository;
+import com.example.demo.model.repositories.Contenido.SerieRepository;
+import com.example.demo.model.services.Contenido.APIMovieService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
@@ -106,6 +106,8 @@ public class StarterDatabase {
                 .filter(p -> !checkPeliBDD(p.getImdbId()))
                 .toList()) {
 
+            //seteo que automaticamente el estado sea 0 (activo)
+            pelicula.setEstado(0);
             // guardo la serie primero para obtener su id_contenido
             peliculaRepository.save(pelicula);
 
