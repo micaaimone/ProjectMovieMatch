@@ -1,7 +1,7 @@
-package com.example.demo.model.mappers;
+package com.example.demo.model.mappers.Contenido;
 
-import com.example.demo.model.DTOs.RatingDTO;
-import com.example.demo.model.entities.RatingEntity;
+import com.example.demo.model.DTOs.Contenido.RatingDTO;
+import com.example.demo.model.entities.Contenido.RatingEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
