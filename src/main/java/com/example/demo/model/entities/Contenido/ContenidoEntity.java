@@ -1,4 +1,4 @@
-package com.example.demo.model.entities;
+package com.example.demo.model.entities.Contenido;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -18,6 +18,8 @@ public abstract class ContenidoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_contenido;
+
+    private long estado; // 0 -> activo,  1-> no activo
 
     @JsonProperty("Title")
     private String titulo;
