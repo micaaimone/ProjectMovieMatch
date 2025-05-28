@@ -48,7 +48,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<String> eliminarUsuario(@PathVariable Long id) {
         usuarioService.deleteById(id);
         return ResponseEntity.ok("Usuario eliminado con éxito.");
@@ -65,13 +65,13 @@ public class UsuarioController {
         return ResponseEntity.ok(actualizado);
     }
 
-    @PatchMapping("/activar/{id}")
+    @PatchMapping("/reactivar/{id}")
     public ResponseEntity<String> activarUsuario(@PathVariable Long id) {
         usuarioService.cambiarEstadoUsuario(id, true);
         return ResponseEntity.ok("Usuario activado.");
     }
 
-    @PatchMapping("/desactivar/{id}")
+    @PatchMapping("/darDeBaja/{id}")
     public ResponseEntity<String> desactivarUsuario(@PathVariable Long id) {
         usuarioService.cambiarEstadoUsuario(id, false);
         return ResponseEntity.ok("Usuario desactivado.");
@@ -91,8 +91,12 @@ public class UsuarioController {
 
 
     @GetMapping("/{idUsuario}/likes")
-    public ResponseEntity<Set<ContenidoEntity>> obtenerLikes(@PathVariable Long idUsuario){
-        return ResponseEntity.ok(usuarioService.listarLikes(idUsuario));
+    public ResponseEntity<Page<ContenidoEntity>> obtenerLikes(@RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int size,
+                                                              @PathVariable Long idUsuario){
+       Pageable pageable = PageRequest.of(page, size);
+       Page<ContenidoEntity> pagina = usuarioService.obtenerLikes(idUsuario, pageable);
+       return ResponseEntity.ok(pagina);
     }
 
 

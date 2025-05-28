@@ -9,6 +9,8 @@ import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -125,9 +127,14 @@ public class UsuarioService {
 //    }
 
     //despues cambiar por contenidoDTO y retornar page
-    public Set<ContenidoEntity> listarLikes(Long id){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return usuarioEntity.getLikes();
+//    public Set<ContenidoEntity> listarLikes(Long id){
+//        UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//        return usuarioEntity.getLikes();
+//    }
+
+    public Page<ContenidoEntity> obtenerLikes(Long id, Pageable pageable) {
+        return usuarioRepository.findLikes(id, pageable);
     }
+
 }
