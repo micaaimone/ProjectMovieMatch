@@ -72,6 +72,7 @@ public class StarterDatabase {
     @PostConstruct
     private void init()
     {
+
         traerPeliculaAPI();
         traerSeriesAPI();
         initPlan();
@@ -82,11 +83,12 @@ public class StarterDatabase {
 
     public void initPlan(){
         if (planRepository.count() == 0) {
-            planRepository.save(new PlanSuscripcionEntity(1L, TipoSuscripcion.MENSUAL, 3000, null));
-            planRepository.save(new PlanSuscripcionEntity(1l, TipoSuscripcion.SEMESTRAL, 15000, null));
-            planRepository.save(new PlanSuscripcionEntity(1l, TipoSuscripcion.ANUAL, 25000, null));
+            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000, null));
+            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.SEMESTRAL, 15000, null));
+            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000, null));
         }
     }
+
     public void validarSubs(){
         suscripcionRepository.VerificarSuscripcion(LocalDate.now());
     }

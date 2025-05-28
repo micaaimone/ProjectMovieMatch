@@ -24,8 +24,9 @@ public interface SuscripcionRepository extends JpaRepository<SuscripcionEntity, 
     @Transactional
     @Query("UPDATE SuscripcionEntity s SET s.estado = true WHERE s.id_suscripcion = :id")
     void activarSub(@Param("id") Long id);
+    @Modifying
+    @Transactional
     @Query("UPDATE SuscripcionEntity s SET s.estado = false WHERE :now > s.fecha_fin")
-
     void VerificarSuscripcion(@Param("now") LocalDate now);
 
 }

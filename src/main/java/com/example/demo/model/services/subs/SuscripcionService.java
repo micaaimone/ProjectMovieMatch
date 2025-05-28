@@ -85,7 +85,7 @@ public class SuscripcionService {
         suscripcion.setFecha_inicio(LocalDate.now());
         suscripcion.setFecha_fin(calcularFechaFin(dato));
         suscripcionRepository.save(suscripcion);
-        usuario.setSuscripcion(suscripcion);
+        //usuario.setSuscripcion(suscripcion);
         return suscripcion;
     }
 

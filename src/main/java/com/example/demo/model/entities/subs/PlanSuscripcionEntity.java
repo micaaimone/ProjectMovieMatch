@@ -8,7 +8,6 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @ToString
 
@@ -28,4 +27,10 @@ public class PlanSuscripcionEntity {
     private List <OfertaEntity> ofertas;
 
     //---------------------------------------
+
+    public PlanSuscripcionEntity(TipoSuscripcion tipo, float precio, List<OfertaEntity> ofertas) {
+        this.tipo = tipo;
+        this.precio = precio;
+        this.ofertas = ofertas;
+    }
 }
