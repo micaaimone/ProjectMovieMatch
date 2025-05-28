@@ -1,12 +1,10 @@
-package com.example.demo.model.services.subs;
+package com.example.demo.model.services.Subs;
 
 import com.example.demo.model.DTOs.subs.OfertaDTO;
-import com.example.demo.model.DTOs.subs.PlanDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
-import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
-import com.example.demo.model.mappers.subs.OfertaMapper;
-import com.example.demo.model.repositories.subs.OfertaRepository;
-import com.example.demo.model.repositories.subs.PlanRepository;
+import com.example.demo.model.mappers.Subs.OfertaMapper;
+import com.example.demo.model.repositories.Subs.OfertaRepository;
+import com.example.demo.model.repositories.Subs.PlanRepository;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

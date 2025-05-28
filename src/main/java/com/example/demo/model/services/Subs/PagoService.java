@@ -1,18 +1,16 @@
-package com.example.demo.model.services.subs;
+package com.example.demo.model.services.Subs;
 
 import com.example.demo.model.DTOs.subs.PagoDTO;
 import com.example.demo.model.entities.subs.PagoEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
-import com.example.demo.model.mappers.subs.PagoMapper;
-import com.example.demo.model.repositories.subs.PagoRepository;
-import org.apache.velocity.exception.ResourceNotFoundException;
+import com.example.demo.model.mappers.Subs.PagoMapper;
+import com.example.demo.model.repositories.Subs.PagoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class PagoService {

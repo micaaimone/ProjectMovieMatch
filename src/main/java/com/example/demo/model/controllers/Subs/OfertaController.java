@@ -1,7 +1,7 @@
-package com.example.demo.model.controllers.subs;
+package com.example.demo.model.controllers.Subs;
 
 import com.example.demo.model.DTOs.subs.OfertaDTO;
-import com.example.demo.model.services.subs.OfertaService;
+import com.example.demo.model.services.Subs.OfertaService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

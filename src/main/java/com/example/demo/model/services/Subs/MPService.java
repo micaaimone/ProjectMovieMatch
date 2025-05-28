@@ -1,8 +1,6 @@
-package com.example.demo.model.services.subs;
+package com.example.demo.model.services.Subs;
 
-import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
-import com.example.demo.model.mappers.subs.SuscripcionMapper;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;

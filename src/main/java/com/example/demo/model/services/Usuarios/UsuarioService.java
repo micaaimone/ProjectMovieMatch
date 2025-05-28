@@ -1,26 +1,15 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
-import com.example.demo.model.exceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.UsuarioMapper;
-import com.example.demo.model.repositories.UsuarioRepository;
-import com.example.demo.model.specifications.UsuarioSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {

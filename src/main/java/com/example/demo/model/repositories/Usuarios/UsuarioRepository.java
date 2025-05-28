@@ -1,4 +1,4 @@
-package com.example.demo.model.repositories;
+package com.example.demo.model.repositories.Usuarios;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;

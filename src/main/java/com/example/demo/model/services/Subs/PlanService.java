@@ -1,19 +1,15 @@
-package com.example.demo.model.services.subs;
+package com.example.demo.model.services.Subs;
 
-import com.example.demo.model.DTOs.subs.OfertaDTO;
 import com.example.demo.model.DTOs.subs.PlanDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
-import com.example.demo.model.entities.subs.TipoSuscripcion;
-import com.example.demo.model.mappers.subs.PlanMapper;
-import com.example.demo.model.repositories.subs.PlanRepository;
+import com.example.demo.model.mappers.Subs.PlanMapper;
+import com.example.demo.model.repositories.Subs.PlanRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service

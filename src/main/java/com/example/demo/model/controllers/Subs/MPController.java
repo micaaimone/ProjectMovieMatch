@@ -1,6 +1,6 @@
-package com.example.demo.model.controllers.subs;
+package com.example.demo.model.controllers.Subs;
 
-import com.example.demo.model.services.subs.MPService;
+import com.example.demo.model.services.Subs.MPService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

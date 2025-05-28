@@ -1,6 +1,5 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

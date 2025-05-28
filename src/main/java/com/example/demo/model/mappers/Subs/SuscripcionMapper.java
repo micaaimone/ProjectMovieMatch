@@ -1,4 +1,4 @@
-package com.example.demo.model.mappers.subs;
+package com.example.demo.model.mappers.Subs;
 
 import com.example.demo.model.DTOs.subs.PagoDTO;
 import com.example.demo.model.DTOs.subs.SuscripcionDTO;

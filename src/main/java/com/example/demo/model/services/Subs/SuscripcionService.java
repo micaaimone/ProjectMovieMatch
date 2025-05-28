@@ -1,4 +1,4 @@
-package com.example.demo.model.services.subs;
+package com.example.demo.model.services.Subs;
 
 import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.UsuarioEntity;
@@ -6,10 +6,10 @@ import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
-import com.example.demo.model.mappers.subs.SuscripcionMapper;
-import com.example.demo.model.repositories.subs.PlanRepository;
-import com.example.demo.model.repositories.subs.SuscripcionRepository;
-import com.example.demo.model.repositories.UsuarioRepository;
+import com.example.demo.model.mappers.Subs.SuscripcionMapper;
+import com.example.demo.model.repositories.Subs.PlanRepository;
+import com.example.demo.model.repositories.Subs.SuscripcionRepository;
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

@@ -1,8 +1,8 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.entities.CredencialEntity;
 
-import com.example.demo.model.repositories.CredencialRepository;
+import com.example.demo.model.repositories.Usuarios.CredencialRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.springframework.data.domain.Page;

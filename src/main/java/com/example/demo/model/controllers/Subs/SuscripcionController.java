@@ -1,9 +1,9 @@
-package com.example.demo.model.controllers.subs;
+package com.example.demo.model.controllers.Subs;
 
 import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
-import com.example.demo.model.services.subs.MPService;
-import com.example.demo.model.services.subs.SuscripcionService;
+import com.example.demo.model.services.Subs.MPService;
+import com.example.demo.model.services.Subs.SuscripcionService;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import org.springframework.data.domain.Page;

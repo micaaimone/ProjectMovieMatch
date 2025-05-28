@@ -1,6 +1,5 @@
-package com.example.demo.model.repositories.subs;
+package com.example.demo.model.repositories.Subs;
 
-import com.example.demo.model.DTOs.subs.OfertaDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
-package com.example.demo.model.repositories.subs;
+package com.example.demo.model.repositories.Subs;
 
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import org.springframework.data.domain.Page;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 
 @Repository
