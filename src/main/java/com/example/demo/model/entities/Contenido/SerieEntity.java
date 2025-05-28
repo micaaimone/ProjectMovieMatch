@@ -17,5 +17,5 @@ import lombok.*;
 public class SerieEntity extends ContenidoEntity {
 
     @JsonProperty("totalSeasons")
-    private String totalSeasons;
+    private String temporadas;
 }

@@ -22,58 +22,20 @@ public class ContenidoController {
         this.contenidoService = contenidoService;
     }
 
+
     @GetMapping
-    public ResponseEntity<Page<ContenidoDTO>> listado(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
+    public ResponseEntity<Page<ContenidoDTO>> all(
+            @RequestParam(required = false) String genero,
+            @RequestParam(required = false) String anio,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) Double puntuacion,
+            @RequestParam(required = false) Integer estado,
+            @RequestParam(required = false) String clasificacion,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(contenidoService.datosBDD(pageable));
-    }
-
-    @GetMapping("/verBajasLogicas")
-    public ResponseEntity<Page<ContenidoDTO>> listadoBajaLogica(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(contenidoService.datosDadosDeBajaBDD(pageable));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ContenidoDTO> buscarID(@PathVariable Long id)
-    {
-        return ResponseEntity.ok( contenidoService.buscarByID(id));
-    }
-
-    @GetMapping("allByGenero/{genero}")
-    public ResponseEntity<Page<ContenidoDTO>> byGenero(@PathVariable String genero, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(contenidoService.buscarPorGenero(genero, pageable));
-    }
-
-    @GetMapping("/allByAnio/{anio}")
-    public ResponseEntity<Page<ContenidoDTO>> byAnio(@PathVariable String anio, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(contenidoService.filtrarPorAnio(anio, pageable));
-    }
-
-    @GetMapping("/tituloParcial/{titulo}")
-    public ResponseEntity<Page<ContenidoDTO>> byTitulo(@PathVariable String titulo, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(contenidoService.filtrarPorTituloParcial(titulo,pageable));
-    }
-
-    @GetMapping("/puntuacion")
-    public ResponseEntity<Page<ContenidoDTO>> byPuntuacion(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(contenidoService.filtrarPorPuntuacion(pageable));
+        return ResponseEntity.ok(contenidoService.buscar(pageable, genero, anio, titulo, puntuacion, estado, clasificacion));
     }
 
 
@@ -95,5 +57,6 @@ public class ContenidoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
 
 }

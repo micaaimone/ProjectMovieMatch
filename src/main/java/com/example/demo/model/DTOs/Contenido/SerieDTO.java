@@ -9,6 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class SerieDTO extends ContenidoDTO {
-    private String totalSeasons;
+    private String temporadas;
 
 }

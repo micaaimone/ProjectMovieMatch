@@ -1,6 +1,5 @@
 package com.example.demo.model.DTOs.Contenido;
 
-import com.example.demo.model.entities.Contenido.RatingEntity;
 import lombok.*;
 
 @Getter

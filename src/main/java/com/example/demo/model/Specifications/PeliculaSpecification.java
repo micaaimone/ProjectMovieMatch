@@ -1,19 +1,19 @@
 package com.example.demo.model.Specifications;
 
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import org.springframework.data.jpa.domain.Specification;
 
-public class ContenidoSpecification {
+public class PeliculaSpecification {
 
-    public static Specification<ContenidoEntity> genero(String genero)
+    public static Specification<PeliculaEntity> genero(String genero)
     {
         return ((root, query, criteriaBuilder) ->
                 genero == null ? null :
                         criteriaBuilder.equal(root.get("genero"), genero)
-                );
+        );
     }
 
-    public static Specification<ContenidoEntity> estado(Integer estado)
+    public static Specification<PeliculaEntity> estado(Integer estado)
     {
         return ((root, query, criteriaBuilder) ->
                 estado == null ? null :
@@ -21,15 +21,15 @@ public class ContenidoSpecification {
         );
     }
 
-    public static Specification<ContenidoEntity> anio(String anio)
+    public static Specification<PeliculaEntity> anio(String anio)
     {
         return ((root, query, criteriaBuilder) ->
                 anio == null ? null :
                         criteriaBuilder.equal(root.get("anio"), anio)
-                );
+        );
     }
 
-    public static Specification<ContenidoEntity> tituloParecido(String titulo)
+    public static Specification<PeliculaEntity> tituloParecido(String titulo)
     {
         return ((root, query, criteriaBuilder) ->
                 titulo == null ? null :
@@ -39,7 +39,7 @@ public class ContenidoSpecification {
                         ));
     }
 
-    public static Specification<ContenidoEntity> puntuacion(Double puntuacion)
+    public static Specification<PeliculaEntity> puntuacion(Double puntuacion)
     {
         return ((root, query, criteriaBuilder) ->
                 puntuacion == null ? null :
@@ -47,7 +47,7 @@ public class ContenidoSpecification {
         );
     }
 
-    public static Specification<ContenidoEntity> clasificacion(String clasificacion)
+    public static Specification<PeliculaEntity> clasificacion(String clasificacion)
     {
         return ((root, query, criteriaBuilder) ->
                 clasificacion == null ? null :
@@ -55,5 +55,11 @@ public class ContenidoSpecification {
         );
     }
 
-
+    public static Specification<PeliculaEntity> metascore(String metascore)
+    {
+        return ((root, query, criteriaBuilder) ->
+                metascore == null ? null :
+                        criteriaBuilder.equal(root.get("metascore"), metascore)
+        );
+    }
 }

@@ -1,24 +1,25 @@
 package com.example.demo.model.services.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.Specifications.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.exceptions.ContenidoNotFound;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
-import com.example.demo.model.services.IContenido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 
 @Service
-public class ContenidoService implements IContenido<ContenidoDTO> {
+public class ContenidoService {
 
     private final ContenidoRepository contenidoRepository;
     private final ContenidoMapper contenidoMapper;
+
 
     @Autowired
     public ContenidoService(ContenidoRepository contenidoRepository,ContenidoMapper contenidoMapper) {
@@ -27,43 +28,17 @@ public class ContenidoService implements IContenido<ContenidoDTO> {
     }
 
 
-    public Page<ContenidoDTO> datosBDD(Pageable pageable)
-    {
-        return contenidoRepository.findByEstado(0,pageable)
-                .map(contenidoMapper::convertToDTO);
-    }
 
-    public Page<ContenidoDTO> datosDadosDeBajaBDD(Pageable pageable)
-    {
-        return contenidoRepository.findByEstado(1,pageable)
-                .map(contenidoMapper::convertToDTO);
-    }
+    public Page<ContenidoDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion){
+        Specification<ContenidoEntity> specification = Specification
+                .where(ContenidoSpecification.genero(genero))
+                .and(ContenidoSpecification.anio(anio))
+                .and(ContenidoSpecification.tituloParecido(titulo))
+                .and(ContenidoSpecification.puntuacion(puntuacion))
+                .and(ContenidoSpecification.estado(estado))
+                .and(ContenidoSpecification.clasificacion(clasificacion));
 
-    public ContenidoDTO buscarByID(Long id)
-    {
-        return contenidoRepository.findById(id).map(contenidoMapper::convertToDTO)
-                .orElseThrow(() -> new ContenidoNotFound("No existe un contenido con ese ID"));
-    }
-
-    public Page<ContenidoDTO> buscarPorGenero(String genero, Pageable pageable) {
-        return contenidoRepository.findByGeneroAndEstado(genero, 0, pageable)
-                .map(contenidoMapper::convertToDTO);
-    }
-
-    public Page<ContenidoDTO> filtrarPorAnio(String anio, Pageable pageable) {
-        return contenidoRepository.findByAnioAndEstado(anio, 0, pageable)
-                .map(contenidoMapper::convertToDTO);
-    }
-
-    public Page<ContenidoDTO> filtrarPorTituloParcial(String tituloParcial, Pageable pageable) {
-        return contenidoRepository.findByTituloContainingIgnoreCaseAndEstado(tituloParcial, 0, pageable)
-                .map(contenidoMapper::convertToDTO);
-    }
-
-    public Page<ContenidoDTO> filtrarPorPuntuacion(Pageable pageable)
-    {
-        return  contenidoRepository.findByEstadoOrderByPuntuacionDesc(0,pageable)
-                .map(contenidoMapper::convertToDTO);
+        return contenidoRepository.findAll(specification, pageable).map(contenidoMapper::convertToDTO);
     }
 
 

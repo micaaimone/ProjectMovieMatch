@@ -5,10 +5,8 @@ import com.example.demo.model.entities.Contenido.SerieEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-public interface SerieRepository extends JpaRepository<SerieEntity, Long> {
-    Page<SerieEntity> findByEstado(int estado, Pageable pageable);
-
-    Page<SerieEntity> findByEstadoOrderByPuntuacionDesc(int estado, Pageable pageable);
+public interface SerieRepository extends JpaRepository<SerieEntity, Long>, JpaSpecificationExecutor<SerieEntity> {
 
 }
