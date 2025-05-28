@@ -138,10 +138,10 @@ public class UsuarioService {
     public Page<ContenidoEntity> obtenerLikes(Long id, Pageable pageable) {
         return usuarioRepository.findLikes(id, pageable);
     }
-
-    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username){
-        Specification<UsuarioEntity> spec = Specification
-                .where(UsuarioSpecification.nombre(nombre));
-    }
+//
+//    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username){
+//        Specification<UsuarioEntity> spec = Specification
+//                .where(UsuarioSpecification.nombre(nombre));
+//    }
 
 }
