@@ -4,7 +4,6 @@ import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.services.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,24 +11,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+    private final UsuarioService usuarioService;
 
-    private UsuarioService usuarioService;
-
-    @Autowired
     public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
 
     @GetMapping("/listar")
-    public List<UsuarioEntity> obtenerListaUsuarios(){
-        return usuarioService.findAll();
+    public ResponseEntity<Page<UsuarioDTO>> obtenerListaUsuarios(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(usuarioService.findAll(pageable));
     }
 
     @GetMapping("/listarPaginado")
@@ -45,9 +42,10 @@ public class UsuarioController {
     // agregar listar por filtros
 
     @PostMapping("/registrar")
-    public ResponseEntity<UsuarioEntity> agregarUsuario(@RequestBody UsuarioEntity u) {
-        UsuarioEntity usuarioGuardado = usuarioService.save(u);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioGuardado);
+    public ResponseEntity<Void> agregarUsuario(@RequestBody UsuarioEntity u) {
+        usuarioService.save(u);
+        /*return ResponseEntity.status(HttpStatus.CREATED).body(usuarioGuardado)*/
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{id}")
@@ -58,8 +56,7 @@ public class UsuarioController {
 
     @GetMapping("/ver/{id}")
     public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable Long id) {
-        UsuarioDTO dto = usuarioService.getUsuarioDTO(id);
-        return ResponseEntity.ok(dto);
+        return ResponseEntity.ok(usuarioService.findById(id));
     }
 
     @PutMapping("/actualizar/{id}")

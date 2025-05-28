@@ -9,6 +9,7 @@ import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -20,34 +21,43 @@ import java.util.stream.Collectors;
 @Service
 public class UsuarioService {
 
-    private UsuarioMapper usuarioMapper;
-    private UsuarioRepository usuarioRepository;
-    private ContenidoService contenidoService;
+    private final UsuarioMapper usuarioMapper;
+    private final UsuarioRepository usuarioRepository;
+    //private final ContenidoService contenidoService; verificar si hay q traer el service o el repo
 
-    @Autowired
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository) {
+
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository /*ContenidoService contenidoService*/) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         //this.contenidoService = contenidoService;
     }
 
-    public List<UsuarioEntity> findAll(){
-        return usuarioRepository.findAll();
+    public Page<UsuarioDTO> findAll(Pageable pageable){
+        return usuarioRepository.findAll(pageable)
+                .map(usuarioMapper::convertToDTO);
     }
 
-    public UsuarioEntity save(UsuarioEntity usuario) {
+    public void save(UsuarioEntity usuario) {
 //        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
 //            throw new UsuarioYaExisteException(usuario.getEmail());
 //        }
-        return usuarioRepository.save(usuario);
+        usuarioRepository.save(usuario);
+
     }
 
-    public Optional<UsuarioEntity> findById(long id){
-        return usuarioRepository.findById(id);
+    public UsuarioDTO findById(long id){
+        return usuarioRepository.findById(id)
+                .map(usuarioMapper::convertToDTO)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
     }
 
-    public UsuarioEntity findByUsername(String username){return usuarioRepository.findByUsername(username);}
+    public UsuarioDTO findByUsername(String username){
+        return usuarioRepository.findByUsername(username)
+                .map(usuarioMapper::convertToDTO)
+                .orElseThrow(/*excepcion personalizada*/);
+    }
 
+    //no hay que borrar, hay q hacer baja logica (activo =false)
     public void deleteById(Long id) {
         if (!usuarioRepository.existsById(id)) {
             throw new UsuarioNoEncontradoException(id);
@@ -60,11 +70,12 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
 
         existente.setNombre(nuevosDatos.getNombre());
-//        existente.setEmail(nuevosDatos.getEmail());
+        existente.setEmail(nuevosDatos.getEmail());
 
         return usuarioRepository.save(existente);
     }
 
+    //se puede ahorrar mandar el boolean
     public void cambiarEstadoUsuario(Long id, boolean activo) {
         UsuarioEntity usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
@@ -73,11 +84,12 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    public List<UsuarioEntity> usuariosMayores(int edad){
-        return usuarioRepository.findByEdadGreaterThan(edad);
+    public Page<UsuarioDTO> usuariosMayores(Long edad, Pageable pageable) {
+        return usuarioRepository.findByEdadGreaterThan(edad, pageable)
+                .map(usuarioMapper::convertToDTO);
     }
 
-
+    //ya esta el mapper?charlarlo
     public UsuarioDTO convertirAUsuarioDTO(UsuarioEntity u) {
         return new UsuarioDTO(
                 u.getUsername(),
@@ -86,6 +98,7 @@ public class UsuarioService {
                 // tmb suscripcion
         );
     }
+
     public UsuarioDTO getUsuarioDTO(Long id) {
         UsuarioEntity usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -94,8 +107,8 @@ public class UsuarioService {
     }
 
     public Page<UsuarioDTO> obtenerUsuariosPaginados(Pageable pageable) {
-        Page<UsuarioEntity> page = usuarioRepository.findAll(pageable);
-        return page.map(this::convertirAUsuarioDTO);
+        return usuarioRepository.findAll(pageable)
+                .map(usuarioMapper::convertToDTO);
     }
 
 
@@ -121,6 +134,7 @@ public class UsuarioService {
 //        usuarioRepository.save(usuarioEntity);
 //    }
 
+    //despues cambiar por contenidoDTO y retornar page
     public Set<ContenidoEntity> listarLikes(Long id){
         UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));

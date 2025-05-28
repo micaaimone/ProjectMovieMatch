@@ -1,28 +1,31 @@
 package com.example.demo.model.services;
 
 import com.example.demo.model.entities.CredencialEntity;
-import com.example.demo.model.entities.UsuarioEntity;
+
 import com.example.demo.model.repositories.CredencialRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CredencialService {
+    private final CredencialRepository credencialRepository;
 
-    private CredencialRepository credencialRepository;
-
-    @Autowired
-    public CredencialService(CredencialRepository credencialRepository) {this.credencialRepository = credencialRepository;}
-
-    public List<CredencialEntity> findAll(){
-        return credencialRepository.findAll();
+    public CredencialService(CredencialRepository credencialRepository) {
+        this.credencialRepository = credencialRepository;
     }
 
-    public Optional<CredencialEntity> findById(Long id){
-        return credencialRepository.findById(id);
+    //cambiar por DTO
+    public Page<CredencialEntity> findAll(Pageable pageable){
+        return credencialRepository.findAll(pageable);
+    }
+
+    public CredencialEntity findById(Long id){
+        return credencialRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException());
     }
     public CredencialEntity save(CredencialEntity credencialEntity){return credencialRepository.save(credencialEntity);}
 
