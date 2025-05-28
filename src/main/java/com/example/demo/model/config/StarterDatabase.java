@@ -9,11 +9,14 @@ import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import com.example.demo.model.repositories.Contenido.RatingRepository;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
 import com.example.demo.model.repositories.subs.PlanRepository;
+import com.example.demo.model.repositories.subs.SuscripcionRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
 import com.example.demo.model.services.subs.PlanService;
+import com.example.demo.model.services.subs.SuscripcionService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -26,13 +29,16 @@ public class StarterDatabase {
     private final PeliculaRepository peliculaRepository;
     private final SerieRepository serieRepository;
     private final PlanRepository planRepository;
+    private final SuscripcionRepository suscripcionRepository;
 
-    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository, PlanRepository planRepository) {
+    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
         this.serieRepository = serieRepository;
         this.planRepository = planRepository;
+        this.suscripcionRepository = suscripcionRepository;
     }
 
     // Listas de títulos de prueba
@@ -67,15 +73,21 @@ public class StarterDatabase {
     {
         traerPeliculaAPI();
         traerSeriesAPI();
+        initPlan();
+        validarSubs();
+
     }
 
-    @PostConstruct
+
     public void initPlan(){
         if (planRepository.count() == 0) {
             planRepository.save(new PlanSuscripcionEntity(1L, TipoSuscripcion.MENSUAL, 3000, null));
             planRepository.save(new PlanSuscripcionEntity(1l, TipoSuscripcion.SEMESTRAL, 15000, null));
             planRepository.save(new PlanSuscripcionEntity(1l, TipoSuscripcion.ANUAL, 25000, null));
         }
+    }
+    public void validarSubs(){
+        suscripcionRepository.VerificarSuscripcion(LocalDate.now());
     }
 
 
@@ -136,6 +148,10 @@ public class StarterDatabase {
 
             contenidoPelicula.add(pelicula);
         }
+    }
+
+    public void ValidarSub(){
+
     }
 
     public boolean checkPeliBDD(String imdbId) {

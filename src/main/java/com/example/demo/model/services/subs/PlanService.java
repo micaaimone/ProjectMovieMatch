@@ -1,5 +1,6 @@
 package com.example.demo.model.services.subs;
 
+import com.example.demo.model.DTOs.subs.OfertaDTO;
 import com.example.demo.model.DTOs.subs.PlanDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;

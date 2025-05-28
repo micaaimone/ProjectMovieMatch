@@ -85,6 +85,7 @@ public class SuscripcionService {
         suscripcion.setFecha_inicio(LocalDate.now());
         suscripcion.setFecha_fin(calcularFechaFin(dato));
         suscripcionRepository.save(suscripcion);
+        usuario.setSuscripcion(suscripcion);
         return suscripcion;
     }
 
@@ -118,16 +119,6 @@ public class SuscripcionService {
         return hoy.isAfter(suscripcion.getFecha_fin());
     }
 
-    //utiliza la verificacion y si caduco cambia el estado
-    public void verificarVencimiento(Long id){
-        SuscripcionEntity sub = suscripcionRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("no existe la suscripcion"));
-
-        if(vencio(sub)){
-            sub.setEstado(false);
-            suscripcionRepository.save(sub);
-        }
-    }
 
     //listar activos
     public Page<SuscripcionDTO> mostrarActivos(Pageable pageable) {

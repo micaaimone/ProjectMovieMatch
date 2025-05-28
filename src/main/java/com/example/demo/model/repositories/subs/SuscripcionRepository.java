@@ -10,6 +10,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 
 @Repository
 public interface SuscripcionRepository extends JpaRepository<SuscripcionEntity, Long> {
@@ -21,5 +24,8 @@ public interface SuscripcionRepository extends JpaRepository<SuscripcionEntity, 
     @Transactional
     @Query("UPDATE SuscripcionEntity s SET s.estado = true WHERE s.id_suscripcion = :id")
     void activarSub(@Param("id") Long id);
+    @Query("UPDATE SuscripcionEntity s SET s.estado = false WHERE :now > s.fecha_fin")
+
+    void VerificarSuscripcion(@Param("now") LocalDate now);
 
 }
