@@ -4,7 +4,15 @@ package com.example.demo.model.entities;
 import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.validator.constraints.Email;
 
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "usuarios")
 public class UsuarioEntity {
@@ -18,6 +26,10 @@ public class UsuarioEntity {
 
     @Column
     private String apellido;
+
+    @Email
+    @Column
+    private String email;
 
     @Column
     private int edad;
@@ -50,102 +62,5 @@ public class UsuarioEntity {
     )
     private Set<ContenidoEntity> likes;
 
-    public UsuarioEntity(Long id, String nombre, String apellido, int edad, long telefono, String contrasenia, String username, boolean activo, CredencialEntity credencial) {
-        this.id = id;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.edad = edad;
-        this.telefono = telefono;
-        this.contrasenia = contrasenia;
-        this.username = username;
-        this.activo = activo;
-        this.credencial = credencial;
-        this.likes = new HashSet<>();
-    }
 
-    public UsuarioEntity() {
-    }
-
-    // GETTERS Y SETTERS
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellido() {
-        return apellido;
-    }
-
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
-    }
-
-
-    public int getEdad() {
-        return edad;
-    }
-
-    public void setEdad(int edad) {
-        this.edad = edad;
-    }
-
-    public long getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(long telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getContrasenia() {
-        return contrasenia;
-    }
-
-    public void setContrasenia( String contrasenia) {
-        this.contrasenia = contrasenia;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public boolean isActivo() {
-        return activo;
-    }
-
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
-    public CredencialEntity getCredencial() {
-        return credencial;
-    }
-
-    public void setCredencial(CredencialEntity credencial) {
-        this.credencial = credencial;
-    }
-
-    public Set<ContenidoEntity> getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Set<ContenidoEntity> likes) {
-        this.likes = likes;
-    }
 }
