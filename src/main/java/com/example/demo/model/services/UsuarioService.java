@@ -7,8 +7,10 @@ import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.UsuarioRepository;
+import com.example.demo.model.specifications.UsuarioSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
@@ -135,6 +137,11 @@ public class UsuarioService {
 
     public Page<ContenidoEntity> obtenerLikes(Long id, Pageable pageable) {
         return usuarioRepository.findLikes(id, pageable);
+    }
+
+    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username){
+        Specification<UsuarioEntity> spec = Specification
+                .where(UsuarioSpecification.nombre(nombre));
     }
 
 }
