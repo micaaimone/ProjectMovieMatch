@@ -3,16 +3,17 @@ package com.example.demo.model.config;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
+import com.example.demo.model.entities.CredencialEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
+import com.example.demo.model.enums.E_Cargo;
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import com.example.demo.model.repositories.Contenido.RatingRepository;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
-import com.example.demo.model.repositories.subs.PlanRepository;
-import com.example.demo.model.repositories.subs.SuscripcionRepository;
+import com.example.demo.model.repositories.Subs.PlanRepository;
+import com.example.demo.model.repositories.Subs.SuscripcionRepository;
+import com.example.demo.model.repositories.Usuarios.CredencialRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
-import com.example.demo.model.services.subs.PlanService;
-import com.example.demo.model.services.subs.SuscripcionService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,15 +32,18 @@ public class StarterDatabase {
     private final SerieRepository serieRepository;
     private final PlanRepository planRepository;
     private final SuscripcionRepository suscripcionRepository;
+    private final CredencialRepository credencialRepository;
+
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository) {
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
         this.serieRepository = serieRepository;
         this.planRepository = planRepository;
         this.suscripcionRepository = suscripcionRepository;
+        this.credencialRepository = credencialRepository;
     }
 
     // Listas de títulos de prueba
@@ -77,6 +81,7 @@ public class StarterDatabase {
         traerSeriesAPI();
         initPlan();
         validarSubs();
+        initCredenciales();
 
     }
 
@@ -86,6 +91,18 @@ public class StarterDatabase {
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000, null));
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.SEMESTRAL, 15000, null));
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000, null));
+        }
+    }
+
+    public void initCredenciales() {
+        if (!credencialRepository.existsById(1L)) {
+            credencialRepository.save(new CredencialEntity(1L, E_Cargo.ADMIN));
+        }
+        if (!credencialRepository.existsById(2L)) {
+            credencialRepository.save(new CredencialEntity(2L, E_Cargo.USUARIO_PREMIUM));
+        }
+        if (!credencialRepository.existsById(3L)) {
+            credencialRepository.save(new CredencialEntity(3L, E_Cargo.USUARIO));
         }
     }
 
