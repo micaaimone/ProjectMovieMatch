@@ -3,6 +3,8 @@ package com.example.demo.model.entities;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;

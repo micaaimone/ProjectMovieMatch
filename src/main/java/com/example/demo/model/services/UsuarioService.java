@@ -1,7 +1,7 @@
 package com.example.demo.model.services;
 
 import com.example.demo.model.DTOs.UsuarioDTO;
-import com.example.demo.model.entities.ContenidoEntity;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioYaExisteException;

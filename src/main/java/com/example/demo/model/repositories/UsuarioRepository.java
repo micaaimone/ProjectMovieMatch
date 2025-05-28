@@ -1,6 +1,6 @@
 package com.example.demo.model.repositories;
 
-import com.example.demo.model.entities.ContenidoEntity;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
