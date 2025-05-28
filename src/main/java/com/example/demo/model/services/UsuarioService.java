@@ -89,21 +89,11 @@ public class UsuarioService {
                 .map(usuarioMapper::convertToDTO);
     }
 
-    //ya esta el mapper?charlarlo
-    public UsuarioDTO convertirAUsuarioDTO(UsuarioEntity u) {
-        return new UsuarioDTO(
-                u.getUsername(),
-                u.getCredencial(),
-                u.getLikes()
-                // tmb suscripcion
-        );
-    }
-
     public UsuarioDTO getUsuarioDTO(Long id) {
-        UsuarioEntity usuario = usuarioRepository.findById(id)
+        return usuarioRepository.findById(id)
+                .map(usuarioMapper::convertToDTO)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        return convertirAUsuarioDTO(usuario);
     }
 
     public Page<UsuarioDTO> obtenerUsuariosPaginados(Pageable pageable) {
