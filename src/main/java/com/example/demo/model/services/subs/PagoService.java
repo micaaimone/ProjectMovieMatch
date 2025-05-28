@@ -25,7 +25,7 @@ public class PagoService {
     }
 
     public void anadirPago(SuscripcionEntity suscripcion, BigDecimal monto) {
-        pagoRepository.save(new PagoEntity("mercado pago", LocalDateTime.now(), monto, suscripcion));
+        pagoRepository.save(new PagoEntity(null, "mercado pago", LocalDateTime.now(), monto, suscripcion));
     }
 
     public Page<PagoDTO> findAll(Pageable pageable) {

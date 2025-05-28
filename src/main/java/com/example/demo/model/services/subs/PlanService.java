@@ -25,14 +25,7 @@ public class PlanService {
         this.planMapper = planMapper;
     }
 
-    @PostConstruct
-    public void init(){
-        if (planRepository.count() == 0) {
-            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000));
-            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.SEMESTRAL, 15000));
-            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000));
-        }
-    }
+
 
     public Page<PlanDTO> verTodos(Pageable pageable){
         return planRepository.findAll(pageable)

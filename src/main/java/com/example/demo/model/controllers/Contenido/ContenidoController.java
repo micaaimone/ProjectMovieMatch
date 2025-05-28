@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,12 +18,10 @@ import org.springframework.web.bind.annotation.*;
 public class ContenidoController {
 
     private final ContenidoService contenidoService;
-    private final PagedResourcesAssembler<ContenidoDTO> pagedResourcesAssambler;
 
     @Autowired
-    public ContenidoController(ContenidoService contenidoService, PagedResourcesAssembler<ContenidoDTO> pagedResourcesAssambler) {
+    public ContenidoController(ContenidoService contenidoService) {
         this.contenidoService = contenidoService;
-        this.pagedResourcesAssambler = pagedResourcesAssambler;
     }
 
     @GetMapping("/verSeriesYPeliculas")

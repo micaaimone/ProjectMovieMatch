@@ -13,5 +13,8 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
+    @PostConstruct
+    public void init()
+    {usuarioRepository.save(new UsuarioEntity("lautaro"));}
 
 }

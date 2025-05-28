@@ -3,10 +3,14 @@ package com.example.demo.model.config;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
+import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
+import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import com.example.demo.model.repositories.Contenido.RatingRepository;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
+import com.example.demo.model.repositories.subs.PlanRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
+import com.example.demo.model.services.subs.PlanService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,12 +25,14 @@ public class StarterDatabase {
     private final RatingRepository ratingRepository;
     private final PeliculaRepository peliculaRepository;
     private final SerieRepository serieRepository;
+    private final PlanRepository planRepository;
 
-    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository) {
+    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository, PlanRepository planRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
         this.serieRepository = serieRepository;
+        this.planRepository = planRepository;
     }
 
     // Listas de títulos de prueba
@@ -61,6 +67,15 @@ public class StarterDatabase {
     {
         traerPeliculaAPI();
         traerSeriesAPI();
+    }
+
+    @PostConstruct
+    public void initPlan(){
+        if (planRepository.count() == 0) {
+            planRepository.save(new PlanSuscripcionEntity(1L, TipoSuscripcion.MENSUAL, 3000, null));
+            planRepository.save(new PlanSuscripcionEntity(1l, TipoSuscripcion.SEMESTRAL, 15000, null));
+            planRepository.save(new PlanSuscripcionEntity(1l, TipoSuscripcion.ANUAL, 25000, null));
+        }
     }
 
 
