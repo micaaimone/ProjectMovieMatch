@@ -115,7 +115,8 @@ public class StarterDatabase {
                 })
                 .average()
                 .orElseThrow(() -> new NoSuchElementException("No hay ratings disponibles"));
-        return promedio;
+        // Redondear a 2 decimales
+        return Math.round(promedio * 100.0) / 100.0;
     }
 
 
@@ -171,8 +172,8 @@ public class StarterDatabase {
                 })
                 .average()
                 .orElseThrow(() -> new NoSuchElementException("No hay ratings disponibles"));
-        return promedio;
-    }
+        // Redondear a 2 decimales
+        return Math.round(promedio * 100.0) / 100.0;    }
 
     public boolean checkPeliBDD(String imdbId) {
         return peliculaRepository.findAll().stream()
