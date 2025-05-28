@@ -2,7 +2,6 @@ package com.example.demo.model.DTOs.Contenido;
 
 import lombok.*;
 
-import java.util.List;
 
 @Getter
 @Setter

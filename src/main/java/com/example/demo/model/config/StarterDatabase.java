@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Configuration
@@ -111,11 +112,38 @@ public class StarterDatabase {
                 for (RatingEntity rating : serie.getRatings()) {
                     rating.setContenido(serie);
                     ratingRepository.save(rating);
+                    serie.setPuntuacion(calcularPromedioSerie(serie));
+                    serieRepository.save(serie);
                 }
             }
 
+
+
             contenidoSerie.add(serie);
         }
+    }
+
+    public double calcularPromedioSerie(SerieEntity serie){
+        double promedio = serie.getRatings()
+                .stream()
+                .mapToDouble(r -> {
+                    String valor = r.getValor();
+                    if (valor == null || valor.isEmpty() || valor.equals("N/A")) {
+                        return 0.0;
+                    }
+                    if (valor.contains("/")) {
+                        String[] parts = valor.split("/");
+                        return Double.parseDouble(parts[0]) / Double.parseDouble(parts[1]) * 10;
+                    } else if (valor.contains("%")) {
+                        return Double.parseDouble(valor.replace("%", "")) / 10;
+                    } else {
+                        return Double.parseDouble(valor);
+                    }
+                })
+                .average()
+                .orElseThrow(() -> new NoSuchElementException("No hay ratings disponibles"));
+        // Redondear a 2 decimales
+        return Math.round(promedio * 100.0) / 100.0;
     }
 
 
@@ -143,6 +171,8 @@ public class StarterDatabase {
                 for (RatingEntity rating : pelicula.getRatings()) {
                     rating.setContenido(pelicula);
                     ratingRepository.save(rating);
+                    pelicula.setPuntuacion(calcularPromedioPelicula(pelicula));
+                    peliculaRepository.save(pelicula);
                 }
             }
 
@@ -150,9 +180,27 @@ public class StarterDatabase {
         }
     }
 
-    public void ValidarSub(){
-
-    }
+    public double calcularPromedioPelicula(PeliculaEntity pelicula){
+        double promedio = pelicula.getRatings()
+                .stream()
+                .mapToDouble(r -> {
+                    String valor = r.getValor();
+                    if (valor == null || valor.isEmpty() || valor.equals("N/A")) {
+                        return 0.0;
+                    }
+                    if (valor.contains("/")) {
+                        String[] parts = valor.split("/");
+                        return Double.parseDouble(parts[0]) / Double.parseDouble(parts[1]) * 10;
+                    } else if (valor.contains("%")) {
+                        return Double.parseDouble(valor.replace("%", "")) / 10;
+                    } else {
+                        return Double.parseDouble(valor);
+                    }
+                })
+                .average()
+                .orElseThrow(() -> new NoSuchElementException("No hay ratings disponibles"));
+        // Redondear a 2 decimales
+        return Math.round(promedio * 100.0) / 100.0;    }
 
     public boolean checkPeliBDD(String imdbId) {
         return peliculaRepository.findAll().stream()

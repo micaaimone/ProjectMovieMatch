@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.services.Contenido.PeliculaService;
 import org.springframework.data.domain.Page;
@@ -19,17 +20,20 @@ public class PeliculaController {
         this.peliculaService = peliculaService;
     }
 
-
-    @GetMapping("/todasLasPelis")
-    public ResponseEntity<Page<PeliculaDTO>> listarPeliculas(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size)
+    @GetMapping
+    public ResponseEntity<Page<PeliculaDTO>> all(
+            @RequestParam(required = false) String genero,
+            @RequestParam(required = false) String anio,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) Double puntuacion,
+            @RequestParam(required = false) Integer estado,
+            @RequestParam(required = false) String clasificacion,
+            @RequestParam(required = false) String metascore,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(peliculaService.datosBDD(pageable));
+
+        return ResponseEntity.ok(peliculaService.buscar(pageable, genero, anio, titulo, puntuacion, estado, clasificacion, metascore));
     }
 
-    @GetMapping("/buscarByID/{id}")
-    public ResponseEntity<PeliculaDTO> findByID(@PathVariable Long id)
-    {
-        return ResponseEntity.ok(peliculaService.buscarByID(id));
-    }
 }

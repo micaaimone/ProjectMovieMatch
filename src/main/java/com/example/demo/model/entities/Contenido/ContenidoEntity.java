@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Entity
+@Entity(name = "contenido")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class ContenidoEntity {
 
@@ -65,6 +65,8 @@ public abstract class ContenidoEntity {
     //eager hace q cuando se consulta a la entidad principal (contenidos) esta tabla tmbn cargue automaticamente
     @JsonProperty("Ratings")
     private List<RatingEntity> ratings;
+
+    private double puntuacion;
 
     @JsonProperty("imdbRating")
     private String imdbRating;

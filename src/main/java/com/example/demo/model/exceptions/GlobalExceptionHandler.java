@@ -51,7 +51,12 @@ public class GlobalExceptionHandler {
 
     //error por entrada invalida
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Illegal argument");
+    public ResponseEntity<ErrorDetalles> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
     }
 }

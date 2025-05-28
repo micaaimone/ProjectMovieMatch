@@ -18,17 +18,21 @@ public class SerieController {
         this.serieService = serieService;
     }
 
-
     @GetMapping
-    public ResponseEntity<Page<SerieDTO>> listarSeries(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size)
+    public ResponseEntity<Page<SerieDTO>> all(
+            @RequestParam(required = false) String genero,
+            @RequestParam(required = false) String anio,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) Double puntuacion,
+            @RequestParam(required = false) Integer estado,
+            @RequestParam(required = false) String clasificacion,
+            @RequestParam(required = false) String temporadas,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(serieService.datosBDD(pageable));
+
+        return ResponseEntity.ok(serieService.buscar(pageable, genero, anio, titulo, puntuacion, estado, clasificacion, temporadas));
     }
 
-    @GetMapping("/buscarByID/{id}")
-    public ResponseEntity<SerieDTO> findByID(@PathVariable Long id)
-    {
-        return ResponseEntity.ok(serieService.buscarByID(id));
-    }
+
 }
