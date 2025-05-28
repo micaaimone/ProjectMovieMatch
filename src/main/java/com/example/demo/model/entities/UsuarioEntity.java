@@ -1,37 +1,66 @@
 package com.example.demo.model.entities;
 
-import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.validator.constraints.Email;
+
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "usuarios")
 public class UsuarioEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    String nombre;
+    private Long id;
 
-    public UsuarioEntity(String nombre) {
+    @Column
+    private String nombre;
 
-        this.nombre = nombre;
-    }
+    @Column
+    private String apellido;
 
-    public UsuarioEntity() {
+    @Email
+    @Column
+    private String email;
 
-    }
+    @Column
+    private int edad;
 
-    public long getId() {
-        return id;
-    }
+    @Column
+    private long telefono;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+    @Column(nullable = false, length = 30)
+    private String contrasenia;
 
-    public String getNombre() {
-        return nombre;
-    }
+    @Column(name = "username", unique = true)
+    private String username;
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+    @Column(nullable = false)
+    private boolean activo = true;
+
+    @ManyToOne
+    @JoinColumn(name = "id_credencial", referencedColumnName = "id")
+    private CredencialEntity credencial;
+
+//    @OneToOne
+//    @JoinColumn(name = "id_suscripcion")
+//    private SuscripcionEntity suscripcion;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinTable(
+            name = "likes",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_contenido")
+    )
+    private Set<ContenidoEntity> likes;
+
+
 }
