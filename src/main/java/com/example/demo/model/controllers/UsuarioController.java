@@ -3,15 +3,13 @@ package com.example.demo.model.controllers;
 import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
-import com.example.demo.model.services.UsuarioService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Set;
 
 @RestController
 @RequestMapping("/usuarios")
