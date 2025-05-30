@@ -13,6 +13,14 @@ public class SerieSpecification {
         );
     }
 
+    public static Specification<SerieEntity> id(Long id)
+    {
+        return ((root, query, criteriaBuilder) ->
+                id == null ? null :
+                        criteriaBuilder.equal(root.get("id"), id)
+        );
+    }
+
     public static Specification<SerieEntity> estado(Integer estado)
     {
         return ((root, query, criteriaBuilder) ->

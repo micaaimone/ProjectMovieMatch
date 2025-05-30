@@ -13,6 +13,14 @@ public class PeliculaSpecification {
         );
     }
 
+    public static Specification<PeliculaEntity> id(Long id)
+    {
+        return ((root, query, criteriaBuilder) ->
+                id == null ? null :
+                        criteriaBuilder.equal(root.get("id"), id)
+        );
+    }
+
     public static Specification<PeliculaEntity> estado(Integer estado)
     {
         return ((root, query, criteriaBuilder) ->

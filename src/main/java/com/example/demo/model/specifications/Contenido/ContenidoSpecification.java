@@ -14,6 +14,14 @@ public class ContenidoSpecification {
         );
     }
 
+    public static Specification<ContenidoEntity> id(Long id)
+    {
+        return ((root, query, criteriaBuilder) ->
+                id == null ? null :
+                        criteriaBuilder.equal(root.get("id"), id)
+        );
+    }
+
     public static Specification<ContenidoEntity> estado(Integer estado)
     {
         return ((root, query, criteriaBuilder) ->
