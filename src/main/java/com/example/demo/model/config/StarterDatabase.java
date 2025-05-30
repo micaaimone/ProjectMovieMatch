@@ -4,6 +4,7 @@ import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
 import com.example.demo.model.entities.CredencialEntity;
+import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.enums.E_Cargo;
@@ -13,6 +14,7 @@ import com.example.demo.model.repositories.Contenido.SerieRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
 import com.example.demo.model.repositories.Usuarios.CredencialRepository;
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +35,12 @@ public class StarterDatabase {
     private final PlanRepository planRepository;
     private final SuscripcionRepository suscripcionRepository;
     private final CredencialRepository credencialRepository;
+    private final UsuarioRepository usuarioRepository;
 
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository) {
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository,
+                           CredencialRepository credencialRepository, UsuarioRepository usuarioRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
@@ -44,6 +48,7 @@ public class StarterDatabase {
         this.planRepository = planRepository;
         this.suscripcionRepository = suscripcionRepository;
         this.credencialRepository = credencialRepository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     // Listas de títulos de prueba
@@ -82,7 +87,25 @@ public class StarterDatabase {
         initPlan();
         validarSubs();
         initCredenciales();
+        initUsers();
 
+    }
+
+    public void initUsers(){
+        if(usuarioRepository.count()==0) {
+            usuarioRepository.saveAll(List.of(
+                    new UsuarioEntity("Lautaro", "Martínez", "lautaro@example.com", 28, 1123456789L, "1234", "lautaM", true),
+                    new UsuarioEntity("Sofía", "González", "sofia@example.com", 24, 1167891234L, "abcd", "sofiG", true),
+                    new UsuarioEntity("Martín", "Pérez", "martin@example.com", 35, 1134567890L, "pass123", "martinP", true),
+                    new UsuarioEntity("Camila", "López", "camila@example.com", 22, 1198765432L, "qwerty", "camiL", true),
+                    new UsuarioEntity("Nicolás", "Díaz", "nico@example.com", 30, 1187654321L, "nico123", "nikoD", true),
+                    new UsuarioEntity("Valentina", "Torres", "valen@example.com", 27, 1176543210L, "valenpass", "valenT", true),
+                    new UsuarioEntity("Julián", "Ramírez", "julian@example.com", 33, 1156781234L, "julianpass", "juliR", true),
+                    new UsuarioEntity("Florencia", "Castro", "flor@example.com", 26, 1199998888L, "florcita", "florC", true),
+                    new UsuarioEntity("Diego", "Morales", "diego@example.com", 40, 1177776666L, "diego40", "diegoM", true),
+                    new UsuarioEntity("Agustina", "Fernández", "agus@example.com", 29, 1144443333L, "agus29", "agusF", true)
+            ));
+        }
     }
 
 
