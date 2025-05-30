@@ -1,5 +1,6 @@
 package com.example.demo.model.entities.Contenido;
 
+import com.example.demo.model.entities.ReseñaEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -66,7 +67,12 @@ public abstract class ContenidoEntity {
     @JsonProperty("Ratings")
     private List<RatingEntity> ratings;
 
+    //esto es de la api, lo mostramos como reseñas generales
     private double puntuacion;
+
+    //aca van nuestras puntuacion, se muestran como reseñas recientes
+    @OneToMany (mappedBy = "contenido",  cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<ReseñaEntity> reseña;
 
     @JsonProperty("imdbRating")
     private String imdbRating;
