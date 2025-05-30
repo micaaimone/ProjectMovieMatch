@@ -20,6 +20,7 @@ public class UsuarioController {
         this.usuarioService = usuarioService;
     }
 
+    //usar specifications
 
     @GetMapping("/listar")
     public ResponseEntity<Page<UsuarioDTO>> obtenerListaUsuarios(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
@@ -56,6 +57,7 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable Long id) {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
+
 
     @PutMapping("/actualizar/{id}")
     public ResponseEntity<UsuarioEntity> actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioEntity usuarioActualizado) {
