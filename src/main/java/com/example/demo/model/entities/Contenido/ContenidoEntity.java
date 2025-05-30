@@ -1,5 +1,6 @@
 package com.example.demo.model.entities.Contenido;
 
+import com.example.demo.model.entities.subs.ListasContenidoEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -83,5 +84,8 @@ public abstract class ContenidoEntity {
 
     @JsonProperty("Response")
     private String respuesta;
+
+    @ManyToMany(mappedBy = "contenidos")
+    private List<ListasContenidoEntity> listas;
 
 }

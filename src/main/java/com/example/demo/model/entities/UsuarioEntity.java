@@ -2,9 +2,11 @@ package com.example.demo.model.entities;
 
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.subs.ListasContenidoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;
@@ -12,7 +14,7 @@ import org.hibernate.validator.constraints.Email;
 
 @Getter
 @Setter
-@AllArgsConstructor
+
 @NoArgsConstructor
 @ToString
 @Entity
@@ -64,5 +66,17 @@ public class UsuarioEntity {
     )
     private Set<ContenidoEntity> likes;
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private List<ListasContenidoEntity> listasContenido;
 
+    public UsuarioEntity(String nombre, String apellido, String email, int edad, long telefono, String contrasenia, String username, boolean activo) {
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.email = email;
+        this.edad = edad;
+        this.telefono = telefono;
+        this.contrasenia = contrasenia;
+        this.username = username;
+        this.activo = activo;
+    }
 }

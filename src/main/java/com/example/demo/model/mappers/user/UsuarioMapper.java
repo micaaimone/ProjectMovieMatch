@@ -1,10 +1,8 @@
-package com.example.demo.model.mappers;
+package com.example.demo.model.mappers.user;
 
-import com.example.demo.model.DTOs.UsuarioDTO;
+import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.UsuarioEntity;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
