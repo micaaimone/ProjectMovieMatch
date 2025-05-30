@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -99,5 +100,16 @@ public class UsuarioController {
        return ResponseEntity.ok(pagina);
     }
 
+    @GetMapping("/listarFiltrado")
+    public ResponseEntity<Page<UsuarioEntity>> filtrarUsuarios(@RequestParam(required = false) String nombre,
+                                               @RequestParam(required = false) String apellido,
+                                               @RequestParam(required = false) String email,
+                                               @RequestParam(required = false) String username,
+                                               @RequestParam(required = false) Boolean activo,
+                                               Pageable pageable){
+        Page<UsuarioEntity> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, activo, pageable);
+
+        return ResponseEntity.ok(resultado);
+    }
 
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -139,9 +140,17 @@ public class UsuarioService {
         return usuarioRepository.findLikes(id, pageable);
     }
 
-    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username){
+
+    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
         Specification<UsuarioEntity> spec = Specification
-                .where(UsuarioSpecification.nombre(nombre));
+                .where(UsuarioSpecification.nombre(nombre))
+                .and(UsuarioSpecification.apellido(apellido))
+                .and(UsuarioSpecification.email(email))
+                .and(UsuarioSpecification.username(username))
+                .and(UsuarioSpecification.activo(activo));
+
+        return usuarioRepository.findAll(spec, pageable);
     }
+
 
 }

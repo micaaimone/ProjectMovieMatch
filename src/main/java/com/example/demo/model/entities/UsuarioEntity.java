@@ -44,7 +44,7 @@ public class UsuarioEntity {
     private String username;
 
     @Column(nullable = false)
-    private boolean activo = true;
+    private Boolean activo = true;
 
     @ManyToOne
     @JoinColumn(name = "id_credencial", referencedColumnName = "id")

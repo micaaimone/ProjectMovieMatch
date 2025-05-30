@@ -37,5 +37,13 @@ public class UsuarioSpecification {
         );
     }
 
+    public static Specification<UsuarioEntity> activo(Boolean activo)
+    {
+        return ((root, query, criteriaBuilder) ->
+                activo == null ? null :
+                        criteriaBuilder.equal(root.get("activo"), activo)
+        );
+    }
+
 
 }
