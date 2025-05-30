@@ -3,7 +3,7 @@ package com.example.demo.model.services.Contenido;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.Specifications.Contenido.SerieSpecification;
 import com.example.demo.model.entities.Contenido.SerieEntity;
-import com.example.demo.model.exceptions.SerieNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.SerieNotFound;
 import com.example.demo.model.mappers.Contenido.SerieMapper;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
 import org.springframework.data.domain.Page;

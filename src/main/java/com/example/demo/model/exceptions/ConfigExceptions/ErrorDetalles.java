@@ -1,4 +1,4 @@
-package com.example.demo.model.exceptions;
+package com.example.demo.model.exceptions.ConfigExceptions;
 
 import lombok.*;
 

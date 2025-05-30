@@ -3,7 +3,7 @@ package com.example.demo.model.services.Contenido;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.Specifications.Contenido.PeliculaSpecification;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
-import com.example.demo.model.exceptions.PeliculaNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.PeliculaNotFound;
 import com.example.demo.model.mappers.Contenido.PeliculaMapper;
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import org.springframework.data.domain.Page;

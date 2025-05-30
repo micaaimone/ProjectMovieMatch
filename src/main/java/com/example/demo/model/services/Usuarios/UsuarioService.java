@@ -3,7 +3,7 @@ package com.example.demo.model.services.Usuarios;
 import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
-import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.UsuarioMapper;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;

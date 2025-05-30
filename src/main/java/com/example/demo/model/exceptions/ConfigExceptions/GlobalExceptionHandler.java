@@ -1,5 +1,10 @@
-package com.example.demo.model.exceptions;
+package com.example.demo.model.exceptions.ConfigExceptions;
 
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.PeliculaNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.SerieNotFound;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

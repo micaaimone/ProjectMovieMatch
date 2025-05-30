@@ -3,7 +3,7 @@ package com.example.demo.model.services.Contenido;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.exceptions.ContenidoNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 
 @Service

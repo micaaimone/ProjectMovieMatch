@@ -1,4 +1,4 @@
-package com.example.demo.model.exceptions;
+package com.example.demo.model.exceptions.UsuarioExceptions;
 
 public class UsuarioYaExisteException extends RuntimeException{
     public UsuarioYaExisteException(String email) {
