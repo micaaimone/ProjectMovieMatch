@@ -1,29 +1,47 @@
 package com.example.demo.model.mappers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
-import com.example.demo.model.DTOs.Contenido.RatingDTO;
+import com.example.demo.model.DTOs.ReseñaDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
-import com.example.demo.model.entities.Contenido.RatingEntity;
+import com.example.demo.model.entities.ReseñaEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Component
 public class ContenidoMapper {
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private ReseñaMapper reseñaMapper;
 
     public ContenidoDTO convertToDTO(ContenidoEntity contenidoEntity)
     {
         ContenidoDTO dto = modelMapper.map(contenidoEntity, ContenidoDTO.class);
 
-        if (contenidoEntity.getRatings() != null) {
-            dto.setPuntuacionApi(contenidoEntity.getPuntuacion());
+        dto.setPuntuacionApi(contenidoEntity.getPuntuacion());
+
+        if (contenidoEntity.getReseña() != null)
+        {
+            //mapeo las reseñas, las hago dto
+            List<ReseñaDTO> reseñasDTO = contenidoEntity.getReseña()
+                    .stream()
+                    .map(reseñaMapper::convertToDTO)
+                    .collect(Collectors.toList());
+            dto.setReseña(reseñasDTO);
+
+            //saco el promedio de cada peli
+            double promedioReseña= contenidoEntity.getReseña()
+                    .stream()
+                    .mapToDouble(ReseñaEntity::getPuntuacionU)
+                    .average()
+                    .orElse(0.0);
+
+            dto.setPromedioPuntuacionUsuario(promedioReseña);
         }
 
         return dto;
