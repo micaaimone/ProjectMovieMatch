@@ -3,6 +3,7 @@ package com.example.demo.model.services.Contenido;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.exceptions.ContenidoNotFound;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,59 +30,47 @@ public class ContenidoService {
 
 
 
-    public Page<ContenidoDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion){
+    public Page<ContenidoDTO> buscarActivos(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, Long id){
         Specification<ContenidoEntity> specification = Specification
                 .where(ContenidoSpecification.genero(genero))
                 .and(ContenidoSpecification.anio(anio))
                 .and(ContenidoSpecification.tituloParecido(titulo))
                 .and(ContenidoSpecification.puntuacion(puntuacion))
                 .and(ContenidoSpecification.estado(estado))
-                .and(ContenidoSpecification.clasificacion(clasificacion));
+                .and(ContenidoSpecification.clasificacion(clasificacion))
+                .and(ContenidoSpecification.id(id));
 
-        return contenidoRepository.findAll(specification, pageable).map(contenidoMapper::convertToDTO);
-    }
+        Page<ContenidoEntity> page = contenidoRepository.findAll(specification, pageable);
 
 
-    public boolean borrarDeBDD(long id)
-    {
-        boolean eliminado;
-        if(contenidoRepository.existsById(id))
-        {
-            Optional<ContenidoEntity> c = contenidoRepository.findById(id);
-            if(c.isPresent())
-            {
-                ContenidoEntity contenido = c.get();
-                contenido.setEstado(1);
-                contenidoRepository.save(contenido);
-            }
-            eliminado = true;
-        } else
-        {
-            eliminado = false;
+        if (page.getContent().isEmpty()) {
+            throw new ContenidoNotFound("No se encontraron contenidos con los filtros especificados.");
         }
-        return eliminado;
+
+        return page.map(contenidoMapper::convertToDTO);
     }
 
 
 
-    public boolean darDeAltaBDD(long id)
+    public void borrarDeBDD(long id) {
+        ContenidoEntity contenido = contenidoRepository.findById(id)
+                .orElseThrow(() -> new ContenidoNotFound("No se encontró contenido con id: " + id));
+
+        contenido.setEstado(1);
+        contenidoRepository.save(contenido);
+    }
+
+
+    public void darDeAltaBDD(long id)
     {
         boolean alta;
-        if(contenidoRepository.existsById(id))
-        {
-            Optional<ContenidoEntity> c = contenidoRepository.findById(id);
-            if(c.isPresent())
-            {
-                ContenidoEntity contenido = c.get();
-                contenido.setEstado(0);
-                contenidoRepository.save(contenido);
-            }
-            alta = true;
-        } else
-        {
-            alta = false;
+        if(contenidoRepository.existsById(id)) {
+            ContenidoEntity contenido = contenidoRepository.findById(id)
+                    .orElseThrow(() -> new ContenidoNotFound("No se encontró contenido con id: " + id));
+
+            contenido.setEstado(0);
+            contenidoRepository.save(contenido);
         }
-        return alta;
     }
 
 

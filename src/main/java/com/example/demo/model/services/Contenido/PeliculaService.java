@@ -3,6 +3,7 @@ package com.example.demo.model.services.Contenido;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.Specifications.Contenido.PeliculaSpecification;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
+import com.example.demo.model.exceptions.PeliculaNotFound;
 import com.example.demo.model.mappers.Contenido.PeliculaMapper;
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public class PeliculaService {
         this.peliculaMapper = peliculaMapper;
     }
 
-    public Page<PeliculaDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, String metascore){
+    public Page<PeliculaDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, String metascore, Long id){
         Specification<PeliculaEntity> specification = Specification
                 .where(PeliculaSpecification.genero(genero))
                 .and(PeliculaSpecification.anio(anio))
@@ -29,9 +30,20 @@ public class PeliculaService {
                 .and(PeliculaSpecification.puntuacion(puntuacion))
                 .and(PeliculaSpecification.estado(estado))
                 .and(PeliculaSpecification.clasificacion(clasificacion))
-                .and(PeliculaSpecification.metascore(metascore));
+                .and(PeliculaSpecification.metascore(metascore))
+                .and(PeliculaSpecification.id(id));
 
-        return peliculaRepository.findAll(specification, pageable).map(peliculaMapper::convertToDTO);
+
+        //creo la page que voy a devolver
+        Page<PeliculaEntity> page = peliculaRepository.findAll(specification, pageable);
+
+        //si esta vacia arrojo error
+        if (page.getContent().isEmpty()) {
+            throw new PeliculaNotFound("No se encontraron peliculas con los filtros especificados.");
+        }
+
+        //devuelvo dto
+        return page.map(peliculaMapper::convertToDTO);
     }
 
 }
