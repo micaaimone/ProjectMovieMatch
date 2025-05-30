@@ -1,7 +1,7 @@
 package com.example.demo.model.entities;
 
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.Email;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 @Entity
 @Table(name = "usuarios")
 public class UsuarioEntity {
@@ -65,4 +66,17 @@ public class UsuarioEntity {
     private Set<ContenidoEntity> likes;
 
 
+    //vamos a crear una entidad amigos, va a tener
+    //id
+    //id_usuario (base)
+    //lista de ids
+
+    //tmbn vamos a tener una clase de solicitud amistad
+    //id
+    //id_usuario(propio)
+    //id_usuario (q te manda soli)
+    //boolean si o no
+
+    @OneToMany(mappedBy = "usuario",  cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    private List<ReseñaEntity> reseñasHechas;
 }
