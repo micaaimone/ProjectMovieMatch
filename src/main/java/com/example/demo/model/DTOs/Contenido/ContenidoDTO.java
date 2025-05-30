@@ -1,6 +1,9 @@
 package com.example.demo.model.DTOs.Contenido;
 
+import com.example.demo.model.DTOs.ReseñaDTO;
 import lombok.*;
+
+import java.util.List;
 
 
 @Getter
@@ -9,7 +12,6 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class ContenidoDTO {
-    private Long id_contenido;
     private String titulo;
     private String anio;
     private String clasificacion;
@@ -24,6 +26,10 @@ public class ContenidoDTO {
 //    private List<RatingDTO> ratings;
     private double puntuacionApi;
     //hace falta crear un atributo para puntuacion de nuestros usuarios
+
+    private List<ReseñaDTO> reseña;
+
+    private double promedioPuntuacionUsuario;
 
     //importan los votos de la puntuacion api???
 //    private String imdbVotos;
