@@ -19,20 +19,22 @@ public class SerieController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<SerieDTO>> all(
+    public ResponseEntity<Page<SerieDTO>> allSeriesActivas(
             @RequestParam(required = false) String genero,
             @RequestParam(required = false) String anio,
             @RequestParam(required = false) String titulo,
             @RequestParam(required = false) Double puntuacion,
-            @RequestParam(required = false) Integer estado,
             @RequestParam(required = false) String clasificacion,
             @RequestParam(required = false) String temporadas,
+            @RequestParam(required = false) Long id,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(serieService.buscar(pageable, genero, anio, titulo, puntuacion, estado, clasificacion, temporadas));
+        return ResponseEntity.ok(serieService.buscar(pageable, genero, anio, titulo, puntuacion, 0, clasificacion, temporadas, id));
     }
+
+
 
 
 }

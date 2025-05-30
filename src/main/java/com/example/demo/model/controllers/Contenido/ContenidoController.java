@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,39 +23,51 @@ public class ContenidoController {
 
 
     @GetMapping
-    public ResponseEntity<Page<ContenidoDTO>> all(
+    public ResponseEntity<Page<ContenidoDTO>> allActivos(
+            @RequestParam(required = false) String genero,
+            @RequestParam(required = false) String anio,
+            @RequestParam(required = false) String titulo,
+            @RequestParam(required = false) Double puntuacion,
+            @RequestParam(required = false) String clasificacion,
+            @RequestParam(required = false) Long id,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
+    {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, 0, clasificacion, id));
+    }
+
+    @GetMapping("/bajados")
+    public ResponseEntity<Page<ContenidoDTO>> allDesactivoados(
             @RequestParam(required = false) String genero,
             @RequestParam(required = false) String anio,
             @RequestParam(required = false) String titulo,
             @RequestParam(required = false) Double puntuacion,
             @RequestParam(required = false) Integer estado,
             @RequestParam(required = false) String clasificacion,
+            @RequestParam(required = false) Long id,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(contenidoService.buscar(pageable, genero, anio, titulo, puntuacion, estado, clasificacion));
+        return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, 1, clasificacion, id));
     }
 
 
     @PostMapping("/{id}")
-    public ResponseEntity<Void> darDeAlta(@PathVariable Long id) {
-        if (contenidoService.darDeAltaBDD(id)) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    //pongo ? porque puede devolver un contenido dto, como un error detalle
+    public ResponseEntity<?> darDeAlta(@PathVariable Long id) {
+        contenidoService.darDeAltaBDD(id);
+        return ResponseEntity.ok("Contenido eliminado correctamente.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id)
-    {
-        if (contenidoService.borrarDeBDD(id)) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    //pongo ? porque puede devolver un contenido dto, como un error detalle
+    public ResponseEntity<?> borrarContenido(@PathVariable long id){
+        contenidoService.borrarDeBDD(id);
+        return ResponseEntity.ok("Contenido eliminado correctamente.");
     }
+
 
 
 }
