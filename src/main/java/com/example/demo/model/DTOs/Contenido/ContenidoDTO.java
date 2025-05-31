@@ -1,6 +1,6 @@
 package com.example.demo.model.DTOs.Contenido;
 
-import com.example.demo.model.DTOs.ReseñaDTO;
+import com.example.demo.model.DTOs.ReseniaDTO;
 import lombok.*;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class ContenidoDTO {
     private double puntuacionApi;
     //hace falta crear un atributo para puntuacion de nuestros usuarios
 
-    private List<ReseñaDTO> reseña;
+    private List<ReseniaDTO> reseña;
 
     private double promedioPuntuacionUsuario;
 

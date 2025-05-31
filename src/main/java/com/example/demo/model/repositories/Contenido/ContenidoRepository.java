@@ -7,6 +7,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 
 public interface ContenidoRepository extends JpaRepository<ContenidoEntity, Long>, JpaSpecificationExecutor<ContenidoEntity> {
-
-
 }

@@ -1,6 +1,6 @@
 package com.example.demo.model.entities;
 
-import com.example.demo.model.DTOs.UsuarioDTO;
+
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 @Entity(name = "reseña")
-public class ReseñaEntity {
+public class ReseniaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_reseña;
+    private long id_resenia;
 //1 usuario a muchas reseñas
 
     @ManyToOne
@@ -29,7 +29,6 @@ public class ReseñaEntity {
     @ManyToOne
     @JoinColumn(name = "id_contenido")
     private ContenidoEntity contenido;
-
 
     private double puntuacionU;
 

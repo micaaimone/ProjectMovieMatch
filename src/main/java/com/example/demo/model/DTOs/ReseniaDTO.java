@@ -2,15 +2,16 @@ package com.example.demo.model.DTOs;
 
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class ReseñaDTO {
+@Builder
+public class ReseniaDTO {
+    private Long id;
+    private Long id_usuario;
+    private Long id_contenido;
     private double puntuacionU;
     private String comentario;
-    private LocalDateTime fecha;
 }

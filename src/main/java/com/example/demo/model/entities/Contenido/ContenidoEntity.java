@@ -1,6 +1,6 @@
 package com.example.demo.model.entities.Contenido;
 
-import com.example.demo.model.entities.ReseñaEntity;
+import com.example.demo.model.entities.ReseniaEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -71,8 +71,8 @@ public abstract class ContenidoEntity {
     private double puntuacion;
 
     //aca van nuestras puntuacion, se muestran como reseñas recientes
-    @OneToMany (mappedBy = "contenido",  cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<ReseñaEntity> reseña;
+    @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ReseniaEntity> reseña;
 
     @JsonProperty("imdbRating")
     private String imdbRating;

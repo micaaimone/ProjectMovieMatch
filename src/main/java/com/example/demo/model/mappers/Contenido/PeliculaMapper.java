@@ -2,7 +2,7 @@ package com.example.demo.model.mappers.Contenido;
 
 
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
-import com.example.demo.model.DTOs.ReseñaDTO;
+import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class PeliculaMapper {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
-    private ReseñaMapper reseñaMapper;
+    private ReseniaMapper reseñaMapper;
 
     public PeliculaDTO convertToDTO(PeliculaEntity peliculaEntity)
     {
@@ -27,7 +27,7 @@ public class PeliculaMapper {
 
         if (peliculaEntity.getReseña() != null)
         {
-            List<ReseñaDTO> reseñasDTO = peliculaEntity.getReseña()
+            List<ReseniaDTO> reseñasDTO = peliculaEntity.getReseña()
                     .stream()
                     .map(reseñaMapper::convertToDTO)
                     .collect(Collectors.toList());
