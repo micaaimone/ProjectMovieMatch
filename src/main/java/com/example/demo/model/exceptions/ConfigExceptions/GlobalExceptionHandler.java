@@ -1,8 +1,6 @@
 package com.example.demo.model.exceptions.ConfigExceptions;
 
-import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
-import com.example.demo.model.exceptions.ContenidoExceptions.PeliculaNotFound;
-import com.example.demo.model.exceptions.ContenidoExceptions.SerieNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
@@ -65,6 +63,30 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
     }
+
+    //error por reseña existente
+    @ExceptionHandler(ReseniaAlredyExists.class)
+    public ResponseEntity<ErrorDetalles> handleReseñaAlredyExistsException(ReseniaAlredyExists ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
+    }
+
+    //error por reseña inexistente
+    @ExceptionHandler(ReseniaNotFound.class)
+    public ResponseEntity<ErrorDetalles> handleReseñaNotFoundException(ReseniaNotFound ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
+    }
+
+
 
     @ExceptionHandler(UsuarioNoEncontradoException.class)
     public ResponseEntity<String> manejarUsuarioNoEncontrado(UsuarioNoEncontradoException ex) {
