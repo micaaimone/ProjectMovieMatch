@@ -77,6 +77,6 @@ public class UsuarioEntity {
     //id_usuario (q te manda soli)
     //boolean si o no
 
-    @OneToMany(mappedBy = "usuario",  cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    private List<ReseñaEntity> reseñasHechas;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ReseniaEntity> reseñasHechas;
 }
