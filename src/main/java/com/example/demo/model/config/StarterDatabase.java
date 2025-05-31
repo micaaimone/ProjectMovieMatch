@@ -5,7 +5,7 @@ import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
 import com.example.demo.model.entities.CredencialEntity;
-import com.example.demo.model.entities.ReseñaEntity;
+import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
@@ -14,7 +14,7 @@ import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import com.example.demo.model.repositories.Contenido.RatingRepository;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
-import com.example.demo.model.repositories.Contenido.ReseñaRepository;
+import com.example.demo.model.repositories.Contenido.ReseniaRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
 import com.example.demo.model.repositories.Usuarios.CredencialRepository;
@@ -41,12 +41,12 @@ public class StarterDatabase {
     private final SuscripcionRepository suscripcionRepository;
     private final CredencialRepository credencialRepository;
     private final UsuarioRepository usuarioRepository;
-    private final ReseñaRepository reseñaRepository;
+    private final ReseniaRepository reseñaRepository;
     private final ContenidoRepository contenidoRepository;
 
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository, UsuarioRepository usuarioRepository, ReseñaRepository reseñaRepository, ContenidoRepository contenidoRepository) {
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository, ContenidoRepository contenidoRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
@@ -222,7 +222,7 @@ public class StarterDatabase {
             List<ContenidoEntity> contenidos = contenidoRepository.findAll();
 
             reseñaRepository.saveAll(List.of(
-                    ReseñaEntity.builder()
+                    ReseniaEntity.builder()
                             .usuario(usuarios.get(0))
                             .contenido(contenidos.get(0))
                             .puntuacionU(9.8)
@@ -230,7 +230,7 @@ public class StarterDatabase {
                             .fecha(LocalDateTime.now())
                             .build(),
 
-                    ReseñaEntity.builder()
+                    ReseniaEntity.builder()
                             .usuario(usuarios.get(1))
                             .contenido(contenidos.get(1))
                             .puntuacionU(7.9)
@@ -238,7 +238,7 @@ public class StarterDatabase {
                             .fecha(LocalDateTime.now())
                             .build(),
 
-                    ReseñaEntity.builder()
+                    ReseniaEntity.builder()
                             .usuario(usuarios.get(2))
                             .contenido(contenidos.get(2))
                             .puntuacionU(8.7)
@@ -246,7 +246,7 @@ public class StarterDatabase {
                             .fecha(LocalDateTime.now())
                             .build(),
 
-                    ReseñaEntity.builder()
+                    ReseniaEntity.builder()
                             .usuario(usuarios.get(1))
                             .contenido(contenidos.get(2))
                             .puntuacionU(6)
@@ -254,7 +254,7 @@ public class StarterDatabase {
                             .fecha(LocalDateTime.now())
                             .build(),
 
-                    ReseñaEntity.builder()
+                    ReseniaEntity.builder()
                             .usuario(usuarios.get(3))
                             .contenido(contenidos.get(3))
                             .puntuacionU(8.9)                            .comentario("Excelente historia y actuaciones.")
