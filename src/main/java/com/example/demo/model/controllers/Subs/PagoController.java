@@ -2,6 +2,10 @@ package com.example.demo.model.controllers.Subs;
 
 import com.example.demo.model.DTOs.subs.PagoDTO;
 import com.example.demo.model.services.Subs.PagoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,17 +21,43 @@ public class PagoController {
         this.pagoService = pagoService;
     }
 
+    @Operation(
+            summary = "Mostrar todos los pagos",
+            description = "Devuelve una lista paginada de todos los pagos registrados en el sistema."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado paginado de pagos")
+    })
+
     @GetMapping("/mostrarTodos")
     public Page<PagoDTO> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size);
         return pagoService.findAll(pageable);
     }
 
+    @Operation(
+            summary = "Mostrar pagos por suscripción",
+            description = "Devuelve una lista paginada de pagos filtrados por el ID de una suscripción específica."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado paginado de pagos por suscripción"),
+            @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
+    })
+
     @GetMapping("/mostrarXsub/{id}")
     public Page<PagoDTO> findBySubId(@PathVariable Long id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size);
         return pagoService.findBySub(id, pageable);
     }
+
+    @Operation(
+            summary = "Buscar pago por ID",
+            description = "Obtiene la información de un pago específico mediante su ID."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Pago encontrado"),
+            @ApiResponse(responseCode = "404", description = "Pago no encontrado", content = @Content)
+    })
 
     @GetMapping("/mostrar/{id}")
     public ResponseEntity<PagoDTO> findById(@PathVariable Long id){

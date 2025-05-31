@@ -3,6 +3,11 @@ package com.example.demo.model.controllers.Contenido;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.services.Contenido.SerieService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +22,18 @@ public class SerieController {
     public SerieController(SerieService serieService) {
         this.serieService = serieService;
     }
+
+    @Operation(
+            summary = "Obtener series filtradas",
+            description = "Devuelve una lista paginada de series filtradas por género, año, título, puntuación, estado, clasificación y temporadas."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de series obtenida exitosamente",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Page.class))),
+            @ApiResponse(responseCode = "400", description = "Parámetros de entrada inválidos", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
+    })
 
     @GetMapping
     public ResponseEntity<Page<SerieDTO>> all(
