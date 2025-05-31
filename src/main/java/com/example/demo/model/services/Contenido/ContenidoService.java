@@ -27,7 +27,6 @@ public class ContenidoService {
     }
 
 
-
     public Page<ContenidoDTO> buscarActivos(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, Long id){
         Specification<ContenidoEntity> specification = Specification
                 .where(ContenidoSpecification.genero(genero))
@@ -61,7 +60,6 @@ public class ContenidoService {
 
     public void darDeAltaBDD(long id)
     {
-        boolean alta;
         if(contenidoRepository.existsById(id)) {
             ContenidoEntity contenido = contenidoRepository.findById(id)
                     .orElseThrow(() -> new ContenidoNotFound("No se encontró contenido con id: " + id));
