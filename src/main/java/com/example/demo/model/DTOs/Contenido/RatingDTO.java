@@ -11,3 +11,5 @@ public class RatingDTO {
     private String fuente;
     private String valor;
 }
+
+//
