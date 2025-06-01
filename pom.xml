@@ -78,12 +78,6 @@
 
 		<!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
 		<dependency>
-			<groupId>org.modelmapper</groupId>
-			<artifactId>modelmapper</artifactId>
-			<version>3.1.1</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.mercadopago</groupId>
 			<artifactId>sdk-java</artifactId>
 			<version>2.4.0</version>
@@ -110,7 +104,7 @@
 		<dependency>
 			<groupId>org.springdoc</groupId>
 			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-			<version>2.8.8</version> 
+			<version>2.8.8</version>
 		</dependency>
 
 	</dependencies>
@@ -127,6 +121,10 @@
 							<artifactId>lombok</artifactId>
 							<version>1.18.34</version>
 						</path>
+						<plugin>
+							<groupId>org.springframework.boot</groupId>
+							<artifactId>spring-boot-maven-plugin</artifactId>
+						</plugin>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>

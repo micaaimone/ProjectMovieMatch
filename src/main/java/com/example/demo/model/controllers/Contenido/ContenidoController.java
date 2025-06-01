@@ -52,6 +52,8 @@ public class ContenidoController {
 
 
 
+
+
     @Operation(
             summary = "Dar de alta contenido",
             description = "Permite dar de alta un contenido previamente dado de baja mediante su ID."
@@ -92,6 +94,4 @@ public class ContenidoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
-
 }

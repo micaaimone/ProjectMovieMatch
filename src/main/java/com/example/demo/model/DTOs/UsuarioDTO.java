@@ -18,5 +18,4 @@ public class UsuarioDTO {
     private CredencialEntity credencial;
     //  private SuscripcionEntity suscripcion;
     private Set<ContenidoEntity> likes;
-
 }
