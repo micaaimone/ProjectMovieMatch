@@ -46,10 +46,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain (HttpSecurity http) throws
             Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/").permitAll()
+                        .requestMatchers("/auth").permitAll()
                         .requestMatchers("/api/").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/admin/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/",
                                 "/v3/api-docs/",
