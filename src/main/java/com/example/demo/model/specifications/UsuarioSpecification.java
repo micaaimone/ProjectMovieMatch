@@ -1,4 +1,4 @@
-package com.example.demo.model.Specifications;
+package com.example.demo.model.specifications;
 
 import com.example.demo.model.entities.UsuarioEntity;
 import org.springframework.data.jpa.domain.Specification;
