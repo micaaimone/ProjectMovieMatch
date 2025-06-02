@@ -69,13 +69,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> darLike(@PathVariable long idUsuario, @PathVariable long idContenido){
+    public ResponseEntity<String> darLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
         usuarioService.darLike(idUsuario,idContenido);
         return ResponseEntity.ok("Like guardado");
     }
 
     @DeleteMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> quitarLike(@PathVariable long idUsuario, @PathVariable long idContenido){
+    public ResponseEntity<String> quitarLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
         usuarioService.quitarLike(idUsuario,idContenido);
         return ResponseEntity.ok("Like eliminado");
     }
