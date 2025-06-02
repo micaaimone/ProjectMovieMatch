@@ -41,7 +41,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now()
         );
-        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);    }
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
 
     //error cuando no encuentra serie
     @ExceptionHandler(PeliculaNotFound.class)
@@ -51,7 +52,8 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now()
         );
-        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);    }
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
 
     //error por entrada invalida
     @ExceptionHandler(IllegalArgumentException.class)

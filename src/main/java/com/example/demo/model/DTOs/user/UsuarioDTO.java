@@ -1,7 +1,7 @@
-package com.example.demo.model.DTOs;
+package com.example.demo.model.DTOs.user;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.CredencialEntity;
+import com.example.demo.model.entities.User.CredencialEntity;
 import lombok.*;
 
 
