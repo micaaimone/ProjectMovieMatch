@@ -1,6 +1,6 @@
 package com.example.demo.model.DTOs;
 
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.ContenidoEntity;
 import com.example.demo.model.entities.CredencialEntity;
 import lombok.*;
 
