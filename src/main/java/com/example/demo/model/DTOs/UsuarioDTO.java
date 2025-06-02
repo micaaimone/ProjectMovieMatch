@@ -5,6 +5,7 @@ import com.example.demo.model.entities.CredencialEntity;
 import lombok.*;
 
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -16,7 +17,8 @@ public class UsuarioDTO {
     private String username;
     private String email;
     private CredencialEntity credencial;
+    private Boolean activo;
     //  private SuscripcionEntity suscripcion;
     private Set<ContenidoEntity> likes;
-
+    private List<ReseniaMostrarUsuarioDTO> reseñas;
 }

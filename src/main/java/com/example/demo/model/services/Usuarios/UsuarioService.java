@@ -1,19 +1,16 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.DTOs.UsuarioDTO;
-import com.example.demo.model.entities.ContenidoEntity;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
-import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
-import com.example.demo.model.exceptions.UsuarioYaExisteException;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.UsuarioMapper;
-import com.example.demo.model.repositories.UsuarioRepository;
-import com.example.demo.model.specifications.UsuarioSpecification;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
+import com.example.demo.model.Specifications.UsuarioSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
@@ -141,7 +138,7 @@ public class UsuarioService {
     }
 
 
-    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
+    public Page<UsuarioDTO> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
         Specification<UsuarioEntity> spec = Specification
                 .where(UsuarioSpecification.nombre(nombre))
                 .and(UsuarioSpecification.apellido(apellido))
@@ -149,7 +146,15 @@ public class UsuarioService {
                 .and(UsuarioSpecification.username(username))
                 .and(UsuarioSpecification.activo(activo));
 
-        return usuarioRepository.findAll(spec, pageable);
+        Page<UsuarioEntity> page = usuarioRepository.findAll(spec, pageable);
+
+
+        if (page.getContent().isEmpty()) {
+//            throw new UsuarioNoEncontradoException("No se encontraron contenidos con los filtros especificados.");
+            System.out.println("errorrrrr, falta tirar exception correcta");
+        }
+
+        return page.map(usuarioMapper::convertToDTO);
     }
 
 
