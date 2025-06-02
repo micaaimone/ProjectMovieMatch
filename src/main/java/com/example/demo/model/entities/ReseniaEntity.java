@@ -2,6 +2,7 @@ package com.example.demo.model.entities;
 
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 

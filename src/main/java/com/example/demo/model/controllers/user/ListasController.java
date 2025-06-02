@@ -75,7 +75,7 @@ public class ListasController {
     }
 
     //buscar lista de otro usuario
-    @GetMapping("/{username}/verListas")
+    @GetMapping("/{username}/verListasDeUser")
     public ResponseEntity<Page<ListaContenidoDTO>> verListas(@PathVariable("username") String username, Pageable pageable){
         return ResponseEntity.ok(listasService.verListaDeUser(username, pageable));
     }

@@ -4,7 +4,7 @@ import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.DTOs.ReseniaModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaAlredyExists;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaNotFound;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;

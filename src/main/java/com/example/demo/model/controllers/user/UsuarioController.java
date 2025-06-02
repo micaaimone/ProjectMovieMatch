@@ -1,8 +1,8 @@
-package com.example.demo.model.controllers;
+package com.example.demo.model.controllers.user;
 
-import com.example.demo.model.DTOs.UsuarioDTO;
+import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

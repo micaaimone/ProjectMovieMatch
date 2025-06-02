@@ -6,10 +6,10 @@ import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
-import com.example.demo.model.exceptions.ContenidoNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoYaAgregado;
 import com.example.demo.model.exceptions.ListaNotFound;
-import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ListasContenidoRepository;
@@ -43,7 +43,7 @@ public class ListasService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
 
         ListasContenidoEntity lista = listasMapper.convertToEntitySC(list);
-
+        lista.setUsuario(usuario);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(listasContenidoRepository.save(lista));
     }

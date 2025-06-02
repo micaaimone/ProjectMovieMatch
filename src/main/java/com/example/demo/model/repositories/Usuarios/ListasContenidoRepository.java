@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface ListasContenidoRepository extends JpaRepository<ListasContenidoEntity, Long> {
-    @Query("SELECT p FROM ListasContenidoEntity p WHERE p.usuario.id = :id")
+    @Query("SELECT p FROM ListasContenidoEntity p WHERE p.usuario.id = :idUser")
     Page<ListasContenidoEntity> findByIdUser(@PathVariable("id") Long idUser, Pageable pageable);
     @Query("SELECT p FROM ListasContenidoEntity p where p.usuario.id = :id AND p.nombre = :nombre")
     Optional<ListasContenidoEntity> findByNombre(@PathVariable("id")Long id, @Param("nombre")String nombre);

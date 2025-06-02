@@ -5,7 +5,7 @@ import com.example.demo.model.DTOs.ReseniaModificarDTO;
 import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.modelmapper.ModelMapper;

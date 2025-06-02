@@ -1,12 +1,13 @@
 package com.example.demo.model.DTOs.user;
 
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarAdminDTO;
+import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.User.CredencialEntity;
 import lombok.*;
 
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -19,6 +20,6 @@ public class UsuarioDTO {
     private CredencialEntity credencial;
     private Boolean activo;
     //  private SuscripcionEntity suscripcion;
-    private Set<ContenidoEntity> likes;
+    private List<ContenidoMostrarAdminDTO> likes;
     private List<ReseniaMostrarUsuarioDTO> reseñas;
 }
