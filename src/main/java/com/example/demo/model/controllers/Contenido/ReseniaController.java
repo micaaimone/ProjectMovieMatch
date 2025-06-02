@@ -2,6 +2,7 @@ package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.DTOs.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.ReseniaSaveDTO;
 import com.example.demo.model.services.ReseniaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,11 +23,12 @@ public class ReseniaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crearResenia(@RequestBody ReseniaDTO reseniaDTO){
+    public ResponseEntity<?> crearResenia(@RequestBody ReseniaSaveDTO reseniaDTO){
         reseniaService.save(reseniaDTO);
         return ResponseEntity.ok("Reseña agregada correctamente");
     }
 
+    //seria para admin, en caso de q quiera eliminar x id. sino tmbn puede por el usuario y cont
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarResenia(@PathVariable("id") Long id)
     {

@@ -1,6 +1,7 @@
 package com.example.demo.model.mappers.Contenido;
 
 import com.example.demo.model.DTOs.ReseniaDTO;
+import com.example.demo.model.DTOs.ReseniaSaveDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.UsuarioEntity;
@@ -30,10 +31,10 @@ public class ReseniaMapper {
                 .build();
     }
 
-    public ReseniaEntity convertToEntity(ReseniaDTO reseñaDTO, UsuarioEntity usuario, ContenidoEntity contenido)
+    public ReseniaEntity convertToEntity(ReseniaSaveDTO reseñaDTO, UsuarioEntity usuario, ContenidoEntity contenido)
     {
         return ReseniaEntity.builder()
-                .id_resenia(reseñaDTO.getId())
+//                .id_resenia(reseñaDTO.getId())
                 .usuario(usuario)
                 .contenido(contenido)
                 .puntuacionU(reseñaDTO.getPuntuacionU())

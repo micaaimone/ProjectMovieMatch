@@ -2,11 +2,14 @@ package com.example.demo.model.services;
 
 import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.DTOs.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.ReseniaSaveDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaAlredyExists;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaNotFound;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Contenido.ReseniaRepository;
@@ -33,7 +36,7 @@ public class ReseniaService {
         this.reseniaMapper = reseniaMapper;
     }
 
-    public void save(ReseniaDTO dto)
+    public void save(ReseniaSaveDTO dto)
     {
         UsuarioEntity usuario = existeUsuario(dto);
 
@@ -51,17 +54,17 @@ public class ReseniaService {
 
     }
 
-    public UsuarioEntity existeUsuario(ReseniaDTO dto)
+    public UsuarioEntity existeUsuario(ReseniaSaveDTO dto)
     {
 
         return usuarioRepository.findById(dto.getId_usuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(dto.getId_usuario()));
     }
 
-    public ContenidoEntity existeContenido(ReseniaDTO dto)
+    public ContenidoEntity existeContenido(ReseniaSaveDTO dto)
     {
         return contenidoRepository.findById(dto.getId_contenido())
-            .orElseThrow(() -> new RuntimeException("Contenido no encontrado"));
+            .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
     }
 
 
@@ -97,6 +100,7 @@ public class ReseniaService {
         System.out.println("ID contenido: " + resenia.getContenido().getId_contenido());
         System.out.println("Título contenido: " + resenia.getContenido().getTitulo());
 
+        //si no pongo esto, no elimina a la reseña de su propia tabla
         UsuarioEntity usuario = resenia.getUsuario();
         usuario.getReseñasHechas().remove(resenia);
 
