@@ -22,25 +22,6 @@ public class UsuarioController {
     }
 
 
-    //lo hace automaticamente el specific
-//    @GetMapping("/listar")
-//    public ResponseEntity<Page<UsuarioDTO>> obtenerListaUsuarios(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-//        Pageable pageable = PageRequest.of(page, size);
-//        return ResponseEntity.ok(usuarioService.findAll(pageable));
-//    }
-//
-//    @GetMapping("/listarPaginado")
-//    public ResponseEntity<Page<UsuarioDTO>> listarUsuariosPaginado(
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "10") int size) {
-//
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<UsuarioDTO> pagina = usuarioService.obtenerUsuariosPaginados(pageable);
-//        return ResponseEntity.ok(pagina);
-//    }
-
-    // agregar listar por filtros
-
     @PostMapping("/registrar")
     public ResponseEntity<Void> agregarUsuario(@RequestBody UsuarioEntity u) {
         usuarioService.save(u);
