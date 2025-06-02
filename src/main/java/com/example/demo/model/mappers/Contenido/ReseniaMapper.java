@@ -1,6 +1,8 @@
 package com.example.demo.model.mappers.Contenido;
 
 import com.example.demo.model.DTOs.ReseniaDTO;
+import com.example.demo.model.DTOs.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.UsuarioEntity;
@@ -24,6 +26,15 @@ public class ReseniaMapper {
         return ReseniaDTO.builder()
                 .id(reseñaEntity.getId_resenia())
                 .id_usuario(reseñaEntity.getUsuario().getId())
+                .id_contenido(reseñaEntity.getContenido().getId_contenido())
+                .puntuacionU(reseñaEntity.getPuntuacionU())
+                .comentario(reseñaEntity.getComentario())
+                .build();
+    }
+
+    public ReseniaMostrarUsuarioDTO convertToDTOUsuario(ReseniaEntity reseñaEntity)
+    {
+        return ReseniaMostrarUsuarioDTO.builder()
                 .id_contenido(reseñaEntity.getContenido().getId_contenido())
                 .puntuacionU(reseñaEntity.getPuntuacionU())
                 .comentario(reseñaEntity.getComentario())

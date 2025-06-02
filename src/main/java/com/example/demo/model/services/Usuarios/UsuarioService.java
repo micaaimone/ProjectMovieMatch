@@ -3,31 +3,35 @@ package com.example.demo.model.services.Usuarios;
 import com.example.demo.model.DTOs.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.UsuarioMapper;
-import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
-import com.example.demo.model.specifications.UsuarioSpecification;
+import com.example.demo.model.Specifications.UsuarioSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
-
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
 
     private final UsuarioMapper usuarioMapper;
     private final UsuarioRepository usuarioRepository;
-    private final ContenidoRepository contenidoRepository;
+    //private final ContenidoService contenidoService; verificar si hay q traer el service o el repo
 
 
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository /*ContenidoService contenidoService*/) {
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository /*ContenidoService contenidoService*/) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
-        this.contenidoRepository = contenidoRepository;
+        //this.contenidoService = contenidoService;
     }
 
     public Page<UsuarioDTO> findAll(Pageable pageable){
@@ -38,8 +42,7 @@ public class UsuarioService {
     public void save(UsuarioEntity usuario) {
 //        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
 //            throw new UsuarioYaExisteException(usuario.getEmail());
-//        } revisar si es necesario
-
+//        }
         usuarioRepository.save(usuario);
 
     }
@@ -101,41 +104,41 @@ public class UsuarioService {
     }
 
 
-    // verificar si anda
-    public void darLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+    // agregar findById, por eso está comentado
+//    public void darLike(Long idUsuario, Long idContenido){
+//        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
+//                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+//
+//        usuarioEntity.getLikes().add(contenidoEntity);
+//        usuarioRepository.save(usuarioEntity);
+//    }
+//
+//    public void quitarLike(Long idUsuario, Long idContenido){
+//        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//        // agregar find by id
+//        ContenidoEntity contenidoEntity = contenidoService.findById(idContenido)
+//                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+//
+//        usuarioEntity.getLikes().remove(contenidoEntity);
+//        usuarioRepository.save(usuarioEntity);
+//    }
 
-        usuarioEntity.getLikes().add(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    public void quitarLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-        ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
-
-        usuarioEntity.getLikes().remove(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    // quitar después
-    public Set<ContenidoEntity> listarLikes(Long id){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return usuarioEntity.getLikes();
-    }
+    //despues cambiar por contenidoDTO y retornar page
+//    public Set<ContenidoEntity> listarLikes(Long id){
+//        UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+//        return usuarioEntity.getLikes();
+//    }
 
     public Page<ContenidoEntity> obtenerLikes(Long id, Pageable pageable) {
         return usuarioRepository.findLikes(id, pageable);
     }
 
 
-    public Page<UsuarioEntity> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
+    public Page<UsuarioDTO> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
         Specification<UsuarioEntity> spec = Specification
                 .where(UsuarioSpecification.nombre(nombre))
                 .and(UsuarioSpecification.apellido(apellido))
@@ -143,7 +146,15 @@ public class UsuarioService {
                 .and(UsuarioSpecification.username(username))
                 .and(UsuarioSpecification.activo(activo));
 
-        return usuarioRepository.findAll(spec, pageable);
+        Page<UsuarioEntity> page = usuarioRepository.findAll(spec, pageable);
+
+
+        if (page.getContent().isEmpty()) {
+//            throw new UsuarioNoEncontradoException("No se encontraron contenidos con los filtros especificados.");
+            System.out.println("errorrrrr, falta tirar exception correcta");
+        }
+
+        return page.map(usuarioMapper::convertToDTO);
     }
 
 
