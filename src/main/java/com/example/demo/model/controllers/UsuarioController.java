@@ -78,17 +78,17 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario desactivado.");
     }
 
-//    @PostMapping("/{idUsuario}/like/{idContenido}")
-//    public ResponseEntity<String> darLike(@PathVariable long idUsuario, @PathVariable long idContenido){
-//        usuarioService.darLike(idUsuario,idContenido);
-//        return ResponseEntity.ok("Like guardado");
-//    }
-//
-//    @DeleteMapping("/{idUsuario}/like/{idContenido}")
-//    public ResponseEntity<String> quitarLike(@PathVariable long idUsuario, @PathVariable long idContenido){
-//        usuarioService.quitarLike(idUsuario,idContenido);
-//        return ResponseEntity.ok("Like eliminado");
-//    }
+    @PostMapping("/{idUsuario}/like/{idContenido}")
+    public ResponseEntity<String> darLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
+        usuarioService.darLike(idUsuario,idContenido);
+        return ResponseEntity.ok("Like guardado");
+    }
+
+    @DeleteMapping("/{idUsuario}/like/{idContenido}")
+    public ResponseEntity<String> quitarLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
+        usuarioService.quitarLike(idUsuario,idContenido);
+        return ResponseEntity.ok("Like eliminado");
+    }
 
 
     @GetMapping("/{idUsuario}/likes")
