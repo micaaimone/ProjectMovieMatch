@@ -13,5 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ListaContenidoDTO {
     private String nombre;
+    private boolean privado;
     private List<ContenidoDTO> contenidos;
 }

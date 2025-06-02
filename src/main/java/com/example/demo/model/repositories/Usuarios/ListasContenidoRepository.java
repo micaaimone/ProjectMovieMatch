@@ -1,7 +1,6 @@
 package com.example.demo.model.repositories.Usuarios;
 
-import com.example.demo.model.entities.CredencialEntity;
-import com.example.demo.model.entities.subs.ListasContenidoEntity;
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,4 +17,6 @@ public interface ListasContenidoRepository extends JpaRepository<ListasContenido
     Page<ListasContenidoEntity> findByIdUser(@PathVariable("id") Long idUser, Pageable pageable);
     @Query("SELECT p FROM ListasContenidoEntity p where p.usuario.id = :id AND p.nombre = :nombre")
     Optional<ListasContenidoEntity> findByNombre(@PathVariable("id")Long id, @Param("nombre")String nombre);
+    @Query("SELECT p from ListasContenidoEntity p where p.usuario.username = :username AND p.privado = false")
+    Page<ListasContenidoEntity> listaOtroUser(@PathVariable("username") String username, Pageable pageable);
 }

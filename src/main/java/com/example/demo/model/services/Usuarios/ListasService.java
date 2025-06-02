@@ -1,14 +1,14 @@
 package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.ListasSinContDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.CredencialEntity;
-import com.example.demo.model.entities.UsuarioEntity;
-import com.example.demo.model.entities.subs.ListasContenidoEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoYaAgregado;
+import com.example.demo.model.exceptions.ListaNotFound;
 import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
@@ -38,13 +38,12 @@ public class ListasService {
     }
 
     //crear una lista(con contenido vacio)
-    public ResponseEntity<ListasContenidoEntity> addLista(Long idUser, String nombreLista) {
-        ListasContenidoEntity lista = new ListasContenidoEntity();
+    public ResponseEntity<ListasContenidoEntity> addLista(Long idUser, ListasSinContDTO list) {
         UsuarioEntity usuario = usuarioRepository.findById(idUser)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
 
-        lista.setUsuario(usuario);
-        lista.setNombre(nombreLista);
+        ListasContenidoEntity lista = listasMapper.convertToEntitySC(list);
+
 
         return ResponseEntity.status(HttpStatus.CREATED).body(listasContenidoRepository.save(lista));
     }
@@ -72,25 +71,30 @@ public class ListasService {
     }
 
 
-    //crear dto sin lista de contenidos solo para visualizar las peliculas
     //muestra solo las listas creadas, sin los contenidos
-    public Page<ListaContenidoDTO> getListas(Long idUser, Pageable pageable) {
+    public Page<ListasSinContDTO> getListas(Long idUser, Pageable pageable) {
         UsuarioEntity user = usuarioRepository.findById(idUser)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
 
 
         return listasContenidoRepository.findByIdUser(idUser, pageable)
-                .map(listasMapper::convertToDTO);
+                .map(listasMapper::convertToDTOSC);
     }
 
     //Muestra el contenido de una lista ya existente
-    public ListaContenidoDTO verListaXnombre(Long idUser, String nombre, Pageable pageable) {
+    public ListaContenidoDTO verListaXnombre(Long idUser, String nombre) {
         UsuarioEntity user = usuarioRepository.findById(idUser)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
 
         return listasContenidoRepository.findByNombre(idUser, nombre)
                 .map(listasMapper::convertToDTO)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
+    }
+
+    //ver lista de otro usuario si es publica
+    public Page<ListaContenidoDTO> verListaDeUser(String username, Pageable pageable) {
+        return listasContenidoRepository.listaOtroUser(username, pageable)
+                .map(listasMapper::convertToDTO);
     }
 
     //elimina un contenido de una lista existente
@@ -106,6 +110,37 @@ public class ListasService {
         return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
     }
 
+    //cambiar nombre de lista
+    public ResponseEntity<ListasContenidoEntity> cambiarNombre(Long idUser, String nombre, String newnombre) {
 
+        if(newnombre != null) {
+
+            ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombre)
+                            .orElseThrow(() -> new ListaNotFound("Lista no encontrada"));
+
+            lista.setNombre(newnombre);
+            return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
+        }
+        else{
+            throw new IllegalArgumentException("nombre invalido");
+        }
+    }
+
+    public ResponseEntity<ListasContenidoEntity> cambiarPrivado(Long idUsuario, String nombre, boolean privado) {
+        ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUsuario, nombre)
+                        .orElseThrow(()-> new ListaNotFound("Lista no encontrada"));
+
+        lista.setPrivado(privado);
+        return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
+    }
+
+    public ResponseEntity<Void> eliminarLista(Long idUser, String nombreLista){
+        ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombreLista)
+                .orElseThrow(() -> new ListaNotFound("Lista no encontrada"));
+
+
+        listasContenidoRepository.delete(lista);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 
 }

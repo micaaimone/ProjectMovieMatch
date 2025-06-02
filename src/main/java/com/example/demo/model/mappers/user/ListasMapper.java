@@ -2,8 +2,9 @@ package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.ListasSinContDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.subs.ListasContenidoEntity;
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class ListasMapper {
         this.modelMapper = modelMapper;
     }
 
+    //dto con contenido
     public ListaContenidoDTO convertToDTO(ListasContenidoEntity entity) {
         ListaContenidoDTO dto = new ListaContenidoDTO();
         dto = modelMapper.map(entity, ListaContenidoDTO.class);
@@ -30,7 +32,7 @@ public class ListasMapper {
         }
         return dto;
     }
-
+    //entity con ocntenido
     public ListasContenidoEntity convertToEntity(ListaContenidoDTO dto) {
         ListasContenidoEntity entity = new ListasContenidoEntity();
         entity = modelMapper.map(dto, ListasContenidoEntity.class);
@@ -43,5 +45,18 @@ public class ListasMapper {
         }
         return entity;
     }
+
+    public ListasSinContDTO convertToDTOSC(ListasContenidoEntity entity) {
+        ListasSinContDTO dto = new ListasSinContDTO();
+
+        return modelMapper.map(entity, ListasSinContDTO.class);
+    }
+
+    public ListasContenidoEntity convertToEntitySC(ListasSinContDTO dto) {
+        ListasContenidoEntity entity = new ListasContenidoEntity();
+        return modelMapper.map(dto, ListasContenidoEntity.class);
+    }
+
+
 
 }

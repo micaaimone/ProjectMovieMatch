@@ -1,7 +1,6 @@
-package com.example.demo.model.entities.subs;
+package com.example.demo.model.entities.User;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +24,7 @@ public class ListasContenidoEntity {
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = false)
     private UsuarioEntity usuario;
+    private boolean privado;
 
     @ManyToMany
     @JoinTable(
