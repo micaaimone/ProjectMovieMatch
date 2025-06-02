@@ -1,12 +1,10 @@
-package com.example.demo.model.entities;
+package com.example.demo.model.entities.User;
 
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.subs.ListasContenidoEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;

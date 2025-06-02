@@ -1,6 +1,6 @@
 package com.example.demo.model.entities.Contenido;
 
-import com.example.demo.model.entities.subs.ListasContenidoEntity;
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;

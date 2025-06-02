@@ -1,7 +1,7 @@
 package com.example.demo.model.services.Subs;
 
 import com.example.demo.model.DTOs.subs.SuscripcionDTO;
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;

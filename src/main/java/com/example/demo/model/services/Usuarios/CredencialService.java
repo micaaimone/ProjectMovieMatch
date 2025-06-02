@@ -1,6 +1,6 @@
 package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.entities.CredencialEntity;
+import com.example.demo.model.entities.User.CredencialEntity;
 
 import com.example.demo.model.repositories.Usuarios.CredencialRepository;
 import jakarta.persistence.EntityNotFoundException;

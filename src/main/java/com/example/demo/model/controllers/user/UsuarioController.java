@@ -1,8 +1,8 @@
-package com.example.demo.model.controllers;
+package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ListasService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import org.springframework.data.domain.Page;
@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuarios")
 public class UsuarioController {
     private final UsuarioService usuarioService;
-    private final ListasService listasService;
 
-    public UsuarioController(UsuarioService usuarioService, ListasService listasService) {
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
-        this.listasService = listasService;
     }
 
 
@@ -41,27 +39,6 @@ public class UsuarioController {
     }
 
 
-    // metodos de listas de contenidos--------------------------
-
-    @PostMapping("/{id}/crearLista")
-    public ResponseEntity<Void> crearLista(@PathVariable("id") Long idUser,@RequestBody String nombre){
-        listasService.addLista(idUser, nombre);
-        return ResponseEntity.ok().body(null);
-    }
-
-    @PatchMapping("/{id}/agregarALista")
-    public ResponseEntity<Void> agregarALista(@PathVariable("id") Long id,@RequestParam String nombre)
-    {
-        System.out.println("ENTRA ACA????????????????????????????????????");
-        listasService.agregarContenido(id, nombre);
-        return ResponseEntity.ok().body(null);
-    }
-
-    @DeleteMapping("/{id}/sacarDelista")
-    public ResponseEntity<Void> eliminarDeLista(@PathVariable("id") Long id, @RequestParam String nombre){
-        listasService.eliminarContenido(id, nombre);
-        return ResponseEntity.noContent().build();
-    }
 
 
 

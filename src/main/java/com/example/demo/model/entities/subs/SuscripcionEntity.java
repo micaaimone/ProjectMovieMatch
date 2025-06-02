@@ -1,11 +1,10 @@
 package com.example.demo.model.entities.subs;
 
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

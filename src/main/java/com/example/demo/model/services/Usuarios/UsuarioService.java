@@ -2,7 +2,7 @@ package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.UsuarioMapper;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;

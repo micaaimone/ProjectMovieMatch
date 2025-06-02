@@ -1,6 +1,6 @@
 package com.example.demo.model.Specifications;
 
-import com.example.demo.model.entities.UsuarioEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import org.springframework.data.jpa.domain.Specification;
 
 public class UsuarioSpecification {
