@@ -22,20 +22,20 @@ public class ReseniaController {
     }
 
     @PostMapping
-    public ResponseEntity<?> crearResenia(@RequestBody ReseniaDTO reseniaDTO){
+    public ResponseEntity<String> crearResenia(@RequestBody ReseniaDTO reseniaDTO){
         reseniaService.save(reseniaDTO);
         return ResponseEntity.ok("Reseña agregada correctamente");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarResenia(@PathVariable("id") Long id)
+    public ResponseEntity<String> eliminarResenia(@PathVariable("id") Long id)
     {
         reseniaService.delete(id);
         return ResponseEntity.ok("Reseña eliminada correctamente");
     }
 
     @DeleteMapping("/{id_usuario}/{id_contenido}")
-    public ResponseEntity<?> eliminarResenia(@PathVariable("id_usuario") Long id_usuario,
+    public ResponseEntity<String> eliminarResenia(@PathVariable("id_usuario") Long id_usuario,
                                             @PathVariable("id_contenido") Long id_contenido)
     {
         reseniaService.delete(id_usuario, id_contenido);
@@ -51,7 +51,7 @@ public class ReseniaController {
     }
 
     @PatchMapping("/{id_usuario}/{id_contenido}")
-    public ResponseEntity<?> modificar (@PathVariable("id_usuario") Long id_usuario,
+    public ResponseEntity<String> modificar (@PathVariable("id_usuario") Long id_usuario,
                                         @PathVariable("id_contenido") Long id_contenido,
                                         @RequestBody ReseniaModificarDTO dto)
     {

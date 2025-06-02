@@ -56,14 +56,14 @@ public class ContenidoController {
 
     @PostMapping("/{id}")
     //pongo ? porque puede devolver un contenido dto, como un error detalle
-    public ResponseEntity<?> darDeAlta(@PathVariable Long id) {
+    public ResponseEntity<String> darDeAlta(@PathVariable Long id) {
         contenidoService.darDeAltaBDD(id);
-        return ResponseEntity.ok("Contenido eliminado correctamente.");
+        return ResponseEntity.ok("Contenido dado de alta correctamente.");
     }
 
     @DeleteMapping("/{id}")
     //pongo ? porque puede devolver un contenido dto, como un error detalle
-    public ResponseEntity<?> borrarContenido(@PathVariable long id){
+    public ResponseEntity<String> borrarContenido(@PathVariable long id){
         contenidoService.borrarDeBDD(id);
         return ResponseEntity.ok("Contenido eliminado correctamente.");
     }

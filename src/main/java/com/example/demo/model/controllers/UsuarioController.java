@@ -101,14 +101,24 @@ public class UsuarioController {
     }
 
     //el dto no tiene nombre, apellido, ni id. deberia?
-    @GetMapping("/listarFiltrado")
+    @GetMapping("/listarActivos")
     public ResponseEntity<Page<UsuarioDTO>> filtrarUsuarios(@RequestParam(required = false) String nombre,
                                                @RequestParam(required = false) String apellido,
                                                @RequestParam(required = false) String email,
                                                @RequestParam(required = false) String username,
-                                               @RequestParam(required = false) Boolean activo,
                                                Pageable pageable){
-        Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, activo, pageable);
+        Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, true, pageable);
+
+        return ResponseEntity.ok(resultado);
+    }
+
+    @GetMapping("/listarDesactivados")
+    public ResponseEntity<Page<UsuarioDTO>> filtrarUsuariosDesactivados(@RequestParam(required = false) String nombre,
+                                                            @RequestParam(required = false) String apellido,
+                                                            @RequestParam(required = false) String email,
+                                                            @RequestParam(required = false) String username,
+                                                            Pageable pageable){
+        Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, false, pageable);
 
         return ResponseEntity.ok(resultado);
     }
