@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class ContenidoMostrarAdminDTO {
+public class ContenidoMostrarDTO {
     private String titulo;
     private String tipo;
 }

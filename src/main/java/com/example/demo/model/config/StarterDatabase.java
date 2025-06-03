@@ -304,6 +304,8 @@ public class StarterDatabase {
                 .filter(s -> !checkSerieBDD(s.getImdbId()))
                 .toList()) {
 
+            //seteo que automaticamente el estado sea true
+            serie.setActivo(true);
             // guardo la serie primero para obtener su id_contenido
             serieRepository.save(serie);
 
@@ -361,8 +363,8 @@ public class StarterDatabase {
                 .filter(p -> !checkPeliBDD(p.getImdbId()))
                 .toList()) {
 
-            //seteo que automaticamente el estado sea 0 (activo)
-            pelicula.setEstado(0);
+            //seteo que automaticamente el estado sea true
+            pelicula.setActivo(true);
             // guardo la serie primero para obtener su id_contenido
             peliculaRepository.save(pelicula);
 

@@ -16,11 +16,12 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class ContenidoEntity {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_contenido;
 
-    private long estado; // 0 -> activo,  1-> no activo
+    private boolean activo = true;
 
     @JsonProperty("Title")
     private String titulo;
@@ -90,4 +91,7 @@ public abstract class ContenidoEntity {
     @JsonProperty("Response")
     private String respuesta;
 
+    public boolean isActivo() {
+        return activo;
+    }
 }

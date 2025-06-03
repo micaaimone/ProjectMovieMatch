@@ -1,7 +1,7 @@
 package com.example.demo.model.mappers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.DTOs.Contenido.ContenidoMostrarAdminDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
@@ -20,9 +20,9 @@ public class ContenidoMapper {
     @Autowired
     private ReseniaMapper reseñaMapper;
 
-    public ContenidoMostrarAdminDTO convertToDTOForAdmin(ContenidoEntity contenidoEntity)
+    public ContenidoMostrarDTO convertToDTOForAdmin(ContenidoEntity contenidoEntity)
     {
-        return ContenidoMostrarAdminDTO.builder()
+        return ContenidoMostrarDTO.builder()
                 .titulo(contenidoEntity.getTitulo())
                 .tipo(contenidoEntity.getTipo())
                 .build();

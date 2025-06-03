@@ -4,6 +4,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
+import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class ContenidoService {
     }
 
 
-    public Page<ContenidoDTO> buscarActivos(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, Long id){
+    public Page<ContenidoDTO> buscarActivos(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Boolean estado, String clasificacion, Long id){
         Specification<ContenidoEntity> specification = Specification
                 .where(ContenidoSpecification.genero(genero))
                 .and(ContenidoSpecification.anio(anio))
@@ -47,24 +48,34 @@ public class ContenidoService {
         return page.map(contenidoMapper::convertToDTO);
     }
 
-
-
-    public void borrarDeBDD(long id) {
-        ContenidoEntity contenido = contenidoRepository.findById(id)
+    private ContenidoEntity obtenerContenidoPorId(long id) {
+        return contenidoRepository.findById(id)
                 .orElseThrow(() -> new ContenidoNotFound("No se encontró contenido con id: " + id));
-
-        contenido.setEstado(1);
-        contenidoRepository.save(contenido);
     }
 
 
-    public void darDeAltaBDD(long id)
-    {
-        if(contenidoRepository.existsById(id)) {
-            ContenidoEntity contenido = contenidoRepository.findById(id)
-                    .orElseThrow(() -> new ContenidoNotFound("No se encontró contenido con id: " + id));
 
-            contenido.setEstado(0);
+    public void darDeBajaContenido(long id) {
+        ContenidoEntity contenido = obtenerContenidoPorId(id);
+        if(contenido.isActivo())
+        {
+            contenido.setActivo(false);
+            contenidoRepository.save(contenido);
+        } else {
+            throw new ContenidoNotFound("No se encuentra un contenido con el id: " + id);
+        }
+
+    }
+
+
+
+    public void darDeAltaContenido(long id)
+    {
+        ContenidoEntity contenido = obtenerContenidoPorId(id);
+        if(contenido.isActivo()) {
+            throw new ContenidoYaAgregadoException("El contenido ya fue agregado a la base de datos");
+        } else {
+            contenido.setActivo(true);
             contenidoRepository.save(contenido);
         }
     }

@@ -1,21 +1,15 @@
 package com.example.demo.model.mappers.user;
 
-import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.DTOs.Contenido.ContenidoMostrarAdminDTO;
-import com.example.demo.model.DTOs.ReseniaDTO;
-import com.example.demo.model.DTOs.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
-import org.apache.catalina.mapper.Mapper;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class UsuarioMapper{
@@ -35,7 +29,7 @@ public class UsuarioMapper{
 
         if(usuarioEntity.getLikes() != null)
         {
-            List<ContenidoMostrarAdminDTO> contenidoDTOS = usuarioEntity.getLikes()
+            List<ContenidoMostrarDTO> contenidoDTOS = usuarioEntity.getLikes()
                     .stream()
                     .map(contenidoMapper::convertToDTOForAdmin)
                     .toList();

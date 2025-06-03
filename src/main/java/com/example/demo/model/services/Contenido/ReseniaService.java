@@ -1,16 +1,19 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Contenido;
 
 import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.DTOs.ReseniaModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaAlredyExists;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaNotFound;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Contenido.ReseniaRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -55,18 +58,15 @@ public class ReseniaService {
     {
 
         return usuarioRepository.findById(dto.getId_usuario())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(dto.getId_usuario()));
     }
 
     public ContenidoEntity existeContenido(ReseniaDTO dto)
     {
         return contenidoRepository.findById(dto.getId_contenido())
-            .orElseThrow(() -> new RuntimeException("Contenido no encontrado"));
+            .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
     }
 
-
-
-    //NO BORRA DE LA BDD, NO ENTIENDO
 
     public void delete(Long id) {
         boolean resenia = reseniaRepository.existsById(id);
@@ -86,25 +86,18 @@ public class ReseniaService {
         ReseniaEntity resenia = reseniaRepository.findByIDAndContenido(id_u, id_c)
                 .orElseThrow(() -> new ReseniaNotFound("Reseña no encontrada"));
 
-        System.out.println("ID reseña: " + resenia.getId_resenia());
-        System.out.println("Puntuación: " + resenia.getPuntuacionU());
-        System.out.println("Comentario: " + resenia.getComentario());
-        System.out.println("Fecha: " + resenia.getFecha());
-
-        System.out.println("ID usuario: " + resenia.getUsuario().getId());
-        System.out.println("Nombre usuario: " + resenia.getUsuario().getNombre());
-
-        System.out.println("ID contenido: " + resenia.getContenido().getId_contenido());
-        System.out.println("Título contenido: " + resenia.getContenido().getTitulo());
-
+        //los tengo q borrar manualmente xq reseñas es "el hijo"
         UsuarioEntity usuario = resenia.getUsuario();
         usuario.getReseñasHechas().remove(resenia);
 
         ContenidoEntity contenido = resenia.getContenido();
         contenido.getReseña().remove(resenia);
 
-        //preguntar xq tengo q borrar manualmente las reseñas de las listas de contenido y usuario
-        //si tengo cascade.all en ambas entities
+        //x si acaso guardo los cambios
+        usuarioRepository.save(usuario);
+        contenidoRepository.save(contenido);
+
+        //ahora si borro la reseña
         reseniaRepository.delete(resenia);
     }
 
@@ -120,7 +113,7 @@ public class ReseniaService {
         return page.map(reseniaMapper::convertToDTO);
     }
 
-    public void modificarResenia(Long id_usuario, Long id_contenido, ReseniaModificarDTO dto) {
+    public void modificarResenia(@Valid Long id_usuario, Long id_contenido, ReseniaModificarDTO dto) {
         if (dto.getComentario() == null && dto.getPuntuacionU() == null) {
             throw new IllegalArgumentException("Debe enviar al menos un campo para actualizar");
         }

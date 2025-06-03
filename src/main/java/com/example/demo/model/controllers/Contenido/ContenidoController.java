@@ -34,7 +34,7 @@ public class ContenidoController {
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, 0, clasificacion, id));
+        return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, true, clasificacion, id));
     }
 
     @GetMapping("/bajados")
@@ -50,21 +50,19 @@ public class ContenidoController {
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, 1, clasificacion, id));
+        return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, false, clasificacion, id));
     }
 
 
-    @PostMapping("/{id}")
-    //pongo ? porque puede devolver un contenido dto, como un error detalle
+    @PatchMapping("/{id}/activar")
     public ResponseEntity<String> darDeAlta(@PathVariable Long id) {
-        contenidoService.darDeAltaBDD(id);
+        contenidoService.darDeAltaContenido(id);
         return ResponseEntity.ok("Contenido dado de alta correctamente.");
     }
 
-    @DeleteMapping("/{id}")
-    //pongo ? porque puede devolver un contenido dto, como un error detalle
+    @PatchMapping("/{id}/desactivar")
     public ResponseEntity<String> borrarContenido(@PathVariable long id){
-        contenidoService.borrarDeBDD(id);
+        contenidoService.darDeBajaContenido(id);
         return ResponseEntity.ok("Contenido eliminado correctamente.");
     }
 

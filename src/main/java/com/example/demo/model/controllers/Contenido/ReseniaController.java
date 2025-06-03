@@ -2,7 +2,8 @@ package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.DTOs.ReseniaModificarDTO;
-import com.example.demo.model.services.ReseniaService;
+import com.example.demo.model.services.Contenido.ReseniaService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,20 +23,20 @@ public class ReseniaController {
     }
 
     @PostMapping
-    public ResponseEntity<String> crearResenia(@RequestBody ReseniaDTO reseniaDTO){
+    public ResponseEntity<String> crearResenia(@Valid @RequestBody ReseniaDTO reseniaDTO){
         reseniaService.save(reseniaDTO);
         return ResponseEntity.ok("Reseña agregada correctamente");
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarResenia(@PathVariable("id") Long id)
+    @DeleteMapping("/eliminarReseniaaByID/{id}")
+    public ResponseEntity<String> eliminarReseniaPorId(@PathVariable("id") Long id)
     {
         reseniaService.delete(id);
         return ResponseEntity.ok("Reseña eliminada correctamente");
     }
 
-    @DeleteMapping("/{id_usuario}/{id_contenido}")
-    public ResponseEntity<String> eliminarResenia(@PathVariable("id_usuario") Long id_usuario,
+    @DeleteMapping("/eliminarReseniaByUserAndIDContenido{id_usuario}/{id_contenido}")
+    public ResponseEntity<String> eliminarReseniaByUsuarioYContenido(@PathVariable("id_usuario") Long id_usuario,
                                             @PathVariable("id_contenido") Long id_contenido)
     {
         reseniaService.delete(id_usuario, id_contenido);
@@ -53,7 +54,7 @@ public class ReseniaController {
     @PatchMapping("/{id_usuario}/{id_contenido}")
     public ResponseEntity<String> modificar (@PathVariable("id_usuario") Long id_usuario,
                                         @PathVariable("id_contenido") Long id_contenido,
-                                        @RequestBody ReseniaModificarDTO dto)
+                                             @Valid @RequestBody ReseniaModificarDTO dto)
     {
         reseniaService.modificarResenia(id_usuario, id_contenido, dto);
 

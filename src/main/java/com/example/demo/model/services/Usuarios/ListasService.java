@@ -7,7 +7,7 @@ import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
-import com.example.demo.model.exceptions.ContenidoYaAgregado;
+import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
 import com.example.demo.model.exceptions.ListaNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
@@ -20,8 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ListasService {
@@ -64,7 +62,7 @@ public class ListasService {
         if (!lista.getContenidos().contains(contenido)) {
             lista.getContenidos().add(contenido);
         }else{
-            throw new ContenidoYaAgregado("Contenido existente en la lista");
+            throw new ContenidoYaAgregadoException("Contenido existente en la lista");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));

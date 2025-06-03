@@ -1,7 +1,6 @@
 package com.example.demo.model.DTOs.user;
 
-import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.DTOs.Contenido.ContenidoMostrarAdminDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.User.CredencialEntity;
 import lombok.*;
@@ -20,6 +19,6 @@ public class UsuarioDTO {
     private CredencialEntity credencial;
     private Boolean activo;
     //  private SuscripcionEntity suscripcion;
-    private List<ContenidoMostrarAdminDTO> likes;
+    private List<ContenidoMostrarDTO> likes;
     private List<ReseniaMostrarUsuarioDTO> reseñas;
 }

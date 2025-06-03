@@ -22,7 +22,7 @@ public class ContenidoSpecification {
         );
     }
 
-    public static Specification<ContenidoEntity> estado(Integer estado)
+    public static Specification<ContenidoEntity> estado(Boolean estado)
     {
         return ((root, query, criteriaBuilder) ->
                 estado == null ? null :
