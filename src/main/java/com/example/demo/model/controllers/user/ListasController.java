@@ -5,6 +5,7 @@ import com.example.demo.model.DTOs.user.ListasSinContDTO;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Usuarios.ListasService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class ListasController {
 
     // metodos de listas de contenidos--------------------------
     @PostMapping("/{id}/crearLista")
-    public ResponseEntity<Void> crearLista(@PathVariable("id") Long idUser, @RequestBody ListasSinContDTO lista){
+    public ResponseEntity<Void> crearLista(@PathVariable("id") Long idUser,@Valid @RequestBody ListasSinContDTO lista){
         listasService.addLista(idUser, lista);
         return ResponseEntity.ok().body(null);
     }

@@ -2,6 +2,7 @@ package com.example.demo.model.exceptions.ConfigExceptions;
 
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.SuscripcionException.*;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
@@ -152,6 +153,62 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorDetalles, status);
+    }
+
+    //suscripciones------------------
+
+    //sub no encontrada
+    @ExceptionHandler(SubNotFoundException.class)
+    public ResponseEntity<ErrorDetalles> manejarSubNotFound(SubNotFoundException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
+
+    //sub ya existente
+    @ExceptionHandler(SubAlreadyExistException.class)
+    public ResponseEntity<ErrorDetalles> manejarSubAlreadyExist(SubAlreadyExistException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
+    }
+
+    //plan no encontrado
+    @ExceptionHandler(PlanNotFoundException.class)
+    public ResponseEntity<ErrorDetalles> manejarPlanNotFound(PlanNotFoundException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
+
+    //oferta no encontrada
+    @ExceptionHandler(OfertaNotFoundException.class)
+    public ResponseEntity<ErrorDetalles> manejarOfertaNotFound(OfertaNotFoundException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PagoNotFoundException.class)
+    public ResponseEntity<ErrorDetalles> manejarPagoNotFound(PagoNotFoundException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
     }
 
 }

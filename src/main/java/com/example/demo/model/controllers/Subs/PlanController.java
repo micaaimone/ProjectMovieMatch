@@ -1,6 +1,7 @@
 package com.example.demo.model.controllers.Subs;
 
 import com.example.demo.model.DTOs.subs.PlanDTO;
+import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.services.Subs.PlanService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,11 +25,9 @@ public class PlanController {
 
     }
 
-    @PatchMapping("/cambiarPrecio/{id}")
-    public ResponseEntity<Void> actualizarPlan(@PathVariable float monto, @PathVariable long id) {
-        planService.cambiarMontoPlan(monto,id);
-        return ResponseEntity.ok().build();
+    @PatchMapping("/{tipoPlan}/cambiarPrecio")
+    public ResponseEntity<String> actualizarPlan(@PathVariable("tipoPlan") TipoSuscripcion tipoPlan, @RequestParam float precio) {
+        planService.cambiarMontoPlan(tipoPlan, precio);
+        return ResponseEntity.ok("Plan actualizado correctamente");
     }
-
-    //falta el de actualizar monto de plan
 }

@@ -82,6 +82,7 @@ public class UsuarioController {
     }
 
     //el dto no tiene nombre, apellido, ni id. deberia?
+    //cambiar el dto de contenido para solo mostrar titulo
     @GetMapping("/listarActivos")
     public ResponseEntity<Page<UsuarioDTO>> filtrarUsuarios(@RequestParam(required = false) String nombre,
                                                @RequestParam(required = false) String apellido,

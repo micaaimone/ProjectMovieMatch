@@ -3,6 +3,7 @@ package com.example.demo.model.services.Subs;
 import com.example.demo.model.DTOs.subs.PagoDTO;
 import com.example.demo.model.entities.subs.PagoEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
+import com.example.demo.model.exceptions.SuscripcionException.PagoNotFoundException;
 import com.example.demo.model.mappers.Subs.PagoMapper;
 import com.example.demo.model.repositories.Subs.PagoRepository;
 import org.springframework.data.domain.Page;
@@ -38,11 +39,8 @@ public class PagoService {
 
     public PagoDTO findById(Long id) {
         PagoEntity pagoEntity = pagoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("No encontrado"));
+                .orElseThrow(() -> new PagoNotFoundException("Pago no encontrado"));
 
-        PagoDTO pagoDTO = pagoMapper.convertToDTO(pagoEntity);
-        System.out.println("monto: "+pagoDTO.getMonto_pago());
-        return pagoDTO;
-       // return pagoMapper.convertToDTO(pagoEntity);
+        return pagoMapper.convertToDTO(pagoEntity);
     }
 }

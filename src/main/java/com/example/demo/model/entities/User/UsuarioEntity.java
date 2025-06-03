@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
+import com.example.demo.model.entities.subs.SuscripcionEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Email;
@@ -54,9 +55,9 @@ public class UsuarioEntity {
     @JoinColumn(name = "id_credencial", referencedColumnName = "id")
     private CredencialEntity credencial;
 
-//    @OneToOne
-//    @JoinColumn(name = "id_suscripcion")
-//    private SuscripcionEntity suscripcion;
+    @OneToOne
+    @JoinColumn(name = "id_suscripcion")
+    private SuscripcionEntity suscripcion;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
@@ -80,4 +81,9 @@ public class UsuarioEntity {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ReseniaEntity> reseñasHechas;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private List<ListasContenidoEntity> listas;
+
+
 }

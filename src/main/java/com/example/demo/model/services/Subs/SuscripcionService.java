@@ -6,6 +6,10 @@ import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
+import com.example.demo.model.exceptions.SuscripcionException.PlanNotFoundException;
+import com.example.demo.model.exceptions.SuscripcionException.SubAlreadyExistException;
+import com.example.demo.model.exceptions.SuscripcionException.SubNotFoundException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.Subs.SuscripcionMapper;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
@@ -37,7 +41,7 @@ public class SuscripcionService {
 
     }
 
-//mostrar todos
+    //mostrar todos
     public Page<SuscripcionDTO> findAll(Pageable pageable) {
         return suscripcionRepository.findAll(pageable)
                 .map(suscripcionMapper::convertToDTO);
@@ -45,25 +49,30 @@ public class SuscripcionService {
 
     public SuscripcionDTO findById(Long id) {
         SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("No se encontro el id del suscripcion"));
+                .orElseThrow(()-> new SubNotFoundException("No se encontro la suscripcion"));
         return suscripcionMapper.convertToDTO(suscripcion);
     }
 
     public SuscripcionEntity findByIdEntity(Long id) {
         SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("No se encontro el id del suscripcion"));
+                .orElseThrow(()-> new SubNotFoundException("No se encontro la suscripcion"));
         return suscripcion;
     }
 
     //crear sub nueva
     public SuscripcionEntity save(Long id_usuario, TipoSuscripcion dato) {
 
+        //buscamos el user
         UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
-                .orElseThrow(()-> new RuntimeException("no se encontro el usuario"));
+                .orElseThrow(()-> new UsuarioNoEncontradoException(id_usuario));
+
+        if(usuario.getSuscripcion()==null){
+            throw new SubAlreadyExistException("Este usuario ya cuenta con suscripcion");
+        }
 
         //buscamos el plan
         PlanSuscripcionEntity plan = planRepository.findByTipo(dato)
-                .orElseThrow(() -> new RuntimeException("no se enocntro el plan"));
+                .orElseThrow(() -> new PlanNotFoundException("no se enocntro el plan"));
 
         //buscamos oferta activa
         Optional<OfertaEntity> oferta = planService.getOfertaActiva(plan);
@@ -85,13 +94,14 @@ public class SuscripcionService {
         suscripcion.setFecha_inicio(LocalDate.now());
         suscripcion.setFecha_fin(calcularFechaFin(dato));
         suscripcionRepository.save(suscripcion);
-        //usuario.setSuscripcion(suscripcion);
+        usuario.setSuscripcion(suscripcion);
         return suscripcion;
     }
 
+    //renovamos la sub si se esta por vencer
     public SuscripcionEntity renovar (Long id){
         SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("Suscripcion no encontrada"));
+                .orElseThrow(()-> new SubNotFoundException("Suscripcion no encontrada"));
 
         if(suscripcion.getFecha_inicio().isBefore(suscripcion.getFecha_fin())){
             suscripcion.setEstado(true);
@@ -101,7 +111,6 @@ public class SuscripcionService {
         suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getPlan().getTipo()));
         suscripcionRepository.save(suscripcion);
         return suscripcion;
-
     }
 
     //indica cuando se terminara la sub segun el tipo
@@ -112,13 +121,6 @@ public class SuscripcionService {
             case ANUAL -> LocalDate.now().plusYears(1);
         };
     }
-
-    //verifica si la fecha de hoy es menor que la de vencimiento
-    public boolean vencio(SuscripcionEntity suscripcion){
-        LocalDate hoy = LocalDate.now();
-        return hoy.isAfter(suscripcion.getFecha_fin());
-    }
-
 
     //listar activos
     public Page<SuscripcionDTO> mostrarActivos(Pageable pageable) {
