@@ -1,7 +1,7 @@
 package com.example.demo.model.controllers.Contenido;
 
-import com.example.demo.model.DTOs.ReseniaDTO;
-import com.example.demo.model.DTOs.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaModificarDTO;
 import com.example.demo.model.services.Contenido.ReseniaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

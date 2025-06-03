@@ -2,7 +2,7 @@ package com.example.demo.model.mappers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.ReseniaDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.ReseniaEntity;

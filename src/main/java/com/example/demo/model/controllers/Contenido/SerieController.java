@@ -1,6 +1,5 @@
 package com.example.demo.model.controllers.Contenido;
 
-import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.services.Contenido.SerieService;
 import org.springframework.data.domain.Page;

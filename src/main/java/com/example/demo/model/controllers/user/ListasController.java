@@ -2,8 +2,6 @@ package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.ListasSinContDTO;
-import com.example.demo.model.repositories.Contenido.ContenidoRepository;
-import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Usuarios.ListasService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;

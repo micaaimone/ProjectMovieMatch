@@ -1,6 +1,6 @@
 package com.example.demo.model.DTOs.Contenido;
 
-import com.example.demo.model.DTOs.ReseniaDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import lombok.*;
 
 import java.util.List;

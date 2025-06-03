@@ -1,7 +1,7 @@
 package com.example.demo.model.exceptions.ConfigExceptions;
 
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
-import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.SuscripcionException.*;

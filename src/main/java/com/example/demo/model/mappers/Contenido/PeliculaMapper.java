@@ -2,7 +2,7 @@ package com.example.demo.model.mappers.Contenido;
 
 
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
-import com.example.demo.model.DTOs.ReseniaDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

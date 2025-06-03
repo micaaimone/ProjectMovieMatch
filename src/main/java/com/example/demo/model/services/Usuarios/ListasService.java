@@ -7,7 +7,7 @@ import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
-import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;

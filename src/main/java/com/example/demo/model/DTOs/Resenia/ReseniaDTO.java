@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs;
+package com.example.demo.model.DTOs.Resenia;
 
 import jakarta.validation.constraints.*;
 import lombok.*;

@@ -1,7 +1,7 @@
 package com.example.demo.model.services.Contenido;
 
-import com.example.demo.model.DTOs.ReseniaDTO;
-import com.example.demo.model.DTOs.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
@@ -113,7 +113,7 @@ public class ReseniaService {
         return page.map(reseniaMapper::convertToDTO);
     }
 
-    public void modificarResenia(@Valid Long id_usuario, Long id_contenido, ReseniaModificarDTO dto) {
+    public void modificarResenia( Long id_usuario, Long id_contenido, ReseniaModificarDTO dto) {
         if (dto.getComentario() == null && dto.getPuntuacionU() == null) {
             throw new IllegalArgumentException("Debe enviar al menos un campo para actualizar");
         }
