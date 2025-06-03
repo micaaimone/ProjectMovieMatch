@@ -23,16 +23,16 @@ public class ListasController {
 
     // metodos de listas de contenidos--------------------------
     @PostMapping("/{id}/crearLista")
-    public ResponseEntity<Void> crearLista(@PathVariable("id") Long idUser,@Valid @RequestBody ListasSinContDTO lista){
+    public ResponseEntity<String> crearLista(@PathVariable("id") Long idUser,@Valid @RequestBody ListasSinContDTO lista){
         listasService.addLista(idUser, lista);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok("Lista Creada!");
     }
 
     @PatchMapping("/{id}/agregarALista")
-    public ResponseEntity<Void> agregarALista(@PathVariable("id") Long id,@RequestParam String nombre)
+    public ResponseEntity<String> agregarALista(@PathVariable("id") Long id,@RequestParam String nombre)
     {
         listasService.agregarContenido(id, nombre);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok("Lista Agregada!");
     }
 
     // mostrar listas con contenido y sin----------------------------------
@@ -50,29 +50,29 @@ public class ListasController {
 
     //-------------------- editar variables de listas ------------
     @PatchMapping("/{id}/{nombre}/cambiarNombre")
-    public ResponseEntity<Void> cambiarNombre(@PathVariable("id") Long id,@PathVariable("nombre") String nombre, @RequestParam String newNombre){
+    public ResponseEntity<String> cambiarNombre(@PathVariable("id") Long id,@PathVariable("nombre") String nombre, @RequestParam String newNombre){
         listasService.cambiarNombre(id, nombre, newNombre);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok("Nombre cambiado!");
     }
 
     @PatchMapping("/{id}/{nombre}/cambiarEstado")
-    public ResponseEntity<Void> cambiarEstado(@PathVariable("id") Long id,@PathVariable("nombre") String nombre, @RequestParam boolean newEstado){
+    public ResponseEntity<String> cambiarEstado(@PathVariable("id") Long id,@PathVariable("nombre") String nombre, @RequestParam boolean newEstado){
         listasService.cambiarPrivado(id, nombre, newEstado);
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok("Privacidad cambiada!");
     }
 
 
     // ------------------------ borrar contenido o borrar lista completa------------
     @DeleteMapping("/{id}/sacarDelista")
-    public ResponseEntity<Void> eliminarDeLista(@PathVariable("id") Long id, @RequestParam String nombre){
+    public ResponseEntity<String> eliminarDeLista(@PathVariable("id") Long id, @RequestParam String nombre){
         listasService.eliminarContenido(id, nombre);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Contenido eliminado!");
     }
 
     @DeleteMapping("/{id}/eliminarLista")
-    public ResponseEntity<Void> eliminarLista(@PathVariable("id") Long idUser, @RequestParam String nombre){
+    public ResponseEntity<String> eliminarLista(@PathVariable("id") Long idUser, @RequestParam String nombre){
         listasService.eliminarLista(idUser, nombre);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Lista Eliminada!");
     }
 
     //buscar lista de otro usuario

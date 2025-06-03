@@ -58,7 +58,7 @@ public class ReseniaService {
     {
 
         return usuarioRepository.findById(dto.getId_usuario())
-                .orElseThrow(() -> new UsuarioNoEncontradoException(dto.getId_usuario()));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
     }
 
     public ContenidoEntity existeContenido(ReseniaDTO dto)

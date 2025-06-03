@@ -2,6 +2,8 @@ package com.example.demo.model.exceptions.ConfigExceptions;
 
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
+import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.SuscripcionException.*;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
@@ -154,6 +156,31 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetalles, status);
     }
+
+    //listas--------------------------------------
+
+    @ExceptionHandler(ListaNotFoundException.class)
+    public ResponseEntity<ErrorDetalles> manejarListaNotFound(ListaNotFoundException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ListAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetalles> manejarListaAlreadyExists(ListAlreadyExistsException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
+    }
+
+
+
 
     //suscripciones------------------
 

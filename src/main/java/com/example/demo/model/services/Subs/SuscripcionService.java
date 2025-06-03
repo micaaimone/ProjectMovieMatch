@@ -64,7 +64,7 @@ public class SuscripcionService {
 
         //buscamos el user
         UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
-                .orElseThrow(()-> new UsuarioNoEncontradoException(id_usuario));
+                .orElseThrow(()-> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         if(usuario.getSuscripcion()==null){
             throw new SubAlreadyExistException("Este usuario ya cuenta con suscripcion");

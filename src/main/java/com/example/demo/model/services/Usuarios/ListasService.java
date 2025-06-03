@@ -8,8 +8,8 @@ import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
-import com.example.demo.model.exceptions.ListAlreadyExistsException;
-import com.example.demo.model.exceptions.ListaNotFoundException;
+import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
+import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
@@ -37,9 +37,9 @@ public class ListasService {
     }
 
     //crear una lista(con contenido vacio)
-    public ResponseEntity<ListasContenidoEntity> addLista(Long idUser, ListasSinContDTO list) {
+    public void addLista(Long idUser, ListasSinContDTO list) {
         UsuarioEntity usuario = usuarioRepository.findById(idUser)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         if(listasContenidoRepository.findByNombre(idUser, list.getNombre()).isPresent()){
             throw new ListAlreadyExistsException("Lista ya existe");
@@ -48,11 +48,11 @@ public class ListasService {
         ListasContenidoEntity lista = listasMapper.convertToEntitySC(list);
         lista.setUsuario(usuario);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(listasContenidoRepository.save(lista));
+        listasContenidoRepository.save(lista);
     }
 
     //agregamos contenido a una lista existente(chequear)
-    public ResponseEntity<ListasContenidoEntity> agregarContenido(Long idLista, String nombre) {
+    public void agregarContenido(Long idLista, String nombre) {
         ListasContenidoEntity lista = listasContenidoRepository.findById(idLista)
                 .orElseThrow();
 
@@ -70,14 +70,14 @@ public class ListasService {
             throw new ContenidoYaAgregadoException("Contenido existente en la lista");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
+        listasContenidoRepository.save(lista);
     }
 
 
     //muestra solo las listas creadas, sin los contenidos
     public Page<ListasSinContDTO> getListas(Long idUser, Pageable pageable) {
         UsuarioEntity user = usuarioRepository.findById(idUser)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
 
         return listasContenidoRepository.findByIdUser(idUser, pageable)
@@ -87,11 +87,11 @@ public class ListasService {
     //Muestra el contenido de una lista ya existente
     public ListaContenidoDTO verListaXnombre(Long idUser, String nombre) {
         UsuarioEntity user = usuarioRepository.findById(idUser)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         return listasContenidoRepository.findByNombre(idUser, nombre)
                 .map(listasMapper::convertToDTO)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
+                .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
     }
 
     //ver lista de otro usuario si es publica
@@ -101,7 +101,7 @@ public class ListasService {
     }
 
     //elimina un contenido de una lista existente
-    public ResponseEntity<ListasContenidoEntity> eliminarContenido(Long idLista, String nombre) {
+    public void eliminarContenido(Long idLista, String nombre) {
         ListasContenidoEntity lista = listasContenidoRepository.findById(idLista).orElseThrow();
 
         boolean removed = lista.getContenidos().removeIf(c -> c.getTitulo().equalsIgnoreCase(nombre));
@@ -110,11 +110,11 @@ public class ListasService {
             throw new ContenidoNotFound(nombre);
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
+        listasContenidoRepository.save(lista);
     }
 
     //cambiar nombre de lista
-    public ResponseEntity<ListasContenidoEntity> cambiarNombre(Long idUser, String nombre, String newnombre) {
+    public void cambiarNombre(Long idUser, String nombre, String newnombre) {
 
         if(newnombre != null) {
 
@@ -122,22 +122,22 @@ public class ListasService {
                             .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
 
             lista.setNombre(newnombre);
-            return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
+            listasContenidoRepository.save(lista);
         }
         else{
             throw new IllegalArgumentException("nombre invalido");
         }
     }
 
-    public ResponseEntity<ListasContenidoEntity> cambiarPrivado(Long idUsuario, String nombre, boolean privado) {
+    public void cambiarPrivado(Long idUsuario, String nombre, boolean privado) {
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUsuario, nombre)
                         .orElseThrow(()-> new ListaNotFoundException("Lista no encontrada"));
 
         lista.setPrivado(privado);
-        return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
+        listasContenidoRepository.save(lista);
     }
 
-    public ResponseEntity<Void> eliminarLista(Long idUser, String nombreLista){
+    public void eliminarLista(Long idUser, String nombreLista){
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombreLista)
                 .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
 
@@ -146,7 +146,6 @@ public class ListasService {
         listasContenidoRepository.save(lista);
 
         listasContenidoRepository.delete(lista);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }

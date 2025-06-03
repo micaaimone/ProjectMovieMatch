@@ -47,26 +47,26 @@ public class UsuarioService {
     public UsuarioDTO findById(long id){
         return usuarioRepository.findById(id)
                 .map(usuarioMapper::convertToDTO)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
     }
 
     public UsuarioDTO findByUsername(String username){
         return usuarioRepository.findByUsername(username)
                 .map(usuarioMapper::convertToDTO)
-                .orElseThrow(/*excepcion personalizada*/);
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
     }
 
     //no hay que borrar, hay q hacer baja logica (activo =false)
     public void deleteById(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new UsuarioNoEncontradoException(id);
+            throw new UsuarioNoEncontradoException("Usuario no encontrado");
         }
         usuarioRepository.deleteById(id);
     }
 
     public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity nuevosDatos) {
         UsuarioEntity existente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         existente.setNombre(nuevosDatos.getNombre());
         existente.setEmail(nuevosDatos.getEmail());
@@ -77,7 +77,7 @@ public class UsuarioService {
     //se puede ahorrar mandar el boolean
     public void cambiarEstadoUsuario(Long id, boolean activo) {
         UsuarioEntity usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException(id));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         usuario.setActivo(activo);
         usuarioRepository.save(usuario);
@@ -147,8 +147,7 @@ public class UsuarioService {
 
 
         if (page.getContent().isEmpty()) {
-//            throw new UsuarioNoEncontradoException("No se encontraron contenidos con los filtros especificados.");
-            System.out.println("errorrrrr, falta tirar exception correcta");
+            throw new UsuarioNoEncontradoException("Usuario no encontrado");
         }
 
         return page.map(usuarioMapper::convertToDTO);
