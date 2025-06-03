@@ -17,6 +17,7 @@ public class UsuarioModificarDTO {
     @Size(min = 10, max = 15, message = "El teléfono debe tener entre 10 y 15 caracteres")
     private String telefono;
 
+    @Pattern(regexp = "^(?!\\d+$).+", message = "No puede ser solo números")
     @Length(min = 4, message = "El username debe tener un minimo de 4 caracteres")
     private String username;
 
