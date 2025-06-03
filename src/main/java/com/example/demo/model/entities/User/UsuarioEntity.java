@@ -8,8 +8,8 @@ import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
-import org.hibernate.validator.constraints.Email;
 
 
 @Getter
