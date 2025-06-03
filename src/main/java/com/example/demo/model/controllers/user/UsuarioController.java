@@ -1,13 +1,14 @@
 package com.example.demo.model.controllers.user;
 
+import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
+import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,17 +24,11 @@ public class UsuarioController {
 
 
     @PostMapping("/registrar")
-    public ResponseEntity<Void> agregarUsuario(@RequestBody UsuarioEntity u) {
+    public ResponseEntity<String> agregarUsuario(@Valid @RequestBody NewUsuarioDTO u) {
         usuarioService.save(u);
-        /*return ResponseEntity.status(HttpStatus.CREATED).body(usuarioGuardado)*/
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.ok("Usuario creado con exito.");
     }
 
-    @DeleteMapping("/eliminar/{id}")
-    public ResponseEntity<String> eliminarUsuario(@PathVariable Long id) {
-        usuarioService.deleteById(id);
-        return ResponseEntity.ok("Usuario eliminado con éxito.");
-    }
 
     //deberia hacerlo el specific
     @GetMapping("/ver/{id}")
@@ -42,9 +37,9 @@ public class UsuarioController {
     }
 
     @PutMapping("/actualizar/{id}")
-    public ResponseEntity<UsuarioEntity> actualizarUsuario(@PathVariable Long id, @RequestBody UsuarioEntity usuarioActualizado) {
-        UsuarioEntity actualizado = usuarioService.actualizarUsuario(id, usuarioActualizado);
-        return ResponseEntity.ok(actualizado);
+    public ResponseEntity<String > actualizarUsuario(@PathVariable Long id, @Valid @RequestBody UsuarioModificarDTO usuarioActualizado) {
+        usuarioService.actualizarUsuario(id, usuarioActualizado);
+        return ResponseEntity.ok("Usuario actualizado correctamente");
     }
 
     @PatchMapping("/reactivar/{id}")

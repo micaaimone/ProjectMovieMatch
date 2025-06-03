@@ -1,8 +1,9 @@
 package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
@@ -57,6 +58,21 @@ public class UsuarioMapper{
         }
         return dto;
     }
+
+    public UsuarioEntity convertToNewEntity(NewUsuarioDTO usuarioDTO)
+    {
+        return UsuarioEntity.builder()
+                .edad(usuarioDTO.getEdad())
+                .email(usuarioDTO.getEmail())
+                .apellido(usuarioDTO.getApellido())
+                .nombre(usuarioDTO.getNombre())
+                .telefono(usuarioDTO.getTelefono())
+                .username(usuarioDTO.getUsername())
+                .contrasenia(usuarioDTO.getContrasenia())
+                .activo(true)
+                .build();
+    }
+
 
     public UsuarioEntity convertToEntity(UsuarioDTO usuarioDTO) {
         return modelMapper.map(usuarioDTO, UsuarioEntity.class);

@@ -1,9 +1,13 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
+import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.user.UsuarioMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
@@ -24,10 +28,9 @@ public class UsuarioService {
     private final ContenidoRepository contenidoRepository;
 
 
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository /*ContenidoService contenidoService*/) {
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
-        //this.contenidoService = contenidoService;
         this.contenidoRepository = contenidoRepository;
     }
 
@@ -36,10 +39,17 @@ public class UsuarioService {
                 .map(usuarioMapper::convertToDTO);
     }
 
-    public void save(UsuarioEntity usuario) {
-//        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-//            throw new UsuarioYaExisteException(usuario.getEmail());
-//        }
+    public void save(NewUsuarioDTO usuarioDTO) {
+        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+            throw new UsuarioYaExisteException("No se encontro un usuario con el email especificado");
+        }
+
+        if(usuarioRepository.existsByUsername(usuarioDTO.getUsername())) {
+            throw new UsuarioYaExisteException("No se encontro un usuario con el username especificado");
+        }
+
+        UsuarioEntity usuario = usuarioMapper.convertToNewEntity(usuarioDTO);
+
         usuarioRepository.save(usuario);
 
     }
@@ -47,37 +57,44 @@ public class UsuarioService {
     public UsuarioDTO findById(long id){
         return usuarioRepository.findById(id)
                 .map(usuarioMapper::convertToDTO)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + id));
     }
 
     public UsuarioDTO findByUsername(String username){
         return usuarioRepository.findByUsername(username)
                 .map(usuarioMapper::convertToDTO)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encuentra un usuario con el username: " + username));
     }
 
-    //no hay que borrar, hay q hacer baja logica (activo =false)
-    public void deleteById(Long id) {
-        if (!usuarioRepository.existsById(id)) {
-            throw new UsuarioNoEncontradoException("Usuario no encontrado");
-        }
-        usuarioRepository.deleteById(id);
-    }
 
-    public UsuarioEntity actualizarUsuario(Long id, UsuarioEntity nuevosDatos) {
+    public void actualizarUsuario(Long id, UsuarioModificarDTO nuevosDatos) {
         UsuarioEntity existente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el username: " + nuevosDatos.getUsername() ));
 
-        existente.setNombre(nuevosDatos.getNombre());
-        existente.setEmail(nuevosDatos.getEmail());
+        if (nuevosDatos.getEmail() != null) {
+            existente.setEmail(nuevosDatos.getEmail());
+        }
 
-        return usuarioRepository.save(existente);
+        if (nuevosDatos.getTelefono() != null) {
+            existente.setTelefono(nuevosDatos.getTelefono());
+        }
+
+        if (nuevosDatos.getUsername() != null) {
+            existente.setUsername(nuevosDatos.getUsername());
+        }
+
+        if (nuevosDatos.getContrasenia() != null) {
+            existente.setContrasenia(nuevosDatos.getContrasenia());
+        }
+
+        usuarioRepository.save(existente);
     }
+
 
     //se puede ahorrar mandar el boolean
     public void cambiarEstadoUsuario(Long id, boolean activo) {
         UsuarioEntity usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + id));
 
         usuario.setActivo(activo);
         usuarioRepository.save(usuario);
@@ -91,7 +108,7 @@ public class UsuarioService {
     public UsuarioDTO getUsuarioDTO(Long id) {
         return usuarioRepository.findById(id)
                 .map(usuarioMapper::convertToDTO)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + id));
 
     }
 
@@ -104,9 +121,9 @@ public class UsuarioService {
     // agregar findById, por eso está comentado
     public void darLike(Long idUsuario, Long idContenido){
         UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));
         ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+                .orElseThrow(()->new ContenidoNotFound("Contenido no encontrado con el id: " + idContenido));
 
         usuarioEntity.getLikes().add(contenidoEntity);
         usuarioRepository.save(usuarioEntity);
@@ -114,10 +131,9 @@ public class UsuarioService {
 
     public void quitarLike(Long idUsuario, Long idContenido){
         UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        // agregar find by id
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));
         ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new RuntimeException("Contenido no encontrado"));
+                .orElseThrow(()->new ContenidoNotFound("Contenido no encontrado con el id: " + idContenido));
 
         usuarioEntity.getLikes().remove(contenidoEntity);
         usuarioRepository.save(usuarioEntity);
@@ -147,7 +163,7 @@ public class UsuarioService {
 
 
         if (page.getContent().isEmpty()) {
-            throw new UsuarioNoEncontradoException("Usuario no encontrado");
+            throw new UsuarioNoEncontradoException("No se encontraron contenidos con los filtros especificados.");
         }
 
         return page.map(usuarioMapper::convertToDTO);

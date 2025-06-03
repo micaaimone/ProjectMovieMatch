@@ -1,9 +1,8 @@
 package com.example.demo.model.DTOs.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.User.CredencialEntity;
-import com.example.demo.model.entities.User.ListasContenidoEntity;
 import lombok.*;
 
 

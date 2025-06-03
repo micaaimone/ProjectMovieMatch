@@ -40,7 +40,7 @@ public class UsuarioEntity {
     private int edad;
 
     @Column
-    private long telefono;
+    private String telefono;
 
     @Column(nullable = false, length = 30)
     private String contrasenia;

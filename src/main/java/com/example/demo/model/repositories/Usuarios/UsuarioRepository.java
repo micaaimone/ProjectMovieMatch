@@ -21,6 +21,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>, J
      Page<UsuarioEntity> findByEdadGreaterThan(Long edad, Pageable pageable);
 
      Optional<UsuarioEntity> findByUsername(String username);
+    boolean existsByUsername(String username);
      boolean existsByEmail(String email);
     Optional<UsuarioEntity> findByEmail(String email);
 
