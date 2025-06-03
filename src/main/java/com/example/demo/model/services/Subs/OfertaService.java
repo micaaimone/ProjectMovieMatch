@@ -2,6 +2,10 @@ package com.example.demo.model.services.Subs;
 
 import com.example.demo.model.DTOs.subs.OfertaDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
+import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
+import com.example.demo.model.entities.subs.TipoSuscripcion;
+import com.example.demo.model.exceptions.SuscripcionException.OfertaNotFoundException;
+import com.example.demo.model.exceptions.SuscripcionException.PlanNotFoundException;
 import com.example.demo.model.mappers.Subs.OfertaMapper;
 import com.example.demo.model.repositories.Subs.OfertaRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
@@ -25,24 +29,21 @@ public class OfertaService {
         this.planRepository = planRepository;
     }
 
-    public ResponseEntity<Void> CrearOferta( String descripcion, float desc, Long idPlan) {
-        OfertaEntity oferta = new OfertaEntity();
-        oferta.setDescripcion(descripcion);
-        oferta.setDescuento(desc);
+    public void CrearOferta(OfertaDTO ofertaDTO, TipoSuscripcion tipoSuscripcion) {
+        PlanSuscripcionEntity plan = planRepository.findByTipo(tipoSuscripcion).
+                orElseThrow(() -> new PlanNotFoundException("Plan no encontrado"));
+        OfertaEntity oferta = ofertaMapper.convertToEntity(ofertaDTO);
         oferta.setFecha_inicio(LocalDate.now());
         oferta.setFecha_fin(LocalDate.now().plusMonths(1));
-        oferta.setPlan(planRepository.findById(idPlan).
-                orElseThrow(() -> new ResourceNotFoundException("Plan no encontrado")));
+        oferta.setPlan(plan);
         ofertaRepository.save(oferta);
-        return ResponseEntity.ok().build();
     }
 
-    public ResponseEntity<Void> renovarOferta(Long id) {
+    public void renovarOferta(Long id) {
         OfertaEntity oferta = ofertaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Oferta no encontrada"));
+                .orElseThrow(() -> new OfertaNotFoundException("Oferta no encontrada"));
         oferta.setFecha_fin(oferta.getFecha_fin().plusMonths(1));
         ofertaRepository.save(oferta);
-        return ResponseEntity.ok().build();
     }
 
     public Page<OfertaDTO> findAll(Pageable pageable) {

@@ -12,10 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface PlanRepository extends JpaRepository<PlanSuscripcionEntity, Long> {
-    @Modifying
-    @Query("UPDATE PlanSuscripcionEntity p SET p.precio = :precio WHERE p.id = :id")
-    void actualizarPrecio(@Param("id") Long id , @Param("precio") float precio);
-
     @Query("select o from PlanSuscripcionEntity o where o.tipo = :tipo")
     Optional<PlanSuscripcionEntity> findByTipo(@Param("tipo") TipoSuscripcion tipo);
 

@@ -3,6 +3,8 @@ package com.example.demo.model.services.Subs;
 import com.example.demo.model.DTOs.subs.PlanDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
+import com.example.demo.model.entities.subs.TipoSuscripcion;
+import com.example.demo.model.exceptions.SuscripcionException.PlanNotFoundException;
 import com.example.demo.model.mappers.Subs.PlanMapper;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import org.springframework.data.domain.Page;
@@ -37,8 +39,12 @@ public class PlanService {
                 .findFirst();
     }
 
-    public void cambiarMontoPlan(float montoNuevo, Long id){
-        planRepository.actualizarPrecio(id, montoNuevo);
+    public void cambiarMontoPlan(TipoSuscripcion tipo, float montoNuevo){
+        PlanSuscripcionEntity plan = planRepository.findByTipo(tipo)
+                .orElseThrow(() -> new PlanNotFoundException("Plan no encontrado"));
+
+        plan.setPrecio(montoNuevo);
+        planRepository.save(plan);
     }
 
     public float precioFinal (float monto, float desc){

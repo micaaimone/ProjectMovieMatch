@@ -17,20 +17,7 @@ public class MPController {
 
     @PostMapping("/notification")
     public ResponseEntity <Void> recibirNoti(@RequestBody Map<String, Object> body){
-        try {
-            if ("payment".equals(body.get("type"))) {
-                Map<String, Object> data = (Map<String, Object>) body.get("data");
-                if (data != null && data.get("id") != null) {
-                    Long paymentId = Long.valueOf(data.get("id").toString());
-                    mpService.procesarPago(paymentId);
-                }
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-
+        mpService.recibirPago(body);
         return ResponseEntity.ok().build();
     }
 

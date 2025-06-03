@@ -1,5 +1,9 @@
 package com.example.demo.model.DTOs.user;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Getter
@@ -8,6 +12,9 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class ListasSinContDTO {
+    @NotBlank(message = "la lista debe tener nombre")
+    @Pattern(regexp = "^(?!\\d+$).+", message = "No puede ser solo números")
     private String nombre;
-    private boolean privado;
+    @NotNull(message = "Se debe elegir tipo de privacidad")
+    private Boolean privado;
 }

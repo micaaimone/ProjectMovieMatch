@@ -7,8 +7,9 @@ import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
-import com.example.demo.model.exceptions.ContenidoYaAgregado;
-import com.example.demo.model.exceptions.ListaNotFound;
+import com.example.demo.model.exceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.ListAlreadyExistsException;
+import com.example.demo.model.exceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
@@ -20,8 +21,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class ListasService {
@@ -41,6 +40,10 @@ public class ListasService {
     public ResponseEntity<ListasContenidoEntity> addLista(Long idUser, ListasSinContDTO list) {
         UsuarioEntity usuario = usuarioRepository.findById(idUser)
                 .orElseThrow(() -> new UsuarioNoEncontradoException(idUser));
+
+        if(listasContenidoRepository.findByNombre(idUser, list.getNombre()).isPresent()){
+            throw new ListAlreadyExistsException("Lista ya existe");
+        }
 
         ListasContenidoEntity lista = listasMapper.convertToEntitySC(list);
         lista.setUsuario(usuario);
@@ -64,7 +67,7 @@ public class ListasService {
         if (!lista.getContenidos().contains(contenido)) {
             lista.getContenidos().add(contenido);
         }else{
-            throw new ContenidoYaAgregado("Contenido existente en la lista");
+            throw new ContenidoYaAgregadoException("Contenido existente en la lista");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
@@ -116,7 +119,7 @@ public class ListasService {
         if(newnombre != null) {
 
             ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombre)
-                            .orElseThrow(() -> new ListaNotFound("Lista no encontrada"));
+                            .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
 
             lista.setNombre(newnombre);
             return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
@@ -128,7 +131,7 @@ public class ListasService {
 
     public ResponseEntity<ListasContenidoEntity> cambiarPrivado(Long idUsuario, String nombre, boolean privado) {
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUsuario, nombre)
-                        .orElseThrow(()-> new ListaNotFound("Lista no encontrada"));
+                        .orElseThrow(()-> new ListaNotFoundException("Lista no encontrada"));
 
         lista.setPrivado(privado);
         return ResponseEntity.status(HttpStatus.OK).body(listasContenidoRepository.save(lista));
@@ -136,8 +139,11 @@ public class ListasService {
 
     public ResponseEntity<Void> eliminarLista(Long idUser, String nombreLista){
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombreLista)
-                .orElseThrow(() -> new ListaNotFound("Lista no encontrada"));
+                .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
 
+        //eliminamos de la bdd la tabla intermedia
+        lista.getContenidos().clear();
+        listasContenidoRepository.save(lista);
 
         listasContenidoRepository.delete(lista);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

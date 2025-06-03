@@ -1,7 +1,9 @@
 package com.example.demo.model.controllers.Subs;
 
 import com.example.demo.model.DTOs.subs.OfertaDTO;
+import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.services.Subs.OfertaService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,16 +19,16 @@ public class OfertaController {
         this.ofertaService = ofertaService;
     }
 
-    @PostMapping("/crear")
-    public ResponseEntity<Void> crear(@RequestParam String descripcion, @RequestParam float desc, @RequestParam Long id) {
-        ofertaService.CrearOferta(descripcion, desc, id);
-    return ResponseEntity.ok().build();
+    @PostMapping("/crear/{tipoPlan}")
+    public ResponseEntity<String> crear(@Valid @RequestBody OfertaDTO ofertaDTO, @PathVariable("tipoPlan") TipoSuscripcion tipoPlan) {
+        ofertaService.CrearOferta(ofertaDTO, tipoPlan);
+        return ResponseEntity.ok("Oferta creada correctamente");
     }
 
-    @PostMapping("/renovar/{id}")
-    public ResponseEntity<Void> renovar(@PathVariable Long id) {
+    @PatchMapping("/renovar/{id}")
+    public ResponseEntity<String> renovar(@PathVariable Long id) {
         ofertaService.renovarOferta(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok("Oferta renovada con exito");
     }
 
     @GetMapping("/verTodas")

@@ -4,6 +4,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarAdminDTO;
 import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.User.CredencialEntity;
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import lombok.*;
 
 
@@ -22,4 +23,5 @@ public class UsuarioDTO {
     //  private SuscripcionEntity suscripcion;
     private List<ContenidoMostrarAdminDTO> likes;
     private List<ReseniaMostrarUsuarioDTO> reseñas;
+    private List<ListaContenidoDTO> listas;
 }

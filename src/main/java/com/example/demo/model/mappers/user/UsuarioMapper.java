@@ -5,6 +5,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoMostrarAdminDTO;
 import com.example.demo.model.DTOs.ReseniaDTO;
 import com.example.demo.model.DTOs.ReseniaModificarDTO;
 import com.example.demo.model.DTOs.ReseniaMostrarUsuarioDTO;
+import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
@@ -22,12 +23,14 @@ public class UsuarioMapper{
     private final ModelMapper modelMapper;
     private final ReseniaMapper reseñaMapper;
     private final ContenidoMapper contenidoMapper;
+    private final ListasMapper listasMapper;
 
 
-    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper, ContenidoMapper contenidoMapper) {
+    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper) {
         this.modelMapper = modelMapper;
         this.reseñaMapper = reseñaMapper;
         this.contenidoMapper = contenidoMapper;
+        this.listasMapper = listasMapper;
     }
 
     public UsuarioDTO convertToDTO(UsuarioEntity usuarioEntity) {
@@ -49,6 +52,14 @@ public class UsuarioMapper{
                     .map(reseñaMapper::convertToDTOUsuario)
                     .toList();
             dto.setReseñas(reseñasDTO);
+        }
+
+        if(usuarioEntity.getListas() != null){
+            List<ListaContenidoDTO> listaDTO = usuarioEntity.getListas()
+                    .stream()
+                    .map(listasMapper::convertToDTO)
+                    .toList();
+            dto.setListas(listaDTO);
         }
         return dto;
     }

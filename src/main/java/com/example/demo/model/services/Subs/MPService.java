@@ -3,10 +3,7 @@ package com.example.demo.model.services.Subs;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.payment.PaymentClient;
-import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
-import com.mercadopago.client.preference.PreferenceClient;
-import com.mercadopago.client.preference.PreferenceItemRequest;
-import com.mercadopago.client.preference.PreferenceRequest;
+import com.mercadopago.client.preference.*;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import com.mercadopago.resources.payment.Payment;
@@ -27,7 +24,6 @@ public class MPService {
     private final PagoService pagoService;
 
 
-
     public MPService(RestTemplate restTemplate, SuscripcionService suscripcionService, PagoService pagoService) {
         this.restTemplate = restTemplate;
         this.suscripcionService = suscripcionService;
@@ -36,39 +32,65 @@ public class MPService {
 
 
     public String crearPreferencia(SuscripcionEntity sub) throws MPException, MPApiException {
-        String ngrokUrl = "https://52bb-2803-9800-9995-6e65-70d1-1a7f-3fb8-a29a.ngrok-free.app";
+        String ngrokUrl = "https://859e-2803-9800-9995-6e65-c4b9-3187-984a-ed8f.ngrok-free.app";
+        //el monto en la api de mp es bigDecimal
         BigDecimal pf = BigDecimal.valueOf(sub.getMonto());
 
-                MercadoPagoConfig.setAccessToken(MERCADOPAGO_ACCESS_TOKEN);
-                PreferenceClient preferenceClient = new PreferenceClient();
+        MercadoPagoConfig.setAccessToken(MERCADOPAGO_ACCESS_TOKEN);
+        PreferenceClient preferenceClient = new PreferenceClient();
 
-                PreferenceItemRequest itemRequest =
-                        PreferenceItemRequest.builder()
-                                .id(UUID.randomUUID().toString())
-                                .title(sub.getPlan().getTipo().name())
-                                .quantity(1)
-                                .unitPrice(pf)
-                                .currencyId("ARS")
-                                .build();
-                List<PreferenceItemRequest> items = new ArrayList<>();
-                items.add(itemRequest);
+        //el item es como la estructura del pago(descripcion, cantidad, precio)
+        PreferenceItemRequest itemRequest =
+                PreferenceItemRequest.builder()
+                        .id(UUID.randomUUID().toString())
+                        .title(sub.getPlan().getTipo().name())
+                        .quantity(1)
+                        .unitPrice(pf)
+                        .currencyId("ARS")
+                        .build();
+        List<PreferenceItemRequest> items = new ArrayList<>();
+        items.add(itemRequest);
 
-                PreferenceRequest preferenceRequest = PreferenceRequest.builder()
-                        .backUrls(
-                                PreferenceBackUrlsRequest.builder()
-                                        .success(ngrokUrl + "/mp/success")
-                                        .failure(ngrokUrl + "/mp/failure")
-                                        .pending(ngrokUrl + "/mp/pending")
-                                        .build())
-                        .items(items)
-                        .notificationUrl(ngrokUrl + "/mp/notification")
-                        .externalReference(String.valueOf(sub.getId_suscripcion()))
+        //aca guardamos informacion del comprador para enviarle mail
+        PreferencePayerRequest payer =
+                PreferencePayerRequest.builder()
+                        .email(sub.getUsuario().getEmail())
+                        .name(sub.getUsuario().getNombre())
                         .build();
 
-                Preference preference = preferenceClient.create(preferenceRequest);
+        //creamos la backURL y agregamos las estructuras hechas al request
+        PreferenceRequest preferenceRequest = PreferenceRequest.builder()
+                .backUrls(
+                        PreferenceBackUrlsRequest.builder()
+                                .success(ngrokUrl + "/mp/success")
+                                .failure(ngrokUrl + "/mp/failure")
+                                .pending(ngrokUrl + "/mp/pending")
+                                .build())
+                .payer(payer)
+                .items(items)
+                .notificationUrl(ngrokUrl + "/mp/notification")
+                .externalReference(String.valueOf(sub.getId_suscripcion()))
+                .build();
 
-                return preference.getInitPoint();
+        Preference preference = preferenceClient.create(preferenceRequest);
 
+        return preference.getInitPoint();
+
+    }
+
+    //recibimos el body de mp al realizar el pago
+    public void recibirPago( Map<String, Object> body){
+        try {
+            if ("payment".equals(body.get("type"))) {
+                Map<String, Object> data = (Map<String, Object>) body.get("data");
+                if (data != null && data.get("id") != null) {
+                    Long paymentId = Long.valueOf(data.get("id").toString());
+                    procesarPago(paymentId);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void procesarPago(Long id){
@@ -76,23 +98,19 @@ public class MPService {
             PaymentClient paymentClient = new PaymentClient();
             Payment payment = paymentClient.get(id);
 
+            //datos del comprador para enviar mail
+            String mail = payment.getPayer().getEmail();
+            String nombre = payment.getPayer().getFirstName();
+
             //si el status de pago es aprobado activamos la sub y guardamos la info del pago
             if("approved".equals(payment.getStatus())){
                 BigDecimal monto = payment.getTransactionAmount();
                 Long idSub = Long.valueOf(payment.getExternalReference());
                 suscripcionService.activarSuscripion(idSub);
                 SuscripcionEntity sub = suscripcionService.findByIdEntity(idSub);
-
+                //agregar metodo de mail
                 pagoService.anadirPago(sub, monto);
 
-                /*posible idea para hacerlo mas especifico
-                switch (payment.getStatus()) {
-                case "approved":
-                    break;
-                case "pending":
-                    break;
-                case "rejected":
-                    break;  */
             }
         } catch (MPException e) {
             throw new RuntimeException(e);
