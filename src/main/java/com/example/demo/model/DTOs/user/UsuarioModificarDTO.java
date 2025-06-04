@@ -1,5 +1,6 @@
 package com.example.demo.model.DTOs.user;
 
+import com.example.demo.model.enums.Genero;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -27,5 +28,5 @@ public class UsuarioModificarDTO {
     private String contrasenia;
 
     @Size(min = 1, max = 3, message = "Debes elegir minimo 1 genero y maximo 3")
-    private Set<String> generos;
+    private Set<Genero> generos;
 }

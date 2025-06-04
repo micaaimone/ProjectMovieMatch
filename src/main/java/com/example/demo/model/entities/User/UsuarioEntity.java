@@ -2,12 +2,11 @@ package com.example.demo.model.entities.User;
 
 
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 
-import com.example.demo.model.Genero;
+import com.example.demo.model.enums.Genero;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
@@ -57,7 +56,7 @@ public class UsuarioEntity {
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<String> generos;
+    private Set<Genero> generos;
 
 
     @ManyToOne

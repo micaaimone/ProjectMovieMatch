@@ -2,6 +2,7 @@ package com.example.demo.model.DTOs.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
+import com.example.demo.model.enums.Genero;
 import com.example.demo.model.entities.User.CredencialEntity;
 import lombok.*;
 
@@ -23,5 +24,5 @@ public class UsuarioDTO {
     private List<ContenidoMostrarDTO> likes;
     private List<ReseniaMostrarUsuarioDTO> reseñas;
     private List<ListaContenidoDTO> listas;
-    private Set<String> generos;
+    private Set<Genero> generos;
 }

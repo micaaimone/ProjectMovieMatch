@@ -41,12 +41,13 @@ public class UsuarioService {
 
     public void save(NewUsuarioDTO usuarioDTO) {
         if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new UsuarioYaExisteException("No se encontro un usuario con el email especificado");
+            throw new UsuarioYaExisteException("Ya existe un usuario con el email especificado");
         }
 
         if(usuarioRepository.existsByUsername(usuarioDTO.getUsername())) {
-            throw new UsuarioYaExisteException("No se encontro un usuario con el username especificado");
+            throw new UsuarioYaExisteException("Ya existe un usuario con el username especificado");
         }
+
 
         UsuarioEntity usuario = usuarioMapper.convertToNewEntity(usuarioDTO);
 

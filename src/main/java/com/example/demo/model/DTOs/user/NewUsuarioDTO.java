@@ -1,7 +1,7 @@
 package com.example.demo.model.DTOs.user;
 
 
-import jakarta.persistence.Column;
+import com.example.demo.model.enums.Genero;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -43,6 +43,6 @@ public class NewUsuarioDTO {
 
     @NotNull(message = "Debe elegir al menos dos generos")
     @Size(min = 1, max = 3, message = "Debes elegir minimo 1 genero y maximo 3")
-    private Set<String> generos;
+    private Set<Genero> generos;
 
 }
