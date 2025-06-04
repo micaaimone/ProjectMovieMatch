@@ -87,6 +87,10 @@ public class UsuarioService {
             existente.setContrasenia(nuevosDatos.getContrasenia());
         }
 
+        if (nuevosDatos.getGeneros() != null) {
+            existente.setGeneros(nuevosDatos.getGeneros());
+        }
+
         usuarioRepository.save(existente);
     }
 
@@ -118,7 +122,6 @@ public class UsuarioService {
     }
 
 
-    // agregar findById, por eso está comentado
     public void darLike(Long idUsuario, Long idContenido){
         UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));

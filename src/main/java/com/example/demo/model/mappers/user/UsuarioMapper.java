@@ -70,6 +70,7 @@ public class UsuarioMapper{
                 .username(usuarioDTO.getUsername())
                 .contrasenia(usuarioDTO.getContrasenia())
                 .activo(true)
+                .generos(usuarioDTO.getGeneros())
                 .build();
     }
 

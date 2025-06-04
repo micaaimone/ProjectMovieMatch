@@ -7,6 +7,7 @@ import lombok.*;
 
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,4 +23,5 @@ public class UsuarioDTO {
     private List<ContenidoMostrarDTO> likes;
     private List<ReseniaMostrarUsuarioDTO> reseñas;
     private List<ListaContenidoDTO> listas;
+    private Set<String> generos;
 }

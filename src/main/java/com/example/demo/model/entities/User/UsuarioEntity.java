@@ -1,9 +1,13 @@
 package com.example.demo.model.entities.User;
 
 
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+
+import com.example.demo.model.Genero;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
@@ -50,6 +54,11 @@ public class UsuarioEntity {
 
     @Column(nullable = false)
     private Boolean activo = true;
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private Set<String> generos;
+
 
     @ManyToOne
     @JoinColumn(name = "id_credencial", referencedColumnName = "id")
