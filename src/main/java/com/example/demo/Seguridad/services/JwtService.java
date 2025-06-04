@@ -35,13 +35,18 @@ public class JwtService{
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (Exception e) {
+            throw new RuntimeException("Token inválido o malformado", e);
+        }
     }
+
     public boolean isTokenValid(String token, UserDetails userDetails)
     {
         final String username = extractUsername(token);

@@ -34,7 +34,7 @@ public class ContenidoController {
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
+//todo agregar el shcema  agregarle a cada de respuestas, documentar los dto request decription example
     @GetMapping
     public ResponseEntity<Page<ContenidoDTO>> all(
             @RequestParam(required = false) String genero,

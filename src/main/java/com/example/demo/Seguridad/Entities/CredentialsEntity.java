@@ -25,7 +25,7 @@ public class CredentialsEntity implements UserDetails {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String email;
+    private String email;///USERNAME
 
     @Column(nullable = false)
     private String password;

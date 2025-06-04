@@ -46,15 +46,15 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain (HttpSecurity http) throws
             Exception {
         http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth").permitAll()
-                        .requestMatchers("/api/").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/auth").permitAll()
                         .requestMatchers(HttpMethod.GET, "/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
+                        .requestMatchers("/api/").hasAnyRole("USER", "ADMIN", "PREMIUM")
                         .requestMatchers(
-                                "/swagger-ui/",
-                                "/v3/api-docs/",
-                                "/swagger-resources/",
-                                "/webjars/"
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-resources/**",
+                                "/webjars/**"
                         ).permitAll()
                         .anyRequest().authenticated())
                 .cors(Customizer.withDefaults())

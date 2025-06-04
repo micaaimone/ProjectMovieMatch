@@ -1,7 +1,8 @@
 package com.example.demo.model.DTOs;
 
+import com.example.demo.Seguridad.repositories.CredentialsRepository;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.CredencialEntity;
+//import com.example.demo.model.entities.CredencialEntity;
 import lombok.*;
 
 
@@ -15,7 +16,7 @@ import java.util.Set;
 public class UsuarioDTO {
     private String username;
     private String email;
-    private CredencialEntity credencial;
+    private CredentialsRepository credencial;
     //  private SuscripcionEntity suscripcion;
     private Set<ContenidoEntity> likes;
 }

@@ -63,7 +63,6 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException(id));
 
         existente.setNombre(nuevosDatos.getNombre());
-        existente.setEmail(nuevosDatos.getEmail());
 
         return usuarioRepository.save(existente);
     }

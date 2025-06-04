@@ -4,6 +4,7 @@ package com.example.demo.model.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.Email;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -29,9 +31,7 @@ public class UsuarioEntity {
     @Column
     private String apellido;
 
-    @Email
-    @Column
-    private String email;
+
 
     @Column
     private int edad;
@@ -39,8 +39,7 @@ public class UsuarioEntity {
     @Column
     private long telefono;
 
-    @Column(nullable = false, length = 30)
-    private String contrasenia;
+
 
     @Column(name = "username", unique = true)
     private String username;
@@ -48,9 +47,8 @@ public class UsuarioEntity {
     @Column(nullable = false)
     private boolean activo = true;
 
-    @ManyToOne
-    @JoinColumn(name = "id_credencial", referencedColumnName = "id")
-    private CredencialEntity credencial;
+    @OneToOne(mappedBy = "usuario")
+    private CredentialsEntity credencial;
 
 //    @OneToOne
 //    @JoinColumn(name = "id_suscripcion")

@@ -1,27 +1,33 @@
 package com.example.demo.model.config;
 
+import com.example.demo.Seguridad.Entities.CredentialsEntity;
+import com.example.demo.Seguridad.Entities.RoleEntity;
+import com.example.demo.Seguridad.Enum.Role;
+import com.example.demo.Seguridad.repositories.CredentialsRepository;
+import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
-import com.example.demo.model.entities.CredencialEntity;
+
+import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
-import com.example.demo.model.enums.E_Cargo;
+
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import com.example.demo.model.repositories.Contenido.RatingRepository;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
-import com.example.demo.model.repositories.Usuarios.CredencialRepository;
+
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
+import java.util.*;
 
 @Configuration
 public class StarterDatabase {
@@ -32,11 +38,14 @@ public class StarterDatabase {
     private final SerieRepository serieRepository;
     private final PlanRepository planRepository;
     private final SuscripcionRepository suscripcionRepository;
-    private final CredencialRepository credencialRepository;
+    private final CredentialsRepository credencialRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UsuarioRepository usuarioRepository;
 
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository) {
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredentialsRepository credencialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
@@ -44,6 +53,9 @@ public class StarterDatabase {
         this.planRepository = planRepository;
         this.suscripcionRepository = suscripcionRepository;
         this.credencialRepository = credencialRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioRepository = usuarioRepository;
     }
 
     // Listas de títulos de prueba
@@ -81,7 +93,50 @@ public class StarterDatabase {
         traerSeriesAPI();
         initPlan();
         validarSubs();
+        //initRoles();
         initCredenciales();
+        initUsers();
+
+    }
+
+    public void initUsers() {
+        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername("lautaM");
+
+        UsuarioEntity usuario;
+
+        if (usuarioOptional.isPresent()) {
+            usuario = usuarioOptional.get();
+        } else {
+            usuario = UsuarioEntity.builder()
+                    .nombre("Lautaro")
+                    .apellido("Martínez")
+                    .edad(28)
+                    .telefono(1123456789L)
+                    .username("lautaM")
+                    .activo(true)
+                    .build();
+
+            usuario = usuarioRepository.save(usuario);
+        }
+
+        RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
+                .orElseThrow(()-> new EntityNotFoundException("Rol inexsistente" +Role.ROLE_ADMIN));
+        HashSet<RoleEntity>roleEntities = new HashSet<>();
+        roleEntities.add(roleEntity);
+        // Verificamos si ya tiene credencial
+        if (usuario.getCredencial() == null) {
+            CredentialsEntity credentialsEntity = CredentialsEntity.builder()
+                    .email("rama@gmail.com")
+                    .password(passwordEncoder.encode("123456"))
+                    .usuario(usuario)
+                    .roles(roleEntities)
+                    .build();
+
+            credentialsEntity = credencialRepository.save(credentialsEntity);
+
+            usuario.setCredencial(credentialsEntity);
+            usuarioRepository.save(usuario);
+        }
 
     }
 
@@ -93,17 +148,32 @@ public class StarterDatabase {
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000, null));
         }
     }
+/*
+    public void initRoles() {
+        if (roleRepository.findByRole(Role.ROLE_ADMIN).isEmpty()) {
+            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_ADMIN));
+        }
+        if (roleRepository.findByRole(Role.ROLE_PREMIUM).isEmpty()) {
+            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_PREMIUM));
+        }
+        if (roleRepository.findByRole(Role.ROLE_USER).isEmpty()) {
+            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_USER));
+        }
+    }
+*/
 
     public void initCredenciales() {
-        if (!credencialRepository.existsById(1L)) {
-            credencialRepository.save(new CredencialEntity(1L, E_Cargo.ADMIN));
-        }
-        if (!credencialRepository.existsById(2L)) {
-            credencialRepository.save(new CredencialEntity(2L, E_Cargo.USUARIO_PREMIUM));
-        }
-        if (!credencialRepository.existsById(3L)) {
-            credencialRepository.save(new CredencialEntity(3L, E_Cargo.USUARIO));
-        }
+        createRoleIfNotExists(Role.ROLE_ADMIN);
+        createRoleIfNotExists(Role.ROLE_PREMIUM);
+        createRoleIfNotExists(Role.ROLE_USER);
+    }
+
+    private RoleEntity createRoleIfNotExists(Role role) {
+        return roleRepository.findByRole(role).orElseGet(() -> {
+            RoleEntity newRole = new RoleEntity();
+            newRole.setRole(role);
+            return roleRepository.save(newRole);
+        });
     }
 
     public void validarSubs(){
@@ -232,3 +302,178 @@ public class StarterDatabase {
     }
 
 }
+ /*
+        UsuarioEntity usuario = UsuarioEntity.builder()
+                .nombre("Lautaro")
+                .apellido("Martínez")
+                .edad(28)
+                .telefono(1123456789L)
+                .username("lautaM")
+                .activo(true)
+                .build();
+
+        usuario = usuarioRepository.save(usuario);
+        CredentialsEntity credentialsEntity = CredentialsEntity.builder()
+                .email("rama@gmail.com")
+                .password(passwordEncoder.encode("123456"))
+                .usuario(usuario)
+                .build();
+
+        credentialsEntity = credencialRepository.save(credentialsEntity);
+
+        usuario.setCredencial(credentialsEntity);
+        usuarioRepository.save(usuario);
+        /*
+        if (usuarioRepository.count() == 0) {
+            usuarioRepository.saveAll(List.of(
+                    UsuarioEntity.builder()
+                            .nombre("Lautaro")
+                            .apellido("Martínez")
+                            .email("lautaro@example.com")
+                            .edad(28)
+                            .telefono(1123456789L)
+                            .contrasenia("1234")
+                            .username("lautaM")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Sofía")
+                            .apellido("González")
+                            .email("sofia@example.com")
+                            .edad(24)
+                            .telefono(1167891234L)
+                            .contrasenia("abcd")
+                            .username("sofiG")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Martín")
+                            .apellido("Pérez")
+                            .email("martin@example.com")
+                            .edad(35)
+                            .telefono(1134567890L)
+                            .contrasenia("pass123")
+                            .username("martinP")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Camila")
+                            .apellido("López")
+                            .email("camila@example.com")
+                            .edad(22)
+                            .telefono(1198765432L)
+                            .contrasenia("qwerty")
+                            .username("camiL")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Nicolás")
+                            .apellido("Díaz")
+                            .email("nico@example.com")
+                            .edad(30)
+                            .telefono(1187654321L)
+                            .contrasenia("nico123")
+                            .username("nikoD")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Valentina")
+                            .apellido("Torres")
+                            .email("valen@example.com")
+                            .edad(27)
+                            .telefono(1176543210L)
+                            .contrasenia("valenpass")
+                            .username("valenT")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Julián")
+                            .apellido("Ramírez")
+                            .email("julian@example.com")
+                            .edad(33)
+                            .telefono(1156781234L)
+                            .contrasenia("julianpass")
+                            .username("juliR")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Florencia")
+                            .apellido("Castro")
+                            .email("flor@example.com")
+                            .edad(26)
+                            .telefono(1199998888L)
+                            .contrasenia("florcita")
+                            .username("florC")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Diego")
+                            .apellido("Morales")
+                            .email("diego@example.com")
+                            .edad(40)
+                            .telefono(1177776666L)
+                            .contrasenia("diego40")
+                            .username("diegoM")
+                            .activo(true)
+                            .build(),
+
+                    UsuarioEntity.builder()
+                            .nombre("Agustina")
+                            .apellido("Fernández")
+                            .email("agus@example.com")
+                            .edad(29)
+                            .telefono(1144443333L)
+                            .contrasenia("agus29")
+                            .username("agusF")
+                            .activo(true)
+                            .build()
+            ));
+        }*//*
+    public void initCredenciales() {
+        // Agarra RoleEntity desde la base de datos
+        com.example.demo.Seguridad.Entities.RoleEntity adminRole = roleRepository.findByRole(Role.ROLE_ADMIN)
+                .orElseThrow(() -> new IllegalStateException("Role ADMIN not found. Ensure roles are initialized."));
+        com.example.demo.Seguridad.Entities.RoleEntity premiumRole = roleRepository.findByRole(Role.ROLE_PREMIUM)
+                .orElseThrow(() -> new IllegalStateException("Role PREMIUM not found. Ensure roles are initialized."));
+        com.example.demo.Seguridad.Entities.RoleEntity userRole = roleRepository.findByRole(Role.ROLE_USER)
+                .orElseThrow(() -> new IllegalStateException("Role USER not found. Ensure roles are initialized."));
+
+        // Inicializar credencial de administrador
+        if (credencialRepository.findByEmail("admin@example.com").isEmpty()) {
+            CredentialsEntity adminCredential = CredentialsEntity.builder()
+                    .email("admin@example.com")
+                    .password(passwordEncoder.encode("admin123"))
+                    .roles(Set.of(adminRole))
+                    .build();
+            credencialRepository.save(adminCredential);
+        }
+
+        // Inicializar credencial premium
+        if (credencialRepository.findByEmail("premium@example.com").isEmpty()) {
+            CredentialsEntity premiumCredential = CredentialsEntity.builder()
+                    .email("premium@example.com")
+                    .password(passwordEncoder.encode("premium456"))
+                    .roles(Set.of(premiumRole))
+                    .build();
+            credencialRepository.save(premiumCredential);
+        }
+
+        // Inicializar credencial de usuario estándar
+        if (credencialRepository.findByEmail("user@example.com").isEmpty()) {
+            CredentialsEntity userCredential = CredentialsEntity.builder()
+                    .email("user@example.com")
+                    .password(passwordEncoder.encode("user789"))
+                    .roles(Set.of(userRole))
+                    .build();
+            credencialRepository.save(userCredential);
+        }
+    }
+*/
