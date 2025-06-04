@@ -1,9 +1,11 @@
 package com.example.demo.model.controllers.user;
 
+import com.example.demo.model.DTOs.MailDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.services.Email.EmailService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -15,11 +17,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
-
     private final UsuarioService usuarioService;
+    private final EmailService emailService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, EmailService emailService) {
         this.usuarioService = usuarioService;
+        this.emailService = emailService;
     }
 
 
@@ -98,6 +101,24 @@ public class UsuarioController {
         Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, false, pageable);
 
         return ResponseEntity.ok(resultado);
+    }
+
+    //mail---------------------------------
+    //recibimos un mail de queja de un usuario
+    @PostMapping("/{idUser}/soporte")
+    public ResponseEntity<String> soporteUsuario(@PathVariable Long idUser, @Valid @RequestBody MailDTO mailDTO) {
+
+        usuarioService.soporte(idUser, mailDTO);
+
+        return ResponseEntity.ok("Mail enviado al soporte");
+    }
+
+    //esto iria aca??????????
+    //enviamos a todos los usuarios activos un mail de aviso de x cosa
+    @PostMapping("/{idAdmin}/anuncio")
+    public ResponseEntity<String> anuncioUsuario(@PathVariable Long idAdmin, @Valid @RequestBody MailDTO mailDTO) {
+        emailService.SendMailToAll(mailDTO);
+        return ResponseEntity.ok("Anuncio enviado a los usuarios");
     }
 
 }

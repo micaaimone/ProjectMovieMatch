@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Subs;
 
+import com.example.demo.model.DTOs.MailDTO;
 import com.example.demo.model.DTOs.subs.OfertaDTO;
 import com.example.demo.model.entities.subs.OfertaEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
@@ -9,6 +10,7 @@ import com.example.demo.model.exceptions.SuscripcionException.PlanNotFoundExcept
 import com.example.demo.model.mappers.Subs.OfertaMapper;
 import com.example.demo.model.repositories.Subs.OfertaRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
+import com.example.demo.model.services.Email.EmailService;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,11 +24,13 @@ public class OfertaService {
     private final OfertaRepository ofertaRepository;
     private final OfertaMapper ofertaMapper;
     private final PlanRepository planRepository;
+    private final EmailService emailService;
 
-    public OfertaService(OfertaRepository ofertaRepository, OfertaMapper ofertaMapper, PlanRepository planRepository) {
+    public OfertaService(OfertaRepository ofertaRepository, OfertaMapper ofertaMapper, PlanRepository planRepository, EmailService emailService) {
         this.ofertaRepository = ofertaRepository;
         this.ofertaMapper = ofertaMapper;
         this.planRepository = planRepository;
+        this.emailService = emailService;
     }
 
     public void CrearOferta(OfertaDTO ofertaDTO, TipoSuscripcion tipoSuscripcion) {
@@ -37,6 +41,8 @@ public class OfertaService {
         oferta.setFecha_fin(LocalDate.now().plusMonths(1));
         oferta.setPlan(plan);
         ofertaRepository.save(oferta);
+        // enviamos mail
+        avisarOferta(oferta);
     }
 
     public void renovarOferta(Long id) {
@@ -54,5 +60,17 @@ public class OfertaService {
         return ofertaRepository.findActivos(LocalDate.now(), pageable).map(ofertaMapper::convertToDTO);
     }
 
+
+    //notificar a usuarios que hay ofertas
+    public void avisarOferta(OfertaEntity oferta) {
+        MailDTO dto = MailDTO.builder()
+                .subject("Nuevas Ofertas!")
+                .mensaje("Buenas tardes usuarios, tenemos sorpresa" +
+                        "Una nueva oferta para el plan "+ oferta.getPlan() +
+                        "Esperamos que la disfruten. \n Atte: Movie-Match")
+                .build();
+        emailService.SendMailToAll(dto);
+
+    }
 
 }

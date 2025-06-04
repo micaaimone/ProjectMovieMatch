@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.DTOs.MailDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
@@ -12,6 +13,8 @@ import com.example.demo.model.mappers.user.UsuarioMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.Specifications.UsuarioSpecification;
+import com.example.demo.model.services.Email.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -26,12 +29,14 @@ public class UsuarioService {
     private final UsuarioMapper usuarioMapper;
     private final UsuarioRepository usuarioRepository;
     private final ContenidoRepository contenidoRepository;
+    private final EmailService emailService;
 
 
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository) {
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, EmailService emailService) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
+        this.emailService = emailService;
     }
 
     public Page<UsuarioDTO> findAll(Pageable pageable){
@@ -151,7 +156,7 @@ public class UsuarioService {
     }
 
 
-    public Page<UsuarioDTO> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
+    public Page<UsuarioDTO> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable) {
         Specification<UsuarioEntity> spec = Specification
                 .where(UsuarioSpecification.nombre(nombre))
                 .and(UsuarioSpecification.apellido(apellido))
@@ -160,13 +165,23 @@ public class UsuarioService {
                 .and(UsuarioSpecification.activo(activo));
 
         Page<UsuarioEntity> page = usuarioRepository.findAll(spec, pageable);
-
-
         if (page.getContent().isEmpty()) {
             throw new UsuarioNoEncontradoException("No se encontraron contenidos con los filtros especificados.");
         }
-
         return page.map(usuarioMapper::convertToDTO);
+    }
+
+    //mail de soporte-----------------------------------------------
+    public void soporte(Long idUser, MailDTO mailDTO) {
+        UsuarioEntity user = usuarioRepository.findById(idUser)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUser));
+
+        try {
+            emailService.recibirEmail(mailDTO, user.getNombre(), user.getEmail());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 

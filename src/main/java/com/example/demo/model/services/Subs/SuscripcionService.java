@@ -14,12 +14,15 @@ import com.example.demo.model.mappers.Subs.SuscripcionMapper;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
+import com.example.demo.model.services.Email.EmailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,15 +33,16 @@ public class SuscripcionService {
     private final UsuarioRepository usuarioRepository;
     private final PlanService planService;
     private final SuscripcionMapper suscripcionMapper;
+    private final EmailService emailService;
 
 
-    public SuscripcionService(SuscripcionRepository suscripcionRepository, PlanRepository planRepository,UsuarioRepository usuarioRepository, PlanService planService, SuscripcionMapper suscripcionMapper) {
+    public SuscripcionService(SuscripcionRepository suscripcionRepository, PlanRepository planRepository, UsuarioRepository usuarioRepository, PlanService planService, SuscripcionMapper suscripcionMapper, EmailService emailService) {
         this.suscripcionRepository = suscripcionRepository;
         this.planRepository = planRepository;
         this.usuarioRepository = usuarioRepository;
         this.planService = planService;
         this.suscripcionMapper = suscripcionMapper;
-
+        this.emailService = emailService;
     }
 
     //mostrar todos
@@ -66,7 +70,7 @@ public class SuscripcionService {
         UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
                 .orElseThrow(()-> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
-        if(usuario.getSuscripcion()==null){
+        if(usuario.getSuscripcion() != null){
             throw new SubAlreadyExistException("Este usuario ya cuenta con suscripcion");
         }
 

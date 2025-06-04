@@ -9,7 +9,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
+@ToString(exclude = "plan")
 
 @Entity
 @Table(name = "plan_suscripcion")
@@ -33,4 +34,5 @@ public class PlanSuscripcionEntity {
         this.precio = precio;
         this.ofertas = ofertas;
     }
+
 }

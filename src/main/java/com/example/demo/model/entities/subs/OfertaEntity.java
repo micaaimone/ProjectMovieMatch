@@ -28,4 +28,5 @@ public class OfertaEntity {
     @JoinColumn(name = "plan_id")
     private PlanSuscripcionEntity plan;
 
+
 }

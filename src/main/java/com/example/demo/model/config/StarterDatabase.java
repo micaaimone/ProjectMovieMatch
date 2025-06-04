@@ -8,6 +8,7 @@ import com.example.demo.model.entities.User.CredencialEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
+import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.enums.E_Cargo;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
@@ -20,8 +21,10 @@ import com.example.demo.model.repositories.Subs.SuscripcionRepository;
 import com.example.demo.model.repositories.Usuarios.CredencialRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
+import com.example.demo.model.services.Email.EmailService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,10 +46,13 @@ public class StarterDatabase {
     private final UsuarioRepository usuarioRepository;
     private final ReseniaRepository reseñaRepository;
     private final ContenidoRepository contenidoRepository;
+    private final EmailService emailService;
 
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository, ContenidoRepository contenidoRepository) {
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository,
+                           CredencialRepository credencialRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository,
+                           ContenidoRepository contenidoRepository, EmailService emailService) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
@@ -57,6 +63,7 @@ public class StarterDatabase {
         this.usuarioRepository = usuarioRepository;
         this.reseñaRepository = reseñaRepository;
         this.contenidoRepository = contenidoRepository;
+        this.emailService = emailService;
     }
 
     // Listas de títulos de prueba
@@ -104,8 +111,8 @@ public class StarterDatabase {
             usuarioRepository.saveAll(List.of(
                     UsuarioEntity.builder()
                             .nombre("Lautaro")
-                            .apellido("Martínez")
-                            .email("lautaro@example.com")
+                            .apellido("araya")
+                            .email("lau9araya@gmail.com")
                             .edad(28)
                             .telefono("1123456789L")
                             .contrasenia("1234")
@@ -265,9 +272,6 @@ public class StarterDatabase {
         }
     }
 
-
-
-
     public void initPlan(){
         if (planRepository.count() == 0) {
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000, null));
@@ -413,6 +417,21 @@ public class StarterDatabase {
     public boolean checkSerieBDD(String imdbId) {
         return serieRepository.findAll().stream()
                 .anyMatch(s -> s.getImdbId().equals(imdbId));
+    }
+
+
+    //tendria que crear una clase de tareas diarias???????
+    //todos los dias a las 12pm
+    @Scheduled(cron = "0 0 12 * *  ?")
+    public void avisarVencimiento(){
+
+        String msj = "Buenas Tardes, le comunicamos que su suscripcion a Movie-Match esta proxima a vencer, si quiere seguir disfrutando del premiun, recuerte renovar";
+        String subject = "Suscripcion proxima a vencer";
+
+        List<SuscripcionEntity> userVencimiento = suscripcionRepository.porVencer(LocalDate.now().plusDays(5));
+
+        userVencimiento.forEach(suscripcion -> emailService.sendEmail(suscripcion.getUsuario().getEmail(), subject, msj));
+
     }
 
 
