@@ -18,12 +18,15 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>, JpaSpecificationExecutor<UsuarioEntity> {
 
-     Page<UsuarioEntity> findByEdadGreaterThan(Long edad, Pageable pageable);
+    Page<UsuarioEntity> findByEdadGreaterThan(Long edad, Pageable pageable);
 
-     Optional<UsuarioEntity> findByUsername(String username);
-    boolean existsByUsername(String username);
-     boolean existsByEmail(String email);
+    Optional<UsuarioEntity> findByUsername(String username);
+
     Optional<UsuarioEntity> findByEmail(String email);
+
+    boolean existsByUsername(String username);
+
+    boolean existsByEmail(String email);
 
     @Query("SELECT u.likes FROM UsuarioEntity u JOIN u.likes WHERE u.id = :usuarioId")
     Page<ContenidoEntity> findLikes(@Param("usuarioId")Long usuarioId, Pageable pageable);
