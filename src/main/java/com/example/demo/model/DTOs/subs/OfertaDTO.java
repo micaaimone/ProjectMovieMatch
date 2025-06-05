@@ -3,8 +3,6 @@ package com.example.demo.model.DTOs.subs;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
 @AllArgsConstructor

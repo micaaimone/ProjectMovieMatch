@@ -1,6 +1,5 @@
 package com.example.demo.model.DTOs;
 
-import com.example.demo.model.enums.EstadoSolicitud;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 

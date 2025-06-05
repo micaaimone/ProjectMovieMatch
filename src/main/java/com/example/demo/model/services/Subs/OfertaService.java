@@ -9,10 +9,8 @@ import com.example.demo.model.exceptions.SuscripcionException.PlanNotFoundExcept
 import com.example.demo.model.mappers.Subs.OfertaMapper;
 import com.example.demo.model.repositories.Subs.OfertaRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

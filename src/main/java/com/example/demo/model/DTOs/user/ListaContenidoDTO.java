@@ -1,7 +1,6 @@
 package com.example.demo.model.DTOs.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import lombok.*;
 
 import java.util.List;

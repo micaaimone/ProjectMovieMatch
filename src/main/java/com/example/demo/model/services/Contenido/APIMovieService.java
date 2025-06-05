@@ -1,7 +1,5 @@
 package com.example.demo.model.services.Contenido;
 
-
-
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;

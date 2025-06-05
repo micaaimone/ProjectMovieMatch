@@ -13,7 +13,6 @@ import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Contenido.ReseniaRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
