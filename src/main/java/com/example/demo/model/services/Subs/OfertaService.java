@@ -66,7 +66,8 @@ public class OfertaService {
         MailDTO dto = MailDTO.builder()
                 .subject("Nuevas Ofertas!")
                 .mensaje("Buenas tardes usuarios, tenemos sorpresa" +
-                        "Una nueva oferta para el plan "+ oferta.getPlan() +
+                        "Una nueva oferta para el plan "+ oferta.getPlan().getTipo() +
+                        " de un "+ oferta.getDescuento() + "% de descuento \n" +
                         "Esperamos que la disfruten. \n Atte: Movie-Match")
                 .build();
         emailService.SendMailToAll(dto);

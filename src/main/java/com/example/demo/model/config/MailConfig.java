@@ -34,7 +34,7 @@ public class MailConfig {
         //ciframos la comunicacion
         props.put("mail.smtp.starttls.enable", "true");
         //una vez que acaben las pruebas desactivar(es para mostrar en consola los estados)
-        props.put("mail.debug", "true");
+        props.put("mail.debug", "false");
 
         return mailSender;
     }

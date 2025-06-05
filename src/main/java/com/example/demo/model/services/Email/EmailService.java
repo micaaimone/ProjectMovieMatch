@@ -1,7 +1,6 @@
 package com.example.demo.model.services.Email;
 
 import com.example.demo.model.DTOs.MailDTO;
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import jakarta.mail.MessagingException;

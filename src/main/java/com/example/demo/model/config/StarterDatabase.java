@@ -121,9 +121,9 @@ public class StarterDatabase {
                             .build(),
 
                     UsuarioEntity.builder()
-                            .nombre("Sofía")
-                            .apellido("González")
-                            .email("sofia@example.com")
+                            .nombre("Micaela")
+                            .apellido("Aimone")
+                            .email("mica.aimone@gmail.com")
                             .edad(24)
                             .telefono("1167891234L")
                             .contrasenia("abcd")
