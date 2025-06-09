@@ -14,8 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 
 
 @RestController
@@ -45,14 +45,17 @@ public class SuscripcionController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Suscripción creada exitosamente"),
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content)
-    })
+    }
+    )
 
+    @PreAuthorize("hasAuthority('SUSCRIPCION_CREAR')")
     @PostMapping("/{idUser}/crear")
     public ResponseEntity<String> crearSuscripcion(@PathVariable("idUser") Long idUsuario, @RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
-       String init = mpService.crearPreferencia(suscripcionService.save(idUsuario, tipo));
+        String init = mpService.crearPreferencia(suscripcionService.save(idUsuario, tipo));
 
         return ResponseEntity.ok(init);
     }
+
 
     @PatchMapping("/renovar")
     @Operation(
@@ -64,6 +67,7 @@ public class SuscripcionController {
             @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
     })
 
+    @PreAuthorize("hasAuthority('SUSCRIPCION_RENOVAR')")
     @PostMapping("/renovar")
     public ResponseEntity<String> renovarSuscripcion(@RequestParam Long idUsuario) throws MPException, MPApiException {
         String init = mpService.crearPreferencia(suscripcionService.renovar(idUsuario));
@@ -78,8 +82,9 @@ public class SuscripcionController {
             @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
     })
 
+    @PreAuthorize("hasAuthority('SUSCRIPCION_VER_TODAS')")
     @GetMapping("/mostrarTodos")
-    public Page<SuscripcionDTO> mostrarSuscripciones(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+    public Page<SuscripcionDTO> mostrarSuscripciones(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return suscripcionService.findAll(pageable);
 
@@ -93,8 +98,9 @@ public class SuscripcionController {
             @ApiResponse(responseCode = "200", description = "Listado de activas obtenido correctamente")
     })
 
+    @PreAuthorize("hasAuthority('SUSCRIPCION_VER_ACTIVAS')")
     @GetMapping("/mostrarActivos")
-    public Page<SuscripcionDTO> mostrarActivos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+    public Page<SuscripcionDTO> mostrarActivos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return suscripcionService.mostrarActivos(pageable);
     }
@@ -108,8 +114,9 @@ public class SuscripcionController {
             @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
     })
 
+    @PreAuthorize("hasAuthority('SUSCRIPCION_VER_POR_ID')")
     @GetMapping("/mostrar/{id}")
-    public ResponseEntity<SuscripcionDTO> mostrarSuscripcion(@PathVariable Long id){
+    public ResponseEntity<SuscripcionDTO> mostrarSuscripcion(@PathVariable Long id) {
         return ResponseEntity.ok(suscripcionService.findById(id));
     }
 

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -31,6 +32,8 @@ public class OfertaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Oferta creada correctamente")
     })
+
+    @PreAuthorize("hasAuthority('OFERTA_CREAR')")
     @PostMapping("/crear/{tipoPlan}")
     public ResponseEntity<String> crear(
             @Valid @RequestBody OfertaDTO ofertaDTO,
@@ -47,6 +50,8 @@ public class OfertaController {
             @ApiResponse(responseCode = "200", description = "Oferta renovada exitosamente"),
             @ApiResponse(responseCode = "404", description = "Oferta no encontrada", content = @Content)
     })
+
+    @PreAuthorize("hasAuthority('OFERTA_RENOVAR')")
     @PatchMapping("/renovar/{id}")
     public ResponseEntity<String> renovar(@PathVariable Long id) {
         ofertaService.renovarOferta(id);
@@ -60,6 +65,8 @@ public class OfertaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de ofertas")
     })
+
+    @PreAuthorize("hasAuthority('OFERTA_VER_TODAS')")
     @GetMapping("/verTodas")
     public ResponseEntity<Page<OfertaDTO>> findAll(
             @RequestParam(defaultValue = "0") int page,
@@ -75,6 +82,8 @@ public class OfertaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de ofertas activas")
     })
+
+    @PreAuthorize("hasAuthority('OFERTA_VER_ACTIVAS')")
     @GetMapping("/verActivas")
     public ResponseEntity<Page<OfertaDTO>> findActivos(
             @RequestParam(defaultValue = "0") int page,

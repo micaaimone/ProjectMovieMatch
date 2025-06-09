@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -33,7 +34,8 @@ public class SerieController {
             @ApiResponse(responseCode = "400", description = "Parámetros de entrada inválidos", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor", content = @Content)
     })
-
+    // 🔐 SOLO LECTURA, ACCESIBLE PARA TODOS LOS ROLES
+    @PreAuthorize("hasAuthority('SERIES_READ')")
     @GetMapping
     public ResponseEntity<Page<SerieDTO>> allSeriesActivas(
             @RequestParam(required = false) String genero,

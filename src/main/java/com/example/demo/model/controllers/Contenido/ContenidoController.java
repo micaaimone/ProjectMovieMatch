@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -32,7 +33,10 @@ public class ContenidoController {
             @ApiResponse(responseCode = "200", description = "Lista de contenidos obtenida correctamente"),
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    })
+    }
+    )
+
+    @PreAuthorize("hasAuthority('VER_CONTENIDO_ACTIVO')")
     @GetMapping
     public ResponseEntity<Page<ContenidoDTO>> allActivos(
             @RequestParam(required = false) String genero,
@@ -48,6 +52,7 @@ public class ContenidoController {
         return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, true, clasificacion, id));
     }
 
+    @PreAuthorize("hasAuthority('VER_CONTENIDO_BAJA')")
     @GetMapping("/bajados")
     public ResponseEntity<Page<ContenidoDTO>> allDesactivados(
             @RequestParam(required = false) String genero,
@@ -74,6 +79,8 @@ public class ContenidoController {
             @ApiResponse(responseCode = "400", description = "ID inválido proporcionado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+
+    @PreAuthorize("hasAuthority('ACTIVAR_CONTENIDO')")
     @PatchMapping("/{id}/activar")
     public ResponseEntity<String> darDeAlta(@PathVariable Long id) {
         contenidoService.darDeAltaContenido(id);
@@ -90,8 +97,10 @@ public class ContenidoController {
             @ApiResponse(responseCode = "400", description = "ID inválido proporcionado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+
+    @PreAuthorize("hasAuthority('DESACTIVAR_CONTENIDO')")
     @PatchMapping("/{id}/desactivar")
-    public ResponseEntity<String> borrarContenido(@PathVariable long id){
+    public ResponseEntity<String> borrarContenido(@PathVariable long id) {
         contenidoService.darDeBajaContenido(id);
         return ResponseEntity.ok("Contenido eliminado correctamente.");
     }

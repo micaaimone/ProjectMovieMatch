@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,8 +28,10 @@ public class PagoController {
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado paginado de pagos")
-    })
+    }
+    )
 
+    @PreAuthorize("hasAuthority('PAGO_VER_TODOS')")
     @GetMapping("/mostrarTodos")
     public Page<PagoDTO> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -44,6 +47,7 @@ public class PagoController {
             @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
     })
 
+    @PreAuthorize("hasAuthority('PAGO_VER_POR_SUSCRIPCION')")
     @GetMapping("/mostrarXsub/{id}")
     public Page<PagoDTO> findBySubId(@PathVariable Long id, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size);
@@ -59,6 +63,7 @@ public class PagoController {
             @ApiResponse(responseCode = "404", description = "Pago no encontrado", content = @Content)
     })
 
+    @PreAuthorize("hasAuthority('PAGO_VER_POR_ID')")
     @GetMapping("/mostrar/{id}")
     public ResponseEntity<PagoDTO> findById(@PathVariable Long id){
         return ResponseEntity.ok(pagoService.findById(id));

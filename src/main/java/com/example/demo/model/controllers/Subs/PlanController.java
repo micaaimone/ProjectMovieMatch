@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +28,8 @@ public class PlanController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado paginado de planes")
     })
+
+    @PreAuthorize("hasAuthority('PLAN_VER')")
     @GetMapping("/ver")
     public Page<PlanDTO> mostrarPlanes(@RequestParam(defaultValue = "0") int page,
                                        @RequestParam(defaultValue = "5") int size) {
@@ -40,6 +43,8 @@ public class PlanController {
             @ApiResponse(responseCode = "200", description = "Monto actualizado correctamente"),
             @ApiResponse(responseCode = "404", description = "Plan no encontrado", content = @Content)
     })
+
+    @PreAuthorize("hasAuthority('PLAN_EDITAR')")
     @PatchMapping("/{tipoPlan}/cambiarPrecio")
     public ResponseEntity<String> actualizarPlan(@PathVariable("tipoPlan") TipoSuscripcion tipoPlan,
                                                  @RequestParam float precio) {

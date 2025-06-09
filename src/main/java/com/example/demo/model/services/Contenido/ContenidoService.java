@@ -34,7 +34,7 @@ public class ContenidoService {
                 .and(ContenidoSpecification.anio(anio))
                 .and(ContenidoSpecification.tituloParecido(titulo))
                 .and(ContenidoSpecification.puntuacion(puntuacion))
-                .and(ContenidoSpecification.estado(activo))
+                .and(ContenidoSpecification.activo(activo))
                 .and(ContenidoSpecification.clasificacion(clasificacion))
                 .and(ContenidoSpecification.id(id));
 
