@@ -1,16 +1,24 @@
 package com.example.demo.model.config;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.Seguridad.Entities.CredentialsEntity;
+import com.example.demo.Seguridad.Entities.RoleEntity;
+import com.example.demo.Seguridad.Enum.Role;
+import com.example.demo.Seguridad.repositories.CredentialsRepository;
+import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
 import com.example.demo.model.entities.User.CredencialEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
+
+import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.enums.E_Cargo;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
+
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
 import com.example.demo.model.repositories.Contenido.RatingRepository;
 import com.example.demo.model.repositories.Contenido.SerieRepository;
@@ -19,9 +27,13 @@ import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
 import com.example.demo.model.repositories.Usuarios.CredencialRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
+
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,6 +41,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.*;
 
 @Configuration
 public class StarterDatabase {
@@ -39,6 +52,10 @@ public class StarterDatabase {
     private final SerieRepository serieRepository;
     private final PlanRepository planRepository;
     private final SuscripcionRepository suscripcionRepository;
+    private final CredentialsRepository credencialRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UsuarioRepository usuarioRepository;
     private final CredencialRepository credencialRepository;
     private final UsuarioRepository usuarioRepository;
     private final ReseniaRepository reseñaRepository;
@@ -46,6 +63,7 @@ public class StarterDatabase {
 
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
+                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredentialsRepository credencialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository) {
                            SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository, ContenidoRepository contenidoRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
@@ -54,6 +72,9 @@ public class StarterDatabase {
         this.planRepository = planRepository;
         this.suscripcionRepository = suscripcionRepository;
         this.credencialRepository = credencialRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioRepository = usuarioRepository;
         this.usuarioRepository = usuarioRepository;
         this.reseñaRepository = reseñaRepository;
         this.contenidoRepository = contenidoRepository;
@@ -94,6 +115,7 @@ public class StarterDatabase {
         traerSeriesAPI();
         initPlan();
         validarSubs();
+        //initRoles();
         initCredenciales();
         initUsers();
         initReseñas();
@@ -220,6 +242,48 @@ public class StarterDatabase {
 
             List<UsuarioEntity> usuarios = usuarioRepository.findAll();
             List<ContenidoEntity> contenidos = contenidoRepository.findAll();
+        initUsers();
+
+    }
+
+    public void initUsers() {
+        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername("lautaM");
+
+        UsuarioEntity usuario;
+
+        if (usuarioOptional.isPresent()) {
+            usuario = usuarioOptional.get();
+        } else {
+            usuario = UsuarioEntity.builder()
+                    .nombre("Lautaro")
+                    .apellido("Martínez")
+                    .edad(28)
+                    .telefono(1123456789L)
+                    .username("lautaM")
+                    .activo(true)
+                    .build();
+
+            usuario = usuarioRepository.save(usuario);
+        }
+
+        RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
+                .orElseThrow(()-> new EntityNotFoundException("Rol inexsistente" +Role.ROLE_ADMIN));
+        HashSet<RoleEntity>roleEntities = new HashSet<>();
+        roleEntities.add(roleEntity);
+        // Verificamos si ya tiene credencial
+        if (usuario.getCredencial() == null) {
+            CredentialsEntity credentialsEntity = CredentialsEntity.builder()
+                    .email("rama@gmail.com")
+                    .password(passwordEncoder.encode("123456"))
+                    .usuario(usuario)
+                    .roles(roleEntities)
+                    .build();
+
+            credentialsEntity = credencialRepository.save(credentialsEntity);
+
+            usuario.setCredencial(credentialsEntity);
+            usuarioRepository.save(usuario);
+        }
 
             reseñaRepository.saveAll(List.of(
                     ReseniaEntity.builder()
@@ -266,8 +330,6 @@ public class StarterDatabase {
     }
 
 
-
-
     public void initPlan(){
         if (planRepository.count() == 0) {
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000, null));
@@ -275,17 +337,32 @@ public class StarterDatabase {
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000, null));
         }
     }
+/*
+    public void initRoles() {
+        if (roleRepository.findByRole(Role.ROLE_ADMIN).isEmpty()) {
+            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_ADMIN));
+        }
+        if (roleRepository.findByRole(Role.ROLE_PREMIUM).isEmpty()) {
+            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_PREMIUM));
+        }
+        if (roleRepository.findByRole(Role.ROLE_USER).isEmpty()) {
+            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_USER));
+        }
+    }
+*/
 
     public void initCredenciales() {
-        if (!credencialRepository.existsById(1L)) {
-            credencialRepository.save(new CredencialEntity(1L, E_Cargo.ADMIN));
-        }
-        if (!credencialRepository.existsById(2L)) {
-            credencialRepository.save(new CredencialEntity(2L, E_Cargo.USUARIO_PREMIUM));
-        }
-        if (!credencialRepository.existsById(3L)) {
-            credencialRepository.save(new CredencialEntity(3L, E_Cargo.USUARIO));
-        }
+        createRoleIfNotExists(Role.ROLE_ADMIN);
+        createRoleIfNotExists(Role.ROLE_PREMIUM);
+        createRoleIfNotExists(Role.ROLE_USER);
+    }
+
+    private RoleEntity createRoleIfNotExists(Role role) {
+        return roleRepository.findByRole(role).orElseGet(() -> {
+            RoleEntity newRole = new RoleEntity();
+            newRole.setRole(role);
+            return roleRepository.save(newRole);
+        });
     }
 
     public void validarSubs(){
@@ -414,7 +491,5 @@ public class StarterDatabase {
         return serieRepository.findAll().stream()
                 .anyMatch(s -> s.getImdbId().equals(imdbId));
     }
-
-
 
 }

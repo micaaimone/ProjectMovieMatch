@@ -1,9 +1,12 @@
 package com.example.demo.model.config;
 
+
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.Objects;
 
 @Configuration
 public class EnvironmentConfig {
@@ -21,6 +24,8 @@ public class EnvironmentConfig {
 
         String port = dotenv.get("PORT");
         System.out.println("Puerto: " + port);
+
+        System.setProperty("jwt.secret", Objects.requireNonNull(dotenv.get("JWT_SECRET")));
 
     }
 

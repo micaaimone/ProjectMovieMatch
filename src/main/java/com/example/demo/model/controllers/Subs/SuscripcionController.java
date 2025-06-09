@@ -6,6 +6,10 @@ import com.example.demo.model.services.Subs.MPService;
 import com.example.demo.model.services.Subs.SuscripcionService;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -34,6 +38,14 @@ public class SuscripcionController {
                                 ↓
     llamamos a gestion pago donde terminamos de armar la sub del paso 1 y enviamos el mail de confirmacion del pago
     */
+    @Operation(
+            summary = "Crear una suscripción",
+            description = "Crea una nueva suscripción para el usuario especificado y devuelve la URL de inicio del pago."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suscripción creada exitosamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content)
+    })
 
     @PostMapping("/{idUser}/crear")
     public ResponseEntity<String> crearSuscripcion(@PathVariable("idUser") Long idUsuario, @RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
@@ -43,10 +55,28 @@ public class SuscripcionController {
     }
 
     @PatchMapping("/renovar")
+    @Operation(
+            summary = "Renovar una suscripción",
+            description = "Renueva la suscripción activa del usuario y devuelve la URL de inicio del pago."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suscripción renovada exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
+    })
+
+    @PostMapping("/renovar")
     public ResponseEntity<String> renovarSuscripcion(@RequestParam Long idUsuario) throws MPException, MPApiException {
         String init = mpService.crearPreferencia(suscripcionService.renovar(idUsuario));
         return ResponseEntity.ok(init);
     }
+
+    @Operation(
+            summary = "Listar todas las suscripciones",
+            description = "Devuelve una lista paginada de todas las suscripciones registradas."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    })
 
     @GetMapping("/mostrarTodos")
     public Page<SuscripcionDTO> mostrarSuscripciones(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
@@ -55,11 +85,28 @@ public class SuscripcionController {
 
     }
 
+    @Operation(
+            summary = "Listar suscripciones activas",
+            description = "Devuelve una lista paginada de suscripciones que se encuentran actualmente activas."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Listado de activas obtenido correctamente")
+    })
+
     @GetMapping("/mostrarActivos")
     public Page<SuscripcionDTO> mostrarActivos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
         Pageable pageable = PageRequest.of(page, size);
         return suscripcionService.mostrarActivos(pageable);
     }
+
+    @Operation(
+            summary = "Obtener una suscripción por ID",
+            description = "Devuelve los detalles de una suscripción específica por su ID."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Suscripción encontrada"),
+            @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
+    })
 
     @GetMapping("/mostrar/{id}")
     public ResponseEntity<SuscripcionDTO> mostrarSuscripcion(@PathVariable Long id){

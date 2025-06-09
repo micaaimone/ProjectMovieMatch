@@ -2,6 +2,9 @@ package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.services.Contenido.PeliculaService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,16 @@ public class PeliculaController {
     public PeliculaController(PeliculaService peliculaService) {
         this.peliculaService = peliculaService;
     }
+
+    @Operation(
+            summary = "Obtener películas filtradas",
+            description = "Devuelve una lista paginada de películas filtradas por género, año, título, puntuación, estado, clasificación y metascore. Todos los filtros son opcionales."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de películas obtenida correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
 
     @GetMapping
     public ResponseEntity<Page<PeliculaDTO>> allPelisActivas(

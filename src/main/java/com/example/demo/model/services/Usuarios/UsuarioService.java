@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
 
-
 @Service
 public class UsuarioService {
 
@@ -89,7 +88,6 @@ public class UsuarioService {
 
         usuarioRepository.save(existente);
     }
-
 
     //se puede ahorrar mandar el boolean
     public void cambiarEstadoUsuario(Long id, boolean activo) {

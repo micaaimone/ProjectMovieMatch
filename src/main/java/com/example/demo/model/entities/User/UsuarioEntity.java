@@ -4,6 +4,7 @@ package com.example.demo.model.entities.User;
 import java.util.List;
 import java.util.Set;
 
+import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
@@ -14,6 +15,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -32,9 +34,7 @@ public class UsuarioEntity {
     @Column
     private String apellido;
 
-    @Email
-    @Column
-    private String email;
+
 
     @Column
     private int edad;
@@ -42,8 +42,7 @@ public class UsuarioEntity {
     @Column
     private String telefono;
 
-    @Column(nullable = false, length = 30)
-    private String contrasenia;
+
 
     @Column(name = "username", unique = true)
     private String username;
@@ -51,9 +50,8 @@ public class UsuarioEntity {
     @Column(nullable = false)
     private Boolean activo = true;
 
-    @ManyToOne
-    @JoinColumn(name = "id_credencial", referencedColumnName = "id")
-    private CredencialEntity credencial;
+    @OneToOne(mappedBy = "usuario")
+    private CredentialsEntity credencial;
 
     @OneToOne
     @JoinColumn(name = "id_suscripcion")
