@@ -54,7 +54,7 @@ public class MPService {
         //aca guardamos informacion del comprador para enviarle mail
         PreferencePayerRequest payer =
                 PreferencePayerRequest.builder()
-                        .email(sub.getUsuario().getEmail())
+                        //.email(sub.getUsuario().getEmail())
                         .name(sub.getUsuario().getNombre())
                         .build();
 

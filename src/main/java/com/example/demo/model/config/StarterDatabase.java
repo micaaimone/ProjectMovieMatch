@@ -1,22 +1,18 @@
 package com.example.demo.model.config;
 
+import com.example.demo.Seguridad.repositories.CredentialsRepository;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.Seguridad.Entities.RoleEntity;
 import com.example.demo.Seguridad.Enum.Role;
-import com.example.demo.Seguridad.repositories.CredentialsRepository;
 import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.RatingEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
-import com.example.demo.model.entities.User.CredencialEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
-
-import com.example.demo.model.entities.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
-import com.example.demo.model.enums.E_Cargo;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 
 import com.example.demo.model.repositories.Contenido.PeliculaRepository;
@@ -25,9 +21,6 @@ import com.example.demo.model.repositories.Contenido.SerieRepository;
 import com.example.demo.model.repositories.Contenido.ReseniaRepository;
 import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
-import com.example.demo.model.repositories.Usuarios.CredencialRepository;
-import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
-
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
 import jakarta.annotation.PostConstruct;
@@ -52,33 +45,28 @@ public class StarterDatabase {
     private final SerieRepository serieRepository;
     private final PlanRepository planRepository;
     private final SuscripcionRepository suscripcionRepository;
-    private final CredentialsRepository credencialRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final UsuarioRepository usuarioRepository;
-    private final CredencialRepository credencialRepository;
     private final UsuarioRepository usuarioRepository;
     private final ReseniaRepository reseñaRepository;
     private final ContenidoRepository contenidoRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final CredentialsRepository credentialsRepository;
 
-
-    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository,
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredentialsRepository credencialRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, UsuarioRepository usuarioRepository) {
-                           SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, CredencialRepository credencialRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository, ContenidoRepository contenidoRepository) {
+    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository, ContenidoRepository contenidoRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
         this.serieRepository = serieRepository;
         this.planRepository = planRepository;
         this.suscripcionRepository = suscripcionRepository;
-        this.credencialRepository = credencialRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.usuarioRepository = usuarioRepository;
         this.usuarioRepository = usuarioRepository;
         this.reseñaRepository = reseñaRepository;
         this.contenidoRepository = contenidoRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.credentialsRepository = credentialsRepository;
     }
+
 
     // Listas de títulos de prueba
     private final List<String> peliculas = List.of(
@@ -107,159 +95,41 @@ public class StarterDatabase {
             "House of Cards"
     );
 
+
     @PostConstruct
-    private void init()
-    {
+    private void init() {
 
         traerPeliculaAPI();
         traerSeriesAPI();
         initPlan();
         validarSubs();
-        //initRoles();
         initCredenciales();
         initUsers();
         initReseñas();
 
     }
-    public void initUsers() {
-        if (usuarioRepository.count() == 0) {
-            usuarioRepository.saveAll(List.of(
-                    UsuarioEntity.builder()
-                            .nombre("Lautaro")
-                            .apellido("Martínez")
-                            .email("lautaro@example.com")
-                            .edad(28)
-                            .telefono("1123456789L")
-                            .contrasenia("1234")
-                            .username("lautaM")
-                            .activo(true)
-                            .build(),
 
-                    UsuarioEntity.builder()
-                            .nombre("Sofía")
-                            .apellido("González")
-                            .email("sofia@example.com")
-                            .edad(24)
-                            .telefono("1167891234L")
-                            .contrasenia("abcd")
-                            .username("sofiG")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Martín")
-                            .apellido("Pérez")
-                            .email("martin@example.com")
-                            .edad(35)
-                            .telefono("1134567890L")
-                            .contrasenia("pass123")
-                            .username("martinP")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Camila")
-                            .apellido("López")
-                            .email("camila@example.com")
-                            .edad(22)
-                            .telefono("1198765432L")
-                            .contrasenia("qwerty")
-                            .username("camiL")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Nicolás")
-                            .apellido("Díaz")
-                            .email("nico@example.com")
-                            .edad(30)
-                            .telefono("1187654321L")
-                            .contrasenia("nico123")
-                            .username("nikoD")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Valentina")
-                            .apellido("Torres")
-                            .email("valen@example.com")
-                            .edad(27)
-                            .telefono("1176543210L")
-                            .contrasenia("valenpass")
-                            .username("valenT")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Julián")
-                            .apellido("Ramírez")
-                            .email("julian@example.com")
-                            .edad(33)
-                            .telefono("1156781234L")
-                            .contrasenia("julianpass")
-                            .username("juliR")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Florencia")
-                            .apellido("Castro")
-                            .email("flor@example.com")
-                            .edad(26)
-                            .telefono("1199998888L")
-                            .contrasenia("florcita")
-                            .username("florC")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Diego")
-                            .apellido("Morales")
-                            .email("diego@example.com")
-                            .edad(40)
-                            .telefono("1177776666L")
-                            .contrasenia("diego40")
-                            .username("diegoM")
-                            .activo(true)
-                            .build(),
-
-                    UsuarioEntity.builder()
-                            .nombre("Agustina")
-                            .apellido("Fernández")
-                            .email("agus@example.com")
-                            .edad(29)
-                            .telefono("1144443333L")
-                            .contrasenia("agus29")
-                            .username("agusF")
-                            .activo(true)
-                            .build()
-            ));
-        }
-    }
-
-    private void initReseñas() {
-        if (reseñaRepository.count() == 0) {
-
-            List<UsuarioEntity> usuarios = usuarioRepository.findAll();
-            List<ContenidoEntity> contenidos = contenidoRepository.findAll();
-        initUsers();
-
-    }
 
     public void initUsers() {
-        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername("lautaM");
+        crearUsuarioSiNoExiste("lautaM", "Lautaro", "Martínez", 28, "1123456789", "rama@gmail.com");
+        crearUsuarioSiNoExiste("meliR", "Melina", "Rodríguez", 25, "1123456790", "meli@gmail.com");
+        crearUsuarioSiNoExiste("tomiG", "Tomás", "Gómez", 30, "1123456791", "tomi@gmail.com");
+        crearUsuarioSiNoExiste("sofiP", "Sofía", "Pérez", 27, "1123456792", "sofi@gmail.com");
+    }
 
+    private void crearUsuarioSiNoExiste(String username, String nombre, String apellido, int edad, String telefono, String email) {
+        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername(username);
         UsuarioEntity usuario;
 
         if (usuarioOptional.isPresent()) {
             usuario = usuarioOptional.get();
         } else {
             usuario = UsuarioEntity.builder()
-                    .nombre("Lautaro")
-                    .apellido("Martínez")
-                    .edad(28)
-                    .telefono(1123456789L)
-                    .username("lautaM")
+                    .nombre(nombre)
+                    .apellido(apellido)
+                    .edad(edad)
+                    .telefono(telefono)
+                    .username(username)
                     .activo(true)
                     .build();
 
@@ -267,23 +137,72 @@ public class StarterDatabase {
         }
 
         RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
-                .orElseThrow(()-> new EntityNotFoundException("Rol inexsistente" +Role.ROLE_ADMIN));
-        HashSet<RoleEntity>roleEntities = new HashSet<>();
+                .orElseThrow(() -> new EntityNotFoundException("Rol inexistente " + Role.ROLE_ADMIN));
+        HashSet<RoleEntity> roleEntities = new HashSet<>();
         roleEntities.add(roleEntity);
-        // Verificamos si ya tiene credencial
+
         if (usuario.getCredencial() == null) {
             CredentialsEntity credentialsEntity = CredentialsEntity.builder()
-                    .email("rama@gmail.com")
+                    .email(email)
                     .password(passwordEncoder.encode("123456"))
                     .usuario(usuario)
                     .roles(roleEntities)
                     .build();
 
-            credentialsEntity = credencialRepository.save(credentialsEntity);
+            credentialsEntity = credentialsRepository.save(credentialsEntity);
 
             usuario.setCredencial(credentialsEntity);
             usuarioRepository.save(usuario);
         }
+    }
+
+
+//    public void initUsers() {
+//        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername("lautaM");
+//
+//        UsuarioEntity usuario;
+//
+//        if (usuarioOptional.isPresent()) {
+//            usuario = usuarioOptional.get();
+//        } else {
+//            usuario = UsuarioEntity.builder()
+//                    .nombre("Lautaro")
+//                    .apellido("Martínez")
+//                    .edad(28)
+//                    .telefono("1123456789")
+//                    .username("lautaM")
+//                    .activo(true)
+//                    .build();
+//
+//            usuario = usuarioRepository.save(usuario);
+//        }
+//
+//        RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
+//                .orElseThrow(() -> new EntityNotFoundException("Rol inexsistente" + Role.ROLE_ADMIN));
+//        HashSet<RoleEntity> roleEntities = new HashSet<>();
+//        roleEntities.add(roleEntity);
+//        // Verificamos si ya tiene credencial
+//        if (usuario.getCredencial() == null) {
+//            CredentialsEntity credentialsEntity = CredentialsEntity.builder()
+//                    .email("rama@gmail.com")
+//                    .password(passwordEncoder.encode("123456"))
+//                    .usuario(usuario)
+//                    .roles(roleEntities)
+//                    .build();
+//
+//            credentialsEntity = credentialsRepository.save(credentialsEntity);
+//
+//            usuario.setCredencial(credentialsEntity);
+//            usuarioRepository.save(usuario);
+//        }
+//
+//    }
+
+    private void initReseñas() {
+        if (reseñaRepository.count() == 0) {
+
+            List<UsuarioEntity> usuarios = usuarioRepository.findAll();
+            List<ContenidoEntity> contenidos = contenidoRepository.findAll();
 
             reseñaRepository.saveAll(List.of(
                     ReseniaEntity.builder()
@@ -330,26 +249,14 @@ public class StarterDatabase {
     }
 
 
-    public void initPlan(){
+    public void initPlan() {
         if (planRepository.count() == 0) {
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000, null));
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.SEMESTRAL, 15000, null));
             planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000, null));
         }
     }
-/*
-    public void initRoles() {
-        if (roleRepository.findByRole(Role.ROLE_ADMIN).isEmpty()) {
-            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_ADMIN));
-        }
-        if (roleRepository.findByRole(Role.ROLE_PREMIUM).isEmpty()) {
-            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_PREMIUM));
-        }
-        if (roleRepository.findByRole(Role.ROLE_USER).isEmpty()) {
-            roleRepository.save(new com.example.demo.Seguridad.Entities.RoleEntity(Role.ROLE_USER));
-        }
-    }
-*/
+
 
     public void initCredenciales() {
         createRoleIfNotExists(Role.ROLE_ADMIN);
@@ -365,12 +272,22 @@ public class StarterDatabase {
         });
     }
 
-    public void validarSubs(){
+    public void validarSubs() {
         suscripcionRepository.VerificarSuscripcion(LocalDate.now());
     }
 
+    private boolean checkPeliBDD(String imdbId) {
+        return peliculaRepository.findAll().stream()
+                .anyMatch(p -> p.getImdbId().equals(imdbId));
+    }
 
-    public void traerSeriesAPI(){
+    public boolean checkSerieBDD(String imdbId) {
+        return serieRepository.findAll().stream()
+                .anyMatch(s -> s.getImdbId().equals(imdbId));
+    }
+
+
+    public void traerSeriesAPI() {
         List<SerieEntity> contenidoSerie = new ArrayList<>();
         List<String> titulos = new ArrayList<>();
 
@@ -398,12 +315,11 @@ public class StarterDatabase {
             }
 
 
-
             contenidoSerie.add(serie);
         }
     }
 
-    public double calcularPromedioSerie(SerieEntity serie){
+    public double calcularPromedioSerie(SerieEntity serie) {
         double promedio = serie.getRatings()
                 .stream()
                 .mapToDouble(r -> {
@@ -427,8 +343,7 @@ public class StarterDatabase {
     }
 
 
-    public void traerPeliculaAPI()
-    {
+    public void traerPeliculaAPI() {
         List<PeliculaEntity> contenidoPelicula = new ArrayList<>();
 
         List<String> titulos = new ArrayList<>();
@@ -460,7 +375,7 @@ public class StarterDatabase {
         }
     }
 
-    public double calcularPromedioPelicula(PeliculaEntity pelicula){
+    public double calcularPromedioPelicula(PeliculaEntity pelicula) {
         double promedio = pelicula.getRatings()
                 .stream()
                 .mapToDouble(r -> {
@@ -480,16 +395,8 @@ public class StarterDatabase {
                 .average()
                 .orElseThrow(() -> new NoSuchElementException("No hay ratings disponibles"));
         // Redondear a 2 decimales
-        return Math.round(promedio * 100.0) / 100.0;    }
-
-    public boolean checkPeliBDD(String imdbId) {
-        return peliculaRepository.findAll().stream()
-                .anyMatch(p -> p.getImdbId().equals(imdbId));
+        return Math.round(promedio * 100.0) / 100.0;
     }
-
-    public boolean checkSerieBDD(String imdbId) {
-        return serieRepository.findAll().stream()
-                .anyMatch(s -> s.getImdbId().equals(imdbId));
-    }
-
 }
+
+

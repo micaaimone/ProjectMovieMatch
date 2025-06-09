@@ -28,13 +28,13 @@ public class ContenidoService {
     }
 
 
-    public Page<ContenidoDTO> buscarActivos(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Boolean estado, String clasificacion, Long id){
+    public Page<ContenidoDTO> buscarActivos(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Boolean activo, String clasificacion, Long id){
         Specification<ContenidoEntity> specification = Specification
                 .where(ContenidoSpecification.genero(genero))
                 .and(ContenidoSpecification.anio(anio))
                 .and(ContenidoSpecification.tituloParecido(titulo))
                 .and(ContenidoSpecification.puntuacion(puntuacion))
-                .and(ContenidoSpecification.estado(estado))
+                .and(ContenidoSpecification.estado(activo))
                 .and(ContenidoSpecification.clasificacion(clasificacion))
                 .and(ContenidoSpecification.id(id));
 

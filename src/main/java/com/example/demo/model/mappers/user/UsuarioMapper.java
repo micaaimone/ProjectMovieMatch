@@ -63,12 +63,12 @@ public class UsuarioMapper{
     {
         return UsuarioEntity.builder()
                 .edad(usuarioDTO.getEdad())
-                .email(usuarioDTO.getEmail())
+                //.email(usuarioDTO.getEmail())
                 .apellido(usuarioDTO.getApellido())
                 .nombre(usuarioDTO.getNombre())
                 .telefono(usuarioDTO.getTelefono())
                 .username(usuarioDTO.getUsername())
-                .contrasenia(usuarioDTO.getContrasenia())
+                //.contrasenia(usuarioDTO.getContrasenia())
                 .activo(true)
                 .build();
     }

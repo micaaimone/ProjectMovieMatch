@@ -39,9 +39,6 @@ public class UsuarioService {
     }
 
     public void save(NewUsuarioDTO usuarioDTO) {
-        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new UsuarioYaExisteException("No se encontro un usuario con el email especificado");
-        }
 
         if(usuarioRepository.existsByUsername(usuarioDTO.getUsername())) {
             throw new UsuarioYaExisteException("No se encontro un usuario con el username especificado");
@@ -70,9 +67,6 @@ public class UsuarioService {
         UsuarioEntity existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el username: " + nuevosDatos.getUsername() ));
 
-        if (nuevosDatos.getEmail() != null) {
-            existente.setEmail(nuevosDatos.getEmail());
-        }
 
         if (nuevosDatos.getTelefono() != null) {
             existente.setTelefono(nuevosDatos.getTelefono());
@@ -82,9 +76,6 @@ public class UsuarioService {
             existente.setUsername(nuevosDatos.getUsername());
         }
 
-        if (nuevosDatos.getContrasenia() != null) {
-            existente.setContrasenia(nuevosDatos.getContrasenia());
-        }
 
         usuarioRepository.save(existente);
     }

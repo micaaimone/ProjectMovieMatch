@@ -23,27 +23,22 @@ public class OfertaController {
         this.ofertaService = ofertaService;
     }
 
+
     @Operation(
-            summary = "Crear una nueva oferta",
-            description = "Permite crear una oferta para un contenido específico pasando descripción, descuento y el ID del contenido."
+            summary = "Crear oferta por tipo de plan",
+            description = "Crea una oferta enviando un DTO y un tipo de plan"
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Oferta creada exitosamente"),
-            @ApiResponse(responseCode = "400", description = "Parámetros inválidos", content = @Content)
+            @ApiResponse(responseCode = "200", description = "Oferta creada correctamente")
     })
-
-    @PostMapping("/crear")
-    public ResponseEntity<Void> crear(@RequestParam String descripcion, @RequestParam float desc, @RequestParam Long id) {
-        ofertaService.CrearOferta(descripcion, desc, id);
-    return ResponseEntity.ok().build();
     @PostMapping("/crear/{tipoPlan}")
-    public ResponseEntity<String> crear(@Valid @RequestBody OfertaDTO ofertaDTO, @PathVariable("tipoPlan") TipoSuscripcion tipoPlan) {
+    public ResponseEntity<String> crear(
+            @Valid @RequestBody OfertaDTO ofertaDTO,
+            @PathVariable("tipoPlan") TipoSuscripcion tipoPlan) {
         ofertaService.CrearOferta(ofertaDTO, tipoPlan);
         return ResponseEntity.ok("Oferta creada correctamente");
     }
 
-    @PatchMapping("/renovar/{id}")
-    public ResponseEntity<String> renovar(@PathVariable Long id) {
     @Operation(
             summary = "Renovar una oferta existente",
             description = "Renueva una oferta existente mediante su ID."
@@ -52,9 +47,8 @@ public class OfertaController {
             @ApiResponse(responseCode = "200", description = "Oferta renovada exitosamente"),
             @ApiResponse(responseCode = "404", description = "Oferta no encontrada", content = @Content)
     })
-
-    @PostMapping("/renovar/{id}")
-    public ResponseEntity<Void> renovar(@PathVariable Long id) {
+    @PatchMapping("/renovar/{id}")
+    public ResponseEntity<String> renovar(@PathVariable Long id) {
         ofertaService.renovarOferta(id);
         return ResponseEntity.ok("Oferta renovada con exito");
     }
@@ -66,9 +60,10 @@ public class OfertaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de ofertas")
     })
-
     @GetMapping("/verTodas")
-    public ResponseEntity<Page<OfertaDTO>> findAll(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<Page<OfertaDTO>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(ofertaService.findAll(pageable));
     }
@@ -80,9 +75,10 @@ public class OfertaController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Listado de ofertas activas")
     })
-
     @GetMapping("/verActivas")
-    public ResponseEntity<Page<OfertaDTO>> findActivos(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    public ResponseEntity<Page<OfertaDTO>> findActivos(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(ofertaService.findActivos(pageable));
     }

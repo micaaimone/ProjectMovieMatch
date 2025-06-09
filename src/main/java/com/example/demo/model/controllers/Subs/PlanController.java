@@ -22,39 +22,29 @@ public class PlanController {
         this.planService = planService;
     }
 
-    @Operation(
-            summary = "Listar planes",
-            description = "Devuelve una lista paginada de todos los planes de suscripción disponibles."
-    )
-    @ApiResponses(value = {
+    @Operation(summary = "Listar planes",
+            description = "Devuelve una lista paginada de todos los planes de suscripción disponibles.")
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Listado paginado de planes")
     })
-
     @GetMapping("/ver")
-    public Page<PlanDTO> mostrarPlanes(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size){
+    public Page<PlanDTO> mostrarPlanes(@RequestParam(defaultValue = "0") int page,
+                                       @RequestParam(defaultValue = "5") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return planService.verTodos(pageable);
-
     }
 
-    @PatchMapping("/{tipoPlan}/cambiarPrecio")
-    public ResponseEntity<String> actualizarPlan(@PathVariable("tipoPlan") TipoSuscripcion tipoPlan, @RequestParam float precio) {
-        planService.cambiarMontoPlan(tipoPlan, precio);
-        return ResponseEntity.ok("Plan actualizado correctamente");
-    @Operation(
-            summary = "Actualizar precio de un plan",
-            description = "Actualiza el monto de un plan de suscripción existente."
-    )
-    @ApiResponses(value = {
+    @Operation(summary = "Actualizar precio de un plan",
+            description = "Actualiza el monto de un plan de suscripción existente por su tipo.")
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Monto actualizado correctamente"),
             @ApiResponse(responseCode = "404", description = "Plan no encontrado", content = @Content)
     })
-
-    @PatchMapping("/cambiarPrecio/{id}")
-    public ResponseEntity<Void> actualizarPlan(@PathVariable float monto, @PathVariable long id) {
-        planService.cambiarMontoPlan(monto,id);
-        return ResponseEntity.ok().build();
+    @PatchMapping("/{tipoPlan}/cambiarPrecio")
+    public ResponseEntity<String> actualizarPlan(@PathVariable("tipoPlan") TipoSuscripcion tipoPlan,
+                                                 @RequestParam float precio) {
+        planService.cambiarMontoPlan(tipoPlan, precio);
+        return ResponseEntity.ok("Plan actualizado correctamente");
     }
 
-    //falta el de actualizar monto de plan
 }

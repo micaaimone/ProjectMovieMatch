@@ -1,5 +1,6 @@
 package com.example.demo.model.exceptions.ConfigExceptions;
 
+import com.example.demo.Seguridad.DTO.AuthErrorDTO;
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
@@ -10,9 +11,13 @@ import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteExcept
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
 
@@ -237,5 +242,37 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
     }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<AuthErrorDTO> handleBadCredentials(
+            BadCredentialsException ex,
+            WebRequest request
+    ) {
+        AuthErrorDTO errorDTO = new AuthErrorDTO(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI()
+        );
+        return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<AuthErrorDTO> handleUsernameNotFound(
+            UsernameNotFoundException ex,
+            WebRequest request
+    ) {
+        AuthErrorDTO errorDTO = new AuthErrorDTO(
+                LocalDateTime.now(),
+                HttpStatus.UNAUTHORIZED.value(),
+                HttpStatus.UNAUTHORIZED.getReasonPhrase(),
+                ex.getMessage(),
+                ((ServletWebRequest) request).getRequest().getRequestURI()
+        );
+        return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
+    }
+
 
 }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +33,6 @@ public class ContenidoController {
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-//todo agregar el shcema  agregarle a cada de respuestas, documentar los dto request decription example
     @GetMapping
     public ResponseEntity<Page<ContenidoDTO>> allActivos(
             @RequestParam(required = false) String genero,
@@ -43,15 +41,15 @@ public class ContenidoController {
             @RequestParam(required = false) Double puntuacion,
             @RequestParam(required = false) String clasificacion,
             @RequestParam(required = false) Long id,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, true, clasificacion, id));
     }
 
     @GetMapping("/bajados")
-    public ResponseEntity<Page<ContenidoDTO>> allDesactivoados(
+    public ResponseEntity<Page<ContenidoDTO>> allDesactivados(
             @RequestParam(required = false) String genero,
             @RequestParam(required = false) String anio,
             @RequestParam(required = false) String titulo,
@@ -59,16 +57,12 @@ public class ContenidoController {
             @RequestParam(required = false) Integer estado,
             @RequestParam(required = false) String clasificacion,
             @RequestParam(required = false) Long id,
-            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
-    {
-        Pageable pageable = PageRequest.of(page, size);
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
+        Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, false, clasificacion, id));
     }
-
-
-
-
 
     @Operation(
             summary = "Dar de alta contenido",
@@ -80,24 +74,12 @@ public class ContenidoController {
             @ApiResponse(responseCode = "400", description = "ID inválido proporcionado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @PostMapping("/{id}")
-    public ResponseEntity<Void> darDeAlta(@PathVariable Long id) {
-        if (contenidoService.darDeAltaBDD(id)) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
     @PatchMapping("/{id}/activar")
     public ResponseEntity<String> darDeAlta(@PathVariable Long id) {
         contenidoService.darDeAltaContenido(id);
         return ResponseEntity.ok("Contenido dado de alta correctamente.");
     }
 
-    @PatchMapping("/{id}/desactivar")
-    public ResponseEntity<String> borrarContenido(@PathVariable long id){
-        contenidoService.darDeBajaContenido(id);
-        return ResponseEntity.ok("Contenido eliminado correctamente.");
     @Operation(
             summary = "Eliminar contenido",
             description = "Elimina un contenido de la base de datos por su ID. Puede ser una eliminación lógica o física según la implementación."
@@ -108,17 +90,9 @@ public class ContenidoController {
             @ApiResponse(responseCode = "400", description = "ID inválido proporcionado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id)
-    {
-        if (contenidoService.borrarDeBDD(id)) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PatchMapping("/{id}/desactivar")
+    public ResponseEntity<String> borrarContenido(@PathVariable long id){
+        contenidoService.darDeBajaContenido(id);
+        return ResponseEntity.ok("Contenido eliminado correctamente.");
     }
 }
-        }
-        }
-

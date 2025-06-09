@@ -22,8 +22,6 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>, J
 
      Optional<UsuarioEntity> findByUsername(String username);
     boolean existsByUsername(String username);
-     boolean existsByEmail(String email);
-    Optional<UsuarioEntity> findByEmail(String email);
 
     @Query("SELECT u.likes FROM UsuarioEntity u JOIN u.likes WHERE u.id = :usuarioId")
     Page<ContenidoEntity> findLikes(@Param("usuarioId")Long usuarioId, Pageable pageable);
