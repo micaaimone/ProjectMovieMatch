@@ -58,7 +58,7 @@ public class ReseniaController {
             @ApiResponse(responseCode = "200", description = "Reseña eliminada correctamente"),
             @ApiResponse(responseCode = "404", description = "Reseña no encontrada")
     })
-    @DeleteMapping("/eliminarReseniaByUserAndIDContenido{id_usuario}/{id_contenido}")
+    @DeleteMapping("/eliminarReseniaByUserAndIDContenido/{id_usuario}/{id_contenido}")
     public ResponseEntity<String> eliminarReseniaByUsuarioYContenido(@PathVariable("id_usuario") Long id_usuario,
                                             @PathVariable("id_contenido") Long id_contenido)
     {
