@@ -123,38 +123,6 @@ public class UsuarioService {
     }
 
 
-    public void darLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));
-        ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new ContenidoNotFound("Contenido no encontrado con el id: " + idContenido));
-
-        usuarioEntity.getLikes().add(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    public void quitarLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));
-        ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new ContenidoNotFound("Contenido no encontrado con el id: " + idContenido));
-
-        usuarioEntity.getLikes().remove(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    //despues cambiar por contenidoDTO y retornar page
-//    public Set<ContenidoEntity> listarLikes(Long id){
-//        UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-//        return usuarioEntity.getLikes();
-//    }
-
-    public Page<ContenidoEntity> obtenerLikes(Long id, Pageable pageable) {
-        return usuarioRepository.findLikes(id, pageable);
-    }
-
-
     public Page<UsuarioDTO> buscarUsuarios(String nombre, String apellido, String email, String username, Boolean activo, Pageable pageable){
         Specification<UsuarioEntity> spec = Specification
                 .where(UsuarioSpecification.nombre(nombre))
