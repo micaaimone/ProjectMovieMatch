@@ -1,5 +1,6 @@
 package com.example.demo.model.DTOs.subs;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +11,19 @@ import java.util.List;
 
 
 public class SuscripcionDTO {
+    @Schema(description = "Fecha en que comienza la suscripción", example = "2025-06-10")
     private LocalDate fecha_inicio;
+
+    @Schema(description = "Fecha en que finaliza la suscripción", example = "2025-07-10")
     private LocalDate fecha_fin;
+
+    @Schema(description = "Estado actual de la suscripción (activa/inactiva)", example = "true")
     private boolean estado;
+
+    @Schema(description = "Monto total pagado por la suscripción", example = "2499.99")
     private float monto;
+
+    @Schema(description = "Lista de pagos asociados a la suscripción")
     private List<PagoDTO> pagos;
 
     public SuscripcionDTO(LocalDate fecha_inicio, LocalDate fecha_fin, boolean estado, float monto, List<PagoDTO> pagos) {
