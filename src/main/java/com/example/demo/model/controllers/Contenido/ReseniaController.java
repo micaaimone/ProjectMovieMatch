@@ -39,7 +39,7 @@ public class ReseniaController {
     }
 
     @PreAuthorize("hasAuthority('ELIMINAR_RESENIA')")
-    @DeleteMapping("/eliminarReseniaByUserAndIDContenido{id_usuario}/{id_contenido}")
+    @DeleteMapping("/eliminarReseniaByUserAndIDContenido/{id_usuario}/{id_contenido}")
     public ResponseEntity<String> eliminarReseniaByUsuarioYContenido(@PathVariable("id_usuario") Long id_usuario,
                                             @PathVariable("id_contenido") Long id_contenido)
     {
