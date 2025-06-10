@@ -3,6 +3,9 @@ package com.example.demo.model.controllers.Contenido;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.services.Contenido.ContenidoService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +29,24 @@ public class ContenidoController {
     }
 
     @Operation(
-            summary = "Obtener todos los contenidos filtrados",
-            description = "Devuelve una lista paginada de contenidos filtrados por género, año, título, puntuación, estado y clasificación. Los parámetros son opcionales."
+            summary = "Obtener todos los contenidos activos filtrados",
+            description = "Devuelve una lista paginada de contenidos activos filtrados por género, año, título, puntuación, clasificación e ID. Todos los parámetros son opcionales."
     )
-    @ApiResponses(value = {
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista de contenidos obtenida correctamente"),
             @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
-    }
-    )
+    })
+    @Parameters({
+            @Parameter(name = "genero", description = "Género del contenido", schema = @Schema(type = "string", example = "Acción")),
+            @Parameter(name = "anio", description = "Año de publicación", schema = @Schema(type = "string", example = "2023")),
+            @Parameter(name = "titulo", description = "Título parcial o completo", schema = @Schema(type = "string", example = "Batman")),
+            @Parameter(name = "puntuacion", description = "Puntuación mínima", schema = @Schema(type = "number", format = "double", example = "8.5")),
+            @Parameter(name = "clasificacion", description = "Clasificación por edad (ej: PG-13)", schema = @Schema(type = "string", example = "PG-13")),
+            @Parameter(name = "id", description = "ID del contenido", schema = @Schema(type = "integer", format = "int64", example = "10")),
+            @Parameter(name = "page", description = "Número de página", schema = @Schema(type = "integer", defaultValue = "0")),
+            @Parameter(name = "size", description = "Cantidad de elementos por página", schema = @Schema(type = "integer", defaultValue = "10"))
+    })
 
     @PreAuthorize("hasAuthority('VER_CONTENIDO_ACTIVO')")
     @GetMapping
@@ -51,6 +63,16 @@ public class ContenidoController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(contenidoService.buscarActivos(pageable, genero, anio, titulo, puntuacion, true, clasificacion, id));
     }
+
+    @Operation(
+            summary = "Obtener contenidos dados de baja",
+            description = "Devuelve una lista paginada de contenidos que han sido desactivados."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de contenidos desactivados obtenida correctamente"),
+            @ApiResponse(responseCode = "400", description = "Parámetros inválidos"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
 
     @PreAuthorize("hasAuthority('VER_CONTENIDO_BAJA')")
     @GetMapping("/bajados")
@@ -71,10 +93,10 @@ public class ContenidoController {
 
     @Operation(
             summary = "Dar de alta contenido",
-            description = "Permite dar de alta un contenido previamente dado de baja mediante su ID."
+            description = "Permite activar un contenido previamente desactivado mediante su ID."
     )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Contenido dado de alta correctamente"),
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contenido dado de alta correctamente"),
             @ApiResponse(responseCode = "404", description = "No se encontró el contenido con el ID proporcionado"),
             @ApiResponse(responseCode = "400", description = "ID inválido proporcionado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
