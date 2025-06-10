@@ -1,10 +1,15 @@
 package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.ReseniaEntity;
+import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ReseniaLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
@@ -31,13 +36,33 @@ public class UsuarioMapper{
     public UsuarioDTO convertToDTO(UsuarioEntity usuarioEntity) {
         UsuarioDTO dto = modelMapper.map(usuarioEntity, UsuarioDTO.class);
 
-        if(usuarioEntity.getLikes() != null)
+        if(usuarioEntity.getContenidoLikes() != null)
         {
-            List<ContenidoMostrarDTO> contenidoDTOS = usuarioEntity.getLikes()
+            List<ContenidoEntity> contenidos = usuarioEntity.getContenidoLikes()
+                    .stream()
+                    .map(ContenidoLike::getContenido)
+                    .toList();
+
+            List<ContenidoMostrarDTO> contenidoDTOS = contenidos
                     .stream()
                     .map(contenidoMapper::convertToDTOForAdmin)
                     .toList();
-            dto.setLikes(contenidoDTOS);
+            dto.setContenidoLikes(contenidoDTOS);
+        }
+
+        // revisar si está bien hechop
+        if(usuarioEntity.getReseniaLikes() != null)
+        {
+            List<ReseniaEntity> resenias = usuarioEntity.getReseniaLikes()
+                    .stream()
+                    .map(ReseniaLike::getResenia)
+                    .toList();
+
+            List<ReseniaMostrarUsuarioDTO> reseniaDTOS = resenias
+                    .stream()
+                    .map(reseñaMapper::convertToDTOUsuario)
+                    .toList();
+            dto.setReseniaLikes(reseniaDTOS);
         }
 
         if (usuarioEntity.getReseñasHechas() != null) {
