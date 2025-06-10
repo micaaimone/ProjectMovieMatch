@@ -43,10 +43,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain (HttpSecurity http) throws
-            Exception {
-        http.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST,"/auth").permitAll()
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.disable())
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                         .requestMatchers(HttpMethod.GET, "/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
                         .requestMatchers("/api/").hasAnyRole("USER", "ADMIN", "PREMIUM")
@@ -56,17 +58,14 @@ public class SecurityConfig {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-                        .anyRequest().authenticated())
-                .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers
-                        ->headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(manager ->
-                        manager.sessionCreationPolicy(STATELESS))
-                .addFilterBefore(jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(e -> e.authenticationEntryPoint(restAuthenticationEntryPoint));
+
         return http.build();
     }
+
 }
