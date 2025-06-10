@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,6 +71,19 @@ public class UsuarioController {
         return ResponseEntity.ok("Like a contenido registrado");
     }
 
+    @DeleteMapping("/{usuarioId}/like/contenido/{contenidoId}")
+    public ResponseEntity<String> quitarLikeContenido(
+            @PathVariable Long usuarioId,
+            @PathVariable Long contenidoId) {
+
+        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, contenidoId);
+        if (eliminado) {
+            return ResponseEntity.ok("Like a contenido eliminado");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
+        }
+    }
+
     @GetMapping("/{usuarioId}/likes/contenido")
     public ResponseEntity<Page<ContenidoLike>> getContenidoLikes(
             @PathVariable Long usuarioId,
@@ -87,6 +101,19 @@ public class UsuarioController {
 
         reseniaLikeService.darLike(usuarioId, reseniaId);
         return ResponseEntity.ok("Like a reseña registrado");
+    }
+
+    @DeleteMapping("/{usuarioId}/like/resenia/{reseniaId}")
+    public ResponseEntity<String> quitarLikeResenia(
+            @PathVariable Long usuarioId,
+            @PathVariable Long reseniaId) {
+
+        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, reseniaId);
+        if (eliminado) {
+            return ResponseEntity.ok("Like a reseña eliminado");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
+        }
     }
 
     @GetMapping("/{usuarioId}/likes/resenia")
