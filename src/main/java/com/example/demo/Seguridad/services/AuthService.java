@@ -13,10 +13,14 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final CredentialsRepository credentialsRepository;
     private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
 
-    public AuthService(CredentialsRepository credentialsRepository, AuthenticationManager authenticationManager) {
+    public AuthService(CredentialsRepository credentialsRepository,
+                       AuthenticationManager authenticationManager,
+                       UserDetailsService userDetailsService) {
         this.credentialsRepository = credentialsRepository;
         this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
     }
 
     public UserDetails authenticate(AuthRequest input) {
@@ -33,6 +37,10 @@ public class AuthService {
 
         return credentialsRepository.findByEmail(input.email())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + input.email()));
+    }
+
+    public UserDetails loadUserByUsername(String username) {
+        return userDetailsService.loadUserByUsername(username);
     }
 }
 

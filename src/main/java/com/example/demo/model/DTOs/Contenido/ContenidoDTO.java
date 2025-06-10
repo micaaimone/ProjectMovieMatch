@@ -1,6 +1,7 @@
 package com.example.demo.model.DTOs.Contenido;
 
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
 import java.util.List;
@@ -12,25 +13,44 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class ContenidoDTO {
+
+    @Schema(description = "Título del contenido", example = "Breaking Bad")
     private String titulo;
+
+    @Schema(description = "Año de lanzamiento", example = "2008")
     private String anio;
+
+    @Schema(description = "Clasificación por edad", example = "TV-MA")
     private String clasificacion;
+
+    @Schema(description = "Duración del contenido (en minutos o formato hh:mm)", example = "47m")
     private String duracion;
+
+    @Schema(description = "Género principal del contenido", example = "Drama, Crimen")
     private String genero;
+
+    @Schema(description = "Actores principales", example = "Bryan Cranston, Aaron Paul")
     private String actores;
+
+    @Schema(description = "Sinopsis del contenido", example = "Un profesor de química con cáncer terminal comienza a fabricar metanfetamina.")
     private String sinopsis;
-    //lo traemos porue nos sirve para la interfaz en un futuro
-    //private String poster;
 
-    //lo comento porque no creo q al usuario le interese de donde sale la puntuacion api
-//    private List<RatingDTO> ratings;
+    // lo traemos porque nos sirve para la interfaz en un futuro
+    // private String poster;
+
+    // lo comento porque no creo que al usuario le interese de dónde sale la puntuación api
+    // private List<RatingDTO> ratings;
+
+    @Schema(description = "Puntuación de una API externa (por ejemplo, IMDb)", example = "8.9")
     private double puntuacionApi;
-    //hace falta crear un atributo para puntuacion de nuestros usuarios
 
+    // hace falta crear un atributo para puntuación de nuestros usuarios
+    @Schema(description = "Lista de reseñas hechas por los usuarios")
     private List<ReseniaDTO> reseña;
 
+    @Schema(description = "Promedio de puntuaciones dadas por los usuarios registrados", example = "9.1")
     private double promedioPuntuacionUsuario;
 
-    //importan los votos de la puntuacion api???
-//    private String imdbVotos;
+// importan los votos de la puntuación api???
+// private String imdbVotos;
 }

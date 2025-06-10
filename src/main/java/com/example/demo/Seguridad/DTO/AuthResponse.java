@@ -1,4 +1,5 @@
 package com.example.demo.Seguridad.DTO;
 
-public record AuthResponse(String token){
+public record AuthResponse(String token, String refreshToken){
+
 }
