@@ -12,7 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "Credential")
+@Table(name = "credentials")
 @Getter
 @Setter
 @ToString
