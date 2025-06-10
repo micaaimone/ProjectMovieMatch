@@ -2,6 +2,7 @@ package com.example.demo.model.entities.User;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import lombok.*;
 @ToString
 @Builder
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 public class UsuarioEntity {
 
     @Id
@@ -67,14 +68,11 @@ public class UsuarioEntity {
     @JoinColumn(name = "id_suscripcion")
     private SuscripcionEntity suscripcion;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "likes",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_contenido")
-    )
-    private Set<ContenidoEntity> likes;
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContenidoLike> contenidoLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReseniaLike> reseniaLikes = new ArrayList<>();
 
     //vamos a crear una entidad amigos, va a tener
     //id

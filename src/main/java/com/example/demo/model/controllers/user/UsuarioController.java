@@ -4,6 +4,10 @@ import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ReseniaLike;
+import com.example.demo.model.services.Usuarios.ContenidoLikeService;
+import com.example.demo.model.services.Usuarios.ReseniaLikeService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -17,11 +21,14 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final ContenidoLikeService contenidoLikeService;
+    private final ReseniaLikeService reseniaLikeService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, ContenidoLikeService contenidoLikeService, ReseniaLikeService reseniaLikeService) {
         this.usuarioService = usuarioService;
+        this.contenidoLikeService = contenidoLikeService;
+        this.reseniaLikeService = reseniaLikeService;
     }
-
 
     @PostMapping("/registrar")
     public ResponseEntity<String> agregarUsuario(@Valid @RequestBody NewUsuarioDTO u) {
@@ -54,26 +61,42 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario desactivado.");
     }
 
-    @PostMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> darLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
-        usuarioService.darLike(idUsuario,idContenido);
-        return ResponseEntity.ok("Like guardado");
+    @PostMapping("/{usuarioId}/like/contenido/{contenidoId}")
+    public ResponseEntity<String> likeContenido(
+            @PathVariable Long usuarioId,
+            @PathVariable Long contenidoId) {
+
+        contenidoLikeService.darLike(usuarioId, contenidoId);
+        return ResponseEntity.ok("Like a contenido registrado");
     }
 
-    @DeleteMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> quitarLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
-        usuarioService.quitarLike(idUsuario,idContenido);
-        return ResponseEntity.ok("Like eliminado");
+    @GetMapping("/{usuarioId}/likes/contenido")
+    public ResponseEntity<Page<ContenidoLike>> getContenidoLikes(
+            @PathVariable Long usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ContenidoLike> likes = contenidoLikeService.obtenerLikes(usuarioId, page, size);
+        return ResponseEntity.ok(likes);
     }
 
+    @PostMapping("/{usuarioId}/like/resenia/{reseniaId}")
+    public ResponseEntity<String> likeResenia(
+            @PathVariable Long usuarioId,
+            @PathVariable Long reseniaId) {
 
-    @GetMapping("/{idUsuario}/likes")
-    public ResponseEntity<Page<ContenidoEntity>> obtenerLikes(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int size,
-                                                              @PathVariable Long idUsuario){
-       Pageable pageable = PageRequest.of(page, size);
-       Page<ContenidoEntity> pagina = usuarioService.obtenerLikes(idUsuario, pageable);
-       return ResponseEntity.ok(pagina);
+        reseniaLikeService.darLike(usuarioId, reseniaId);
+        return ResponseEntity.ok("Like a reseña registrado");
+    }
+
+    @GetMapping("/{usuarioId}/likes/resenia")
+    public ResponseEntity<Page<ReseniaLike>> getReseniaLikes(
+            @PathVariable Long usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ReseniaLike> likes = reseniaLikeService.obtenerLikes(usuarioId, page, size);
+        return ResponseEntity.ok(likes);
     }
 
     //el dto no tiene nombre, apellido, ni id. deberia?

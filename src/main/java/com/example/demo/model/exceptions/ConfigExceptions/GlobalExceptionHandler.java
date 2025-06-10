@@ -2,11 +2,8 @@ package com.example.demo.model.exceptions.ConfigExceptions;
 
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
+import com.example.demo.model.exceptions.UsuarioExceptions.*;
 import com.example.demo.model.exceptions.SuscripcionException.*;
-import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
-import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -236,6 +233,18 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
+
+    // like
+    @ExceptionHandler(LikeAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetalles> handlerLikeAlreadyExists(LikeAlreadyExistsException ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                status.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, status);
     }
 
 }
