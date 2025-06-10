@@ -1,7 +1,6 @@
 package com.example.demo.model.DTOs.user;
 
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
@@ -20,6 +19,7 @@ public class NewUsuarioDTO {
     private String apellido;
 
     @Email
+    @NotBlank(message = "El mail es requerido")
     private String email;
 
     @Min(14)

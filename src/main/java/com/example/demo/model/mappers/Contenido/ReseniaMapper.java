@@ -23,7 +23,6 @@ public class ReseniaMapper {
     public ReseniaDTO convertToDTO(ReseniaEntity reseñaEntity)
     {
         return ReseniaDTO.builder()
-//                .id(reseñaEntity.getId_resenia())
                 .id_usuario(reseñaEntity.getUsuario().getId())
                 .id_contenido(reseñaEntity.getContenido().getId_contenido())
                 .puntuacionU(reseñaEntity.getPuntuacionU())
@@ -34,7 +33,7 @@ public class ReseniaMapper {
     public ReseniaMostrarUsuarioDTO convertToDTOUsuario(ReseniaEntity reseñaEntity)
     {
         return ReseniaMostrarUsuarioDTO.builder()
-                .id_contenido(reseñaEntity.getContenido().getId_contenido())
+                .nombre(reseñaEntity.getContenido().getTitulo())
                 .puntuacionU(reseñaEntity.getPuntuacionU())
                 .comentario(reseñaEntity.getComentario())
                 .build();

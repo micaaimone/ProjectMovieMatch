@@ -15,8 +15,8 @@ import java.util.List;
 @ToString
 public class UsuarioDTO {
     private String username;
-    private String email;
-    private CredentialsEntity credencial;
+//    private String email;
+    private CredentialDTOForUser credencial;
     private Boolean activo;
     //  private SuscripcionEntity suscripcion;
     private List<ContenidoMostrarDTO> likes;

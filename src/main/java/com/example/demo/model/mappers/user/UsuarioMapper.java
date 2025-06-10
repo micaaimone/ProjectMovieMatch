@@ -2,6 +2,9 @@ package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
+import java.util.Set;
+
+import com.example.demo.model.DTOs.user.CredentialDTOForUser;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
@@ -12,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class UsuarioMapper{
@@ -56,6 +60,18 @@ public class UsuarioMapper{
                     .toList();
             dto.setListas(listaDTO);
         }
+
+        Set<String> roles = usuarioEntity.getCredencial().getRoles().stream()
+                .map(role -> role.getRole().name())
+                .collect(Collectors.toSet());
+
+
+        CredentialDTOForUser credentialDTO = new CredentialDTOForUser(usuarioEntity.getCredencial().getEmail(), roles);
+
+        dto.setCredencial(credentialDTO);
+
+
+
         return dto;
     }
 

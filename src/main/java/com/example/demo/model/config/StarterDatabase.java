@@ -110,14 +110,60 @@ public class StarterDatabase {
     }
 
 
+//    public void initUsers() {
+//        crearUsuarioSiNoExiste("lautaM", "Lautaro", "Martínez", 28, "1123456789", "rama@gmail.com");
+//        crearUsuarioSiNoExiste("meliR", "Melina", "Rodríguez", 25, "1123456790", "meli@gmail.com");
+//        crearUsuarioSiNoExiste("tomiG", "Tomás", "Gómez", 30, "1123456791", "tomi@gmail.com");
+//        crearUsuarioSiNoExiste("sofiP", "Sofía", "Pérez", 27, "1123456792", "sofi@gmail.com");
+//    }
+
+//    private void crearUsuarioSiNoExiste(String username, String nombre, String apellido, int edad, String telefono, String email) {
+//        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername(username);
+//        UsuarioEntity usuario;
+//
+//        if (usuarioOptional.isPresent()) {
+//            usuario = usuarioOptional.get();
+//        } else {
+//            usuario = UsuarioEntity.builder()
+//                    .nombre(nombre)
+//                    .apellido(apellido)
+//                    .edad(edad)
+//                    .telefono(telefono)
+//                    .username(username)
+//                    .activo(true)
+//                    .build();
+//
+//            usuario = usuarioRepository.save(usuario);
+//        }
+//
+//        RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
+//                .orElseThrow(() -> new EntityNotFoundException("Rol inexistente " + Role.ROLE_ADMIN));
+//        HashSet<RoleEntity> roleEntities = new HashSet<>();
+//        roleEntities.add(roleEntity);
+//
+//        if (usuario.getCredencial() == null) {
+//            CredentialsEntity credentialsEntity = CredentialsEntity.builder()
+//                    .email(email)
+//                    .password(passwordEncoder.encode("123456"))
+//                    .usuario(usuario)
+//                    .roles(roleEntities)
+//                    .build();
+//
+//            credentialsEntity = credentialsRepository.save(credentialsEntity);
+//
+//            usuario.setCredencial(credentialsEntity);
+//            usuarioRepository.save(usuario);
+//        }
+//    }
+
     public void initUsers() {
-        crearUsuarioSiNoExiste("lautaM", "Lautaro", "Martínez", 28, "1123456789", "rama@gmail.com");
-        crearUsuarioSiNoExiste("meliR", "Melina", "Rodríguez", 25, "1123456790", "meli@gmail.com");
-        crearUsuarioSiNoExiste("tomiG", "Tomás", "Gómez", 30, "1123456791", "tomi@gmail.com");
-        crearUsuarioSiNoExiste("sofiP", "Sofía", "Pérez", 27, "1123456792", "sofi@gmail.com");
+        crearUsuarioSiNoExiste("lautaM", "Lautaro", "Martínez", 28, "1123456789", "rama@gmail.com", Role.ROLE_USER);
+        crearUsuarioSiNoExiste("meliR", "Melina", "Rodríguez", 25, "1123456790", "meli@gmail.com", Role.ROLE_PREMIUM);
+        crearUsuarioSiNoExiste("tomiG", "Tomás", "Gómez", 30, "1123456791", "tomi@gmail.com", Role.ROLE_ADMIN);
+        crearUsuarioSiNoExiste("sofiP", "Sofía", "Pérez", 27, "1123456792", "sofi@gmail.com", Role.ROLE_USER);
     }
 
-    private void crearUsuarioSiNoExiste(String username, String nombre, String apellido, int edad, String telefono, String email) {
+    private void crearUsuarioSiNoExiste(String username, String nombre, String apellido, int edad, String telefono, String email, Role role) {
         Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername(username);
         UsuarioEntity usuario;
 
@@ -136,8 +182,8 @@ public class StarterDatabase {
             usuario = usuarioRepository.save(usuario);
         }
 
-        RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
-                .orElseThrow(() -> new EntityNotFoundException("Rol inexistente " + Role.ROLE_ADMIN));
+        RoleEntity roleEntity = roleRepository.findByRole(role)
+                .orElseThrow(() -> new EntityNotFoundException("Rol inexistente " + role));
         HashSet<RoleEntity> roleEntities = new HashSet<>();
         roleEntities.add(roleEntity);
 
@@ -157,46 +203,8 @@ public class StarterDatabase {
     }
 
 
-//    public void initUsers() {
-//        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByUsername("lautaM");
-//
-//        UsuarioEntity usuario;
-//
-//        if (usuarioOptional.isPresent()) {
-//            usuario = usuarioOptional.get();
-//        } else {
-//            usuario = UsuarioEntity.builder()
-//                    .nombre("Lautaro")
-//                    .apellido("Martínez")
-//                    .edad(28)
-//                    .telefono("1123456789")
-//                    .username("lautaM")
-//                    .activo(true)
-//                    .build();
-//
-//            usuario = usuarioRepository.save(usuario);
-//        }
-//
-//        RoleEntity roleEntity = roleRepository.findByRole(Role.ROLE_ADMIN)
-//                .orElseThrow(() -> new EntityNotFoundException("Rol inexsistente" + Role.ROLE_ADMIN));
-//        HashSet<RoleEntity> roleEntities = new HashSet<>();
-//        roleEntities.add(roleEntity);
-//        // Verificamos si ya tiene credencial
-//        if (usuario.getCredencial() == null) {
-//            CredentialsEntity credentialsEntity = CredentialsEntity.builder()
-//                    .email("rama@gmail.com")
-//                    .password(passwordEncoder.encode("123456"))
-//                    .usuario(usuario)
-//                    .roles(roleEntities)
-//                    .build();
-//
-//            credentialsEntity = credentialsRepository.save(credentialsEntity);
-//
-//            usuario.setCredencial(credentialsEntity);
-//            usuarioRepository.save(usuario);
-//        }
-//
-//    }
+
+
 
     private void initReseñas() {
         if (reseñaRepository.count() == 0) {
