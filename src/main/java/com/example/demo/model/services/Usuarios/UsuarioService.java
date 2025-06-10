@@ -1,5 +1,10 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.Seguridad.Entities.CredentialsEntity;
+import com.example.demo.Seguridad.Entities.RoleEntity;
+import com.example.demo.Seguridad.Enum.Role;
+import com.example.demo.Seguridad.repositories.CredentialsRepository;
+import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
@@ -14,10 +19,17 @@ import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.Specifications.UsuarioSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class UsuarioService {
@@ -25,12 +37,18 @@ public class UsuarioService {
     private final UsuarioMapper usuarioMapper;
     private final UsuarioRepository usuarioRepository;
     private final ContenidoRepository contenidoRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final CredentialsRepository credentialsRepository;
 
 
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository) {
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.credentialsRepository = credentialsRepository;
     }
 
     public Page<UsuarioDTO> findAll(Pageable pageable){
@@ -45,6 +63,22 @@ public class UsuarioService {
         }
 
         UsuarioEntity usuario = usuarioMapper.convertToNewEntity(usuarioDTO);
+
+        // Creamos la credencial asociada
+        CredentialsEntity credencial = new CredentialsEntity();
+        credencial.setEmail(usuarioDTO.getEmail());
+        credencial.setPassword(passwordEncoder.encode(usuarioDTO.getContrasenia()));
+        credencial.setUsuario(usuario); // relación bidireccional
+        // Obtenemos el rol desde base
+        RoleEntity roleUser = roleRepository.findByRole(Role.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("No se encontró el rol USER"));
+
+        Set<RoleEntity> roles = new HashSet<>();
+        roles.add(roleUser);
+        credencial.setRoles(roles);
+
+        // Asignamos la credencial al usuario
+        usuario.setCredencial(credencial);
 
         usuarioRepository.save(usuario);
 
@@ -80,10 +114,32 @@ public class UsuarioService {
         usuarioRepository.save(existente);
     }
 
-    //se puede ahorrar mandar el boolean
+    public UsuarioEntity getUsuarioAutenticado() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String emailAutenticado = authentication.getName();
+
+        CredentialsEntity credencialAutenticada = credentialsRepository.findByEmail(emailAutenticado)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Credencial no encontrada"));
+
+        return credencialAutenticada.getUsuario();
+    }
+
     public void cambiarEstadoUsuario(Long id, boolean activo) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UsuarioEntity usuarioAutenticado = getUsuarioAutenticado();
+
+        boolean esAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        // Si no es admin y el id no coincide, le tiro excepción
+        if (!esAdmin && !usuarioAutenticado.getId().equals(id)) {
+            throw new AccessDeniedException("No tenés permiso para desactivar este usuario.");
+        }
+
+        // Busco al usuario que quiero modificar
         UsuarioEntity usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + id));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         usuario.setActivo(activo);
         usuarioRepository.save(usuario);

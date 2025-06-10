@@ -55,7 +55,6 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario activado.");
     }
 
-    @PreAuthorize("hasAuthority('USUARIO_DESACTIVAR')")
     @PatchMapping("/darDeBaja/{id}")
     public ResponseEntity<String> desactivarUsuario(@PathVariable Long id) {
         usuarioService.cambiarEstadoUsuario(id, false);
@@ -102,6 +101,7 @@ public class UsuarioController {
         return ResponseEntity.ok(resultado);
     }
 
+    @PreAuthorize("hasAuthority('USUARIO_LISTAR_DESACTIVADOS')")
     @GetMapping("/listarDesactivados")
     public ResponseEntity<Page<UsuarioDTO>> filtrarUsuariosDesactivados(@RequestParam(required = false) String nombre,
                                                             @RequestParam(required = false) String apellido,

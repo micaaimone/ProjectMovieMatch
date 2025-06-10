@@ -10,8 +10,8 @@ import lombok.*;
 @ToString
 @Builder
 public class ReseniaMostrarUsuarioDTO {
-    @NotBlank(message = "id de usuario es necesario")
-    private Long id_contenido;
+
+    private String nombre;
 
     private Double puntuacionU;
 

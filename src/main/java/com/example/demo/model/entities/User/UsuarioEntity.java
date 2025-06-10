@@ -32,15 +32,11 @@ public class UsuarioEntity {
     @Column
     private String apellido;
 
-
-
     @Column
     private int edad;
 
     @Column
     private String telefono;
-
-
 
     @Column(name = "username", unique = true)
     private String username;
@@ -48,7 +44,7 @@ public class UsuarioEntity {
     @Column(nullable = false)
     private Boolean activo = true;
 
-    @OneToOne(mappedBy = "usuario")
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private CredentialsEntity credencial;
 
     @OneToOne
@@ -62,18 +58,6 @@ public class UsuarioEntity {
             inverseJoinColumns = @JoinColumn(name = "id_contenido")
     )
     private Set<ContenidoEntity> likes;
-
-
-    //vamos a crear una entidad amigos, va a tener
-    //id
-    //id_usuario (base)
-    //lista de ids
-
-    //tmbn vamos a tener una clase de solicitud amistad
-    //id
-    //id_usuario(propio)
-    //id_usuario (q te manda soli)
-    //boolean si o no
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ReseniaEntity> reseñasHechas;
