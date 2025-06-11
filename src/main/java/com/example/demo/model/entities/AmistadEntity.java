@@ -7,16 +7,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
 @Builder
-@Entity(name = "solicitud")
-public class SolicitudAmistadEntity {
+@Entity(name = "solicitudes")
+public class AmistadEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +27,5 @@ public class SolicitudAmistadEntity {
 
     private EstadoSolicitud estadoSolicitud;
 
-    //medio q lo pense como ig
-    private LocalDateTime fechaSolicitud;
-    private LocalDateTime fechaRespuesta;
 
 }
