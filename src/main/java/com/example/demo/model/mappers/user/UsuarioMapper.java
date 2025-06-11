@@ -2,6 +2,7 @@ package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
+import com.example.demo.model.DTOs.user.AmigoDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
@@ -28,6 +29,12 @@ public class UsuarioMapper{
         this.listasMapper = listasMapper;
     }
 
+    public AmigoDTO convertAmigoToDTO(UsuarioEntity usuarioEntity)
+    {
+
+        return modelMapper.map(usuarioEntity, AmigoDTO.class);
+    }
+
     public UsuarioDTO convertToDTO(UsuarioEntity usuarioEntity) {
         UsuarioDTO dto = modelMapper.map(usuarioEntity, UsuarioDTO.class);
 
@@ -38,6 +45,15 @@ public class UsuarioMapper{
                     .map(contenidoMapper::convertToDTOForAdmin)
                     .toList();
             dto.setLikes(contenidoDTOS);
+        }
+
+        if(usuarioEntity.getAmigos() != null)
+        {
+            List<AmigoDTO> amigosDTOs = usuarioEntity.getAmigos()
+                    .stream()
+                    .map(this::convertAmigoToDTO)
+                    .toList();
+            dto.setAmigos(amigosDTOs);
         }
 
         if (usuarioEntity.getReseñasHechas() != null) {
