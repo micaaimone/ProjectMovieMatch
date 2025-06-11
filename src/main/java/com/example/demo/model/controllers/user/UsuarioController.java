@@ -4,11 +4,16 @@ import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ReseniaLike;
+import com.example.demo.model.services.Usuarios.ContenidoLikeService;
+import com.example.demo.model.services.Usuarios.ReseniaLikeService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +22,14 @@ import org.springframework.web.bind.annotation.*;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final ContenidoLikeService contenidoLikeService;
+    private final ReseniaLikeService reseniaLikeService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioService usuarioService, ContenidoLikeService contenidoLikeService, ReseniaLikeService reseniaLikeService) {
         this.usuarioService = usuarioService;
+        this.contenidoLikeService = contenidoLikeService;
+        this.reseniaLikeService = reseniaLikeService;
     }
-
 
     @PostMapping("/registrar")
     public ResponseEntity<String> agregarUsuario(@Valid @RequestBody NewUsuarioDTO u) {
@@ -54,26 +62,68 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario desactivado.");
     }
 
-    @PostMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> darLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
-        usuarioService.darLike(idUsuario,idContenido);
-        return ResponseEntity.ok("Like guardado");
+    @PostMapping("/{usuarioId}/like/contenido/{contenidoId}")
+    public ResponseEntity<String> likeContenido(
+            @PathVariable Long usuarioId,
+            @PathVariable Long contenidoId) {
+
+        contenidoLikeService.darLike(usuarioId, contenidoId);
+        return ResponseEntity.ok("Like a contenido registrado");
     }
 
-    @DeleteMapping("/{idUsuario}/like/{idContenido}")
-    public ResponseEntity<String> quitarLike(@PathVariable Long idUsuario, @PathVariable Long idContenido){
-        usuarioService.quitarLike(idUsuario,idContenido);
-        return ResponseEntity.ok("Like eliminado");
+    @DeleteMapping("/{usuarioId}/like/contenido/{contenidoId}")
+    public ResponseEntity<String> quitarLikeContenido(
+            @PathVariable Long usuarioId,
+            @PathVariable Long contenidoId) {
+
+        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, contenidoId);
+        if (eliminado) {
+            return ResponseEntity.ok("Like a contenido eliminado");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
+        }
     }
 
+    @GetMapping("/{usuarioId}/likes/contenido")
+    public ResponseEntity<Page<ContenidoLike>> getContenidoLikes(
+            @PathVariable Long usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-    @GetMapping("/{idUsuario}/likes")
-    public ResponseEntity<Page<ContenidoEntity>> obtenerLikes(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int size,
-                                                              @PathVariable Long idUsuario){
-       Pageable pageable = PageRequest.of(page, size);
-       Page<ContenidoEntity> pagina = usuarioService.obtenerLikes(idUsuario, pageable);
-       return ResponseEntity.ok(pagina);
+        Page<ContenidoLike> likes = contenidoLikeService.obtenerLikes(usuarioId, page, size);
+        return ResponseEntity.ok(likes);
+    }
+
+    @PostMapping("/{usuarioId}/like/resenia/{reseniaId}")
+    public ResponseEntity<String> likeResenia(
+            @PathVariable Long usuarioId,
+            @PathVariable Long reseniaId) {
+
+        reseniaLikeService.darLike(usuarioId, reseniaId);
+        return ResponseEntity.ok("Like a reseña registrado");
+    }
+
+    @DeleteMapping("/{usuarioId}/like/resenia/{reseniaId}")
+    public ResponseEntity<String> quitarLikeResenia(
+            @PathVariable Long usuarioId,
+            @PathVariable Long reseniaId) {
+
+        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, reseniaId);
+        if (eliminado) {
+            return ResponseEntity.ok("Like a reseña eliminado");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
+        }
+    }
+
+    @GetMapping("/{usuarioId}/likes/resenia")
+    public ResponseEntity<Page<ReseniaLike>> getReseniaLikes(
+            @PathVariable Long usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ReseniaLike> likes = reseniaLikeService.obtenerLikes(usuarioId, page, size);
+        return ResponseEntity.ok(likes);
     }
 
     //el dto no tiene nombre, apellido, ni id. deberia?

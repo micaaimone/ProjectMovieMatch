@@ -2,11 +2,14 @@ package com.example.demo.model.entities;
 
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.ReseniaLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,6 +39,9 @@ public class ReseniaEntity {
     private String comentario;
 
     private LocalDateTime fecha;
+
+    @OneToMany(mappedBy = "resenia", cascade = CascadeType.ALL)
+    private List<ReseniaLike> likes = new ArrayList<>();
 
 
 }

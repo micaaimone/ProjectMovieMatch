@@ -41,12 +41,13 @@ public class UsuarioService {
 
     public void save(NewUsuarioDTO usuarioDTO) {
         if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new UsuarioYaExisteException("No se encontro un usuario con el email especificado");
+            throw new UsuarioYaExisteException("Ya existe un usuario con el email especificado");
         }
 
         if(usuarioRepository.existsByUsername(usuarioDTO.getUsername())) {
-            throw new UsuarioYaExisteException("No se encontro un usuario con el username especificado");
+            throw new UsuarioYaExisteException("Ya existe un usuario con el username especificado");
         }
+
 
         UsuarioEntity usuario = usuarioMapper.convertToNewEntity(usuarioDTO);
 
@@ -87,6 +88,10 @@ public class UsuarioService {
             existente.setContrasenia(nuevosDatos.getContrasenia());
         }
 
+        if (nuevosDatos.getGeneros() != null) {
+            existente.setGeneros(nuevosDatos.getGeneros());
+        }
+
         usuarioRepository.save(existente);
     }
 
@@ -115,39 +120,6 @@ public class UsuarioService {
     public Page<UsuarioDTO> obtenerUsuariosPaginados(Pageable pageable) {
         return usuarioRepository.findAll(pageable)
                 .map(usuarioMapper::convertToDTO);
-    }
-
-
-    // agregar findById, por eso está comentado
-    public void darLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));
-        ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new ContenidoNotFound("Contenido no encontrado con el id: " + idContenido));
-
-        usuarioEntity.getLikes().add(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    public void quitarLike(Long idUsuario, Long idContenido){
-        UsuarioEntity usuarioEntity = usuarioRepository.findById(idUsuario)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUsuario));
-        ContenidoEntity contenidoEntity = contenidoRepository.findById(idContenido)
-                .orElseThrow(()->new ContenidoNotFound("Contenido no encontrado con el id: " + idContenido));
-
-        usuarioEntity.getLikes().remove(contenidoEntity);
-        usuarioRepository.save(usuarioEntity);
-    }
-
-    //despues cambiar por contenidoDTO y retornar page
-//    public Set<ContenidoEntity> listarLikes(Long id){
-//        UsuarioEntity usuarioEntity = usuarioRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-//        return usuarioEntity.getLikes();
-//    }
-
-    public Page<ContenidoEntity> obtenerLikes(Long id, Pageable pageable) {
-        return usuarioRepository.findLikes(id, pageable);
     }
 
 
