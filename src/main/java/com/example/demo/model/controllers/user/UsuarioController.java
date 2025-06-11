@@ -76,13 +76,15 @@ public class UsuarioController {
             @PathVariable Long usuarioId,
             @PathVariable Long contenidoId) {
 
-        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, contenidoId);
+        boolean eliminado = contenidoLikeService.quitarLike(usuarioId, contenidoId);
         if (eliminado) {
             return ResponseEntity.ok("Like a contenido eliminado");
         } else {
+            //return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
         }
     }
+
 
     @GetMapping("/{usuarioId}/likes/contenido")
     public ResponseEntity<Page<ContenidoLike>> getContenidoLikes(

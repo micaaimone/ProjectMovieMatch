@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @ToString
 @Entity
-@Table
+@Table(name = "reseña_like")
 public class ReseniaLike {
 
     @Id

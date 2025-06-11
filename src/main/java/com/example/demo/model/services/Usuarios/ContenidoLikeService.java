@@ -1,9 +1,11 @@
 package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.ContenidoLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
+import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.LikeAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
@@ -62,6 +64,7 @@ public class ContenidoLikeService {
         }
         return false;
     }
+
 
     public Page<ContenidoLike> obtenerLikes(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
