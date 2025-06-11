@@ -5,9 +5,12 @@ import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import java.util.Set;
 
 import com.example.demo.model.DTOs.user.CredentialDTOForUser;
+import com.example.demo.model.DTOs.user.AmigoDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
+import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ReseniaLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
@@ -18,48 +21,69 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class UsuarioMapper{
+public class UsuarioMapper {
+
     private final ModelMapper modelMapper;
-    private final ReseniaMapper reseñaMapper;
+    private final ReseniaMapper reseniaMapper;
     private final ContenidoMapper contenidoMapper;
     private final ListasMapper listasMapper;
 
-
-    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper) {
+    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper) {
         this.modelMapper = modelMapper;
-        this.reseñaMapper = reseñaMapper;
+        this.reseniaMapper = reseniaMapper;
         this.contenidoMapper = contenidoMapper;
         this.listasMapper = listasMapper;
+    }
+
+    public AmigoDTO convertAmigoToDTO(UsuarioEntity usuarioEntity) {
+        return modelMapper.map(usuarioEntity, AmigoDTO.class);
     }
 
     public UsuarioDTO convertToDTO(UsuarioEntity usuarioEntity) {
         UsuarioDTO dto = modelMapper.map(usuarioEntity, UsuarioDTO.class);
 
-        if(usuarioEntity.getLikes() != null)
-        {
-            List<ContenidoMostrarDTO> contenidoDTOS = usuarioEntity.getLikes()
+        if (usuarioEntity.getContenidoLikes() != null) {
+            List<ContenidoMostrarDTO> contenidoDTOS = usuarioEntity.getContenidoLikes()
                     .stream()
+                    .map(ContenidoLike::getContenido)
                     .map(contenidoMapper::convertToDTOForAdmin)
                     .toList();
-            dto.setLikes(contenidoDTOS);
+            dto.setContenidoLikes(contenidoDTOS);
+        }
+
+        if (usuarioEntity.getReseniaLikes() != null) {
+            List<ReseniaMostrarUsuarioDTO> reseniaDTOS = usuarioEntity.getReseniaLikes()
+                    .stream()
+                    .map(ReseniaLike::getResenia)
+                    .map(reseniaMapper::convertToDTOUsuario)
+                    .toList();
+            dto.setReseniaLikes(reseniaDTOS);
+        }
+
+        if (usuarioEntity.getAmigos() != null) {
+            List<AmigoDTO> amigosDTOs = usuarioEntity.getAmigos()
+                    .stream()
+                    .map(this::convertAmigoToDTO)
+                    .toList();
+            dto.setAmigos(amigosDTOs);
         }
 
         if (usuarioEntity.getReseñasHechas() != null) {
-            //mapeo las reseñas, las hago dto
-            List<ReseniaMostrarUsuarioDTO> reseñasDTO = usuarioEntity.getReseñasHechas()
+            List<ReseniaMostrarUsuarioDTO> reseniasDTO = usuarioEntity.getReseñasHechas()
                     .stream()
-                    .map(reseñaMapper::convertToDTOUsuario)
+                    .map(reseniaMapper::convertToDTOUsuario)
                     .toList();
-            dto.setReseñas(reseñasDTO);
+            dto.setResenias(reseniasDTO);
         }
 
-        if(usuarioEntity.getListas() != null){
-            List<ListaContenidoDTO> listaDTO = usuarioEntity.getListas()
+        if (usuarioEntity.getListas() != null) {
+            List<ListaContenidoDTO> listasDTO = usuarioEntity.getListas()
                     .stream()
                     .map(listasMapper::convertToDTO)
                     .toList();
-            dto.setListas(listaDTO);
+            dto.setListas(listasDTO);
         }
+
 
         Set<String> roles = usuarioEntity.getCredencial().getRoles().stream()
                 .map(role -> role.getRole().name())
@@ -75,8 +99,7 @@ public class UsuarioMapper{
         return dto;
     }
 
-    public UsuarioEntity convertToNewEntity(NewUsuarioDTO usuarioDTO)
-    {
+    public UsuarioEntity convertToNewEntity(NewUsuarioDTO usuarioDTO) {
         return UsuarioEntity.builder()
                 .edad(usuarioDTO.getEdad())
                 //.email(usuarioDTO.getEmail())
@@ -86,9 +109,9 @@ public class UsuarioMapper{
                 .username(usuarioDTO.getUsername())
                 //.contrasenia(usuarioDTO.getContrasenia())
                 .activo(true)
+                .generos(usuarioDTO.getGeneros())
                 .build();
     }
-
 
     public UsuarioEntity convertToEntity(UsuarioDTO usuarioDTO) {
         return modelMapper.map(usuarioDTO, UsuarioEntity.class);

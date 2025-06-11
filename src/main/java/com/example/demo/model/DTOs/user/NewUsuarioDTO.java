@@ -1,9 +1,12 @@
 package com.example.demo.model.DTOs.user;
 
 
+import com.example.demo.model.enums.Genero;
 import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -31,7 +34,7 @@ public class NewUsuarioDTO {
     private String telefono;
 
     @NotBlank(message = "El username es requerido")
-    @Pattern(regexp = "^(?!\\d+$).+", message = "No puede ser solo números")
+    @Pattern(regexp = "^(?!\\d+$).+", message = "No puede ser solo números")
     @Length(min = 4, message = "El username debe tener un minimo de 4 caracteres")
     private String username;
 
@@ -39,6 +42,8 @@ public class NewUsuarioDTO {
     @Length(min = 6, message = "La contraseña debe tener un minimo de 6 caracteres")
     private String contrasenia;
 
-
+    @NotNull(message = "Debe elegir al menos dos generos")
+    @Size(min = 1, max = 3, message = "Debes elegir minimo 1 genero y maximo 3")
+    private Set<Genero> generos;
 
 }

@@ -3,7 +3,6 @@ package com.example.demo.model.entities.subs;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

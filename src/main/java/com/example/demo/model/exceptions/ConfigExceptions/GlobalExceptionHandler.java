@@ -3,8 +3,11 @@ package com.example.demo.model.exceptions.ConfigExceptions;
 import com.example.demo.Seguridad.DTO.AuthErrorDTO;
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.SolicitudAlreadyExistsException;
+import com.example.demo.model.exceptions.SolicitudNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
+import com.example.demo.model.exceptions.UsuarioExceptions.*;
 import com.example.demo.model.exceptions.SuscripcionException.*;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
@@ -274,5 +277,42 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDTO, HttpStatus.UNAUTHORIZED);
     }
 
+
+    //solicitudes------------------
+
+
+    //para cuando una solicitud ya exista
+    @ExceptionHandler(SolicitudAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetalles> solicitudAlreadyExists(SolicitudAlreadyExistsException ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.BAD_REQUEST);
+    }
+
+    //para cuando una solicitud no exista
+    @ExceptionHandler(SolicitudNotFound.class)
+    public ResponseEntity<ErrorDetalles> solicitudNotFound(SolicitudNotFound ex) {
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, HttpStatus.NOT_FOUND);
+    }
+
+    // like
+    @ExceptionHandler(LikeAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetalles> handlerLikeAlreadyExists(LikeAlreadyExistsException ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                status.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, status);
+    }
 
 }

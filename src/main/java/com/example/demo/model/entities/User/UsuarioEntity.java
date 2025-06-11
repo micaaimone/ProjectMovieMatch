@@ -1,9 +1,13 @@
 package com.example.demo.model.entities.User;
 
 
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
+import com.example.demo.model.enums.Genero;
 import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
@@ -14,10 +18,10 @@ import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 @Entity
 @Table(name = "usuarios")
 public class UsuarioEntity {
@@ -46,18 +50,34 @@ public class UsuarioEntity {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private CredentialsEntity credencial;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    private Set<Genero> generos;
+
+    @ManyToOne
+    @JoinColumn(name = "id_credencial", referencedColumnName = "id")
+    private CredencialEntity credencial;
 
     @OneToOne
     @JoinColumn(name = "id_suscripcion")
     private SuscripcionEntity suscripcion;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContenidoLike> contenidoLikes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReseniaLike> reseniaLikes = new ArrayList<>();
+    //tabla intermedia de amigos
+    @ManyToMany
     @JoinTable(
-            name = "likes",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_contenido")
+            name = "amistades",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
     )
     private Set<ContenidoEntity> likes;
+
+    private List<UsuarioEntity> amigos;
+
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ReseniaEntity> reseñasHechas;

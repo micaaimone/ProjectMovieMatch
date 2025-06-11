@@ -2,11 +2,15 @@ package com.example.demo.model.DTOs.user;
 
 import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
+import com.example.demo.model.enums.Genero;
+import com.example.demo.model.entities.User.CredencialEntity;
 import lombok.*;
 
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,11 +19,12 @@ import java.util.List;
 @ToString
 public class UsuarioDTO {
     private String username;
-//    private String email;
     private CredentialDTOForUser credencial;
     private Boolean activo;
-    //  private SuscripcionEntity suscripcion;
-    private List<ContenidoMostrarDTO> likes;
-    private List<ReseniaMostrarUsuarioDTO> reseñas;
+    private List<ContenidoMostrarDTO> contenidoLikes;
+    private List<ReseniaMostrarUsuarioDTO> reseniaLikes;
+    private List<AmigoDTO> amigos;
+    private List<ReseniaMostrarUsuarioDTO> resenias;
     private List<ListaContenidoDTO> listas;
+    private Set<Genero> generos;
 }
