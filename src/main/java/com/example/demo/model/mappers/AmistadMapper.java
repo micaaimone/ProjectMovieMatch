@@ -2,31 +2,28 @@ package com.example.demo.model.mappers;
 
 import com.example.demo.model.DTOs.NewSolicitudAmistadDTO;
 import com.example.demo.model.DTOs.SolicitudAmistadDTO;
-import com.example.demo.model.entities.SolicitudAmistadEntity;
+import com.example.demo.model.entities.AmistadEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
-public class SolicitudAmistadMapper {
+public class AmistadMapper {
 
     private final ModelMapper modelMapper;
 
-    public SolicitudAmistadMapper(ModelMapper modelMapper) {
+    public AmistadMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
 
-    public SolicitudAmistadEntity convertToNewEntity(NewSolicitudAmistadDTO newSolicitudAmistadDTO)
+    public AmistadEntity convertToNewEntity(NewSolicitudAmistadDTO newSolicitudAmistadDTO)
     {
-        return SolicitudAmistadEntity.builder()
+        return AmistadEntity.builder()
                 .idEmisor(newSolicitudAmistadDTO.getIdEmisor())
                 .idReceptor(newSolicitudAmistadDTO.getIdReceptor())
-                .fechaSolicitud((LocalDateTime.now()))
                 .build();
     }
 
-    public SolicitudAmistadDTO convertToDTO(SolicitudAmistadEntity solicitudAmistad)
+    public SolicitudAmistadDTO convertToDTO(AmistadEntity solicitudAmistad)
     {
         return SolicitudAmistadDTO.builder()
                 .idReceptor(solicitudAmistad.getIdReceptor())
