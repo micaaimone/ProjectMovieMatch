@@ -59,6 +59,7 @@ public class UsuarioEntity {
     @JoinColumn(name = "id_suscripcion")
     private SuscripcionEntity suscripcion;
 
+    //tabla intermedia de likes
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinTable(
             name = "likes",
@@ -67,17 +68,15 @@ public class UsuarioEntity {
     )
     private Set<ContenidoEntity> likes;
 
+    //tabla intermedia de amigos
+    @ManyToMany
+    @JoinTable(
+            name = "amistades",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    private List<UsuarioEntity> amigos;
 
-    //vamos a crear una entidad amigos, va a tener
-    //id
-    //id_usuario (base)
-    //lista de ids
-
-    //tmbn vamos a tener una clase de solicitud amistad
-    //id
-    //id_usuario(propio)
-    //id_usuario (q te manda soli)
-    //boolean si o no
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ReseniaEntity> reseñasHechas;
