@@ -5,6 +5,7 @@ import com.example.demo.model.DTOs.NewSolicitudAmistadDTO;
 import com.example.demo.model.DTOs.SolicitudAmistadDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.AmistadEntity;
+import com.example.demo.model.entities.User.ContenidoLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.enums.EstadoSolicitud;
 import com.example.demo.model.exceptions.SolicitudAlreadyExistsException;
@@ -227,14 +228,23 @@ public class AmistadService {
         UsuarioEntity emisor = validarUsuario(idEmisor);
         UsuarioEntity receptor = validarUsuario(idReceptor);
 
-        Set<ContenidoEntity> likesEmisor = emisor.getLikes();
-        Set<ContenidoEntity> likesReceptor = receptor.getLikes();
+        // Sacamos los ContenidoEntity de los likes de cada usuario
+        List<ContenidoEntity> likesEmisor = emisor.getContenidoLikes()
+                .stream()
+                .map(ContenidoLike::getContenido)
+                .toList();
 
+        List<ContenidoEntity> likesReceptor = receptor.getContenidoLikes()
+                .stream()
+                .map(ContenidoLike::getContenido)
+                .toList();
+
+        // Buscamos las coincidencias entre los dos sets de contenidos
         List<ContenidoMostrarDTO> coincidencias = likesEmisor.stream()
                 .filter(likesReceptor::contains)
                 .map(contenidoMapper::convertToDTOForAdmin)
-                .limit(3) // Limita a 3 resultados
-                .collect(Collectors.toList());
+                .limit(3)
+                .toList();
 
         if (coincidencias.isEmpty()) {
             throw new SolicitudNotFound("No se encontraron coincidencias entre los usuarios.");
@@ -242,6 +252,7 @@ public class AmistadService {
 
         return new PageImpl<>(coincidencias, pageable, coincidencias.size());
     }
+
 
 
 

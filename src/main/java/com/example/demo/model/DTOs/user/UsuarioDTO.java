@@ -19,14 +19,13 @@ import java.util.Set;
 public class UsuarioDTO {
     private String username;
     private String email;
-    private CredencialEntity credencial;
+//    private CredencialDTO credencial;
     private Boolean activo;
-    //  private SuscripcionEntity suscripcion;
     private List<ContenidoMostrarDTO> contenidoLikes;
     private List<ReseniaMostrarUsuarioDTO> reseniaLikes;
     private List<AmigoDTO> amigos;
-    private List<ContenidoMostrarDTO> likes;
-    private List<ReseniaMostrarUsuarioDTO> reseñas;
+    private List<ReseniaMostrarUsuarioDTO> resenias;
     private List<ListaContenidoDTO> listas;
     private Set<Genero> generos;
 }
+
