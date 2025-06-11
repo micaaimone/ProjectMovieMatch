@@ -19,6 +19,7 @@ public class UsuarioDTO {
     private CredencialEntity credencial;
     private Boolean activo;
     //  private SuscripcionEntity suscripcion;
+    private List<AmigoDTO> amigos;
     private List<ContenidoMostrarDTO> likes;
     private List<ReseniaMostrarUsuarioDTO> reseñas;
     private List<ListaContenidoDTO> listas;
