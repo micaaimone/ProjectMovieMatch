@@ -56,6 +56,7 @@ public class RolePermitMapper {
                 Permit.VER_CONTENIDO_BAJA,
                 Permit.ACTIVAR_CONTENIDO,
                 Permit.DESACTIVAR_CONTENIDO,
+                Permit.BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE,
                 Permit.CREAR_RESENIA,
                 Permit.ELIMINAR_RESENIA,
                 Permit.ELIMINAR_RESENIA_POR_USUARIO_Y_CONTENIDO,

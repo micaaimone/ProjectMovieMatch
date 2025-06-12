@@ -54,5 +54,11 @@ public class APIMovieService {
     public void delete(ContenidoEntity dato) {
         contenidoRepository.delete(dato);
     }
+
+    public ContenidoEntity findContenidoByTitle(String titulo) {
+        String url = apiUrl + "?t=" + titulo + "&apikey=" + apiKey;
+        return restTemplate.getForObject(url, ContenidoEntity.class);
+    }
+
 }
 

@@ -19,12 +19,14 @@ public class ContenidoService {
 
     private final ContenidoRepository contenidoRepository;
     private final ContenidoMapper contenidoMapper;
+    private final APIMovieService apiMovieService;
 
 
     @Autowired
-    public ContenidoService(ContenidoRepository contenidoRepository,ContenidoMapper contenidoMapper) {
+    public ContenidoService(ContenidoRepository contenidoRepository, ContenidoMapper contenidoMapper, APIMovieService apiMovieService) {
         this.contenidoRepository = contenidoRepository;
         this.contenidoMapper = contenidoMapper;
+        this.apiMovieService = apiMovieService;
     }
 
 
@@ -79,6 +81,34 @@ public class ContenidoService {
             contenidoRepository.save(contenido);
         }
     }
+
+
+    public ContenidoDTO buscarContenidoPorNombreDesdeAPI(String titulo) {
+        ContenidoEntity contenido = apiMovieService.findContenidoByTitle(titulo);
+
+        if (contenido == null || contenido.getTitulo() == null) {
+            throw new ContenidoNotFound("No se encontró ningún contenido con el título: " + titulo);
+        }
+
+        String tipo = contenido.getTipo();
+
+        switch (tipo.toLowerCase()) {
+            case "movie":
+                System.out.println("Es una película");
+                break;
+            case "series":
+                System.out.println("Es una serie");
+                break;
+            default:
+                System.out.println("Otro tipo de contenido: " + tipo);
+                break;
+        }
+
+        // Guardar en base de datos
+        contenidoRepository.save(contenido);
+        return contenidoMapper.convertToDTO(contenido);
+    }
+
 
 
 }

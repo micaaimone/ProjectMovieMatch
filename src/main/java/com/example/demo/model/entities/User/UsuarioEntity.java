@@ -13,6 +13,7 @@ import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 
@@ -39,6 +40,10 @@ public class UsuarioEntity {
     @Column
     private int edad;
 
+    @Email
+    @Column
+    private String email;
+
     @Column
     private String telefono;
 
@@ -50,13 +55,10 @@ public class UsuarioEntity {
 
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private CredentialsEntity credencial;
+
     @ElementCollection
     @Enumerated(EnumType.STRING)
     private Set<Genero> generos;
-
-    @ManyToOne
-    @JoinColumn(name = "id_credencial", referencedColumnName = "id")
-    private CredencialEntity credencial;
 
     @OneToOne
     @JoinColumn(name = "id_suscripcion")
@@ -67,23 +69,28 @@ public class UsuarioEntity {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReseniaLike> reseniaLikes = new ArrayList<>();
-    //tabla intermedia de amigos
+
+    // Likes a contenidos
     @ManyToMany
     @JoinTable(
-            name = "amistades",
+            name = "amistades_contenido",
             joinColumns = @JoinColumn(name = "usuario_id"),
-            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+            inverseJoinColumns = @JoinColumn(name = "contenido_id")
     )
     private Set<ContenidoEntity> likes;
 
-    private List<UsuarioEntity> amigos;
-
+    // Amigos (usuarios)
+    @ManyToMany
+    @JoinTable(
+            name = "amistades_usuario",
+            joinColumns = @JoinColumn(name = "usuario_id"),
+            inverseJoinColumns = @JoinColumn(name = "amigo_id")
+    )
+    private List<UsuarioEntity> amigos = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<ReseniaEntity> reseñasHechas;
+    private List<ReseniaEntity> reseñasHechas = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<ListasContenidoEntity> listas;
-
-
+    private List<ListasContenidoEntity> listas = new ArrayList<>();
 }

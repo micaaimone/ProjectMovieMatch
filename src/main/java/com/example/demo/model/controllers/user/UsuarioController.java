@@ -1,9 +1,9 @@
 package com.example.demo.model.controllers.user;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ContenidoLike;
 import com.example.demo.model.entities.User.ReseniaLike;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
@@ -11,7 +11,6 @@ import com.example.demo.model.services.Usuarios.ReseniaLikeService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -92,11 +91,8 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario actualizado correctamente");
     }
 
-    // ------------------- Activar / desactivar
-    @Operation(summary = "Activar usuario", description = "Activa el estado de un usuario previamente desactivado.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario activado correctamente")
-    })
+    // ------------------- Activar / desactivar usuario
+    @Operation(summary = "Activar usuario")
     @PreAuthorize("hasAuthority('USUARIO_REACTIVAR')")
     @PatchMapping("/reactivar/{id}")
     public ResponseEntity<String> activarUsuario(@PathVariable Long id) {
@@ -104,42 +100,28 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario activado.");
     }
 
-    @Operation(summary = "Desactivar usuario", description = "Desactiva el usuario, dejándolo inhabilitado en el sistema.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Usuario desactivado correctamente")
-    })
+    @Operation(summary = "Desactivar usuario")
+    @PreAuthorize("hasAuthority('USUARIO_REACTIVAR')")
     @PatchMapping("/darDeBaja/{id}")
     public ResponseEntity<String> desactivarUsuario(@PathVariable Long id) {
         usuarioService.cambiarEstadoUsuario(id, false);
         return ResponseEntity.ok("Usuario desactivado.");
     }
 
-    // ------------------- Likes
-    @Operation(summary = "Dar like a contenido", description = "Registra un 'me gusta' de un usuario sobre un contenido específico.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Like registrado correctamente")
-    })
+    // ------------------- Likes a contenido
+    @Operation(summary = "Dar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_LIKE')")
     @PostMapping("/{usuarioId}/like/contenido/{contenidoId}")
-    public ResponseEntity<String> likeContenido(
-            @PathVariable Long usuarioId,
-            @PathVariable Long contenidoId) {
-
+    public ResponseEntity<String> likeContenido(@PathVariable Long usuarioId, @PathVariable Long contenidoId) {
         contenidoLikeService.darLike(usuarioId, contenidoId);
         return ResponseEntity.ok("Like a contenido registrado");
     }
 
-    @Operation(summary = "Quitar like", description = "Elimina un 'me gusta' de un contenido dado.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Like eliminado correctamente")
-    })
+    @Operation(summary = "Quitar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
     @DeleteMapping("/{usuarioId}/like/contenido/{contenidoId}")
-    public ResponseEntity<String> quitarLikeContenido(
-            @PathVariable Long usuarioId,
-            @PathVariable Long contenidoId) {
-
-        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, contenidoId);
+    public ResponseEntity<String> quitarLikeContenido(@PathVariable Long usuarioId, @PathVariable Long contenidoId) {
+        boolean eliminado = contenidoLikeService.quitarLike(usuarioId, contenidoId);
         if (eliminado) {
             return ResponseEntity.ok("Like a contenido eliminado");
         } else {
@@ -147,39 +129,30 @@ public class UsuarioController {
         }
     }
 
-    @Operation(summary = "Ver contenido con like", description = "Devuelve una lista paginada de los contenidos a los que el usuario dio like.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Listado de likes obtenido correctamente")
-    })
-    @Parameters({
-            @Parameter(name = "page", description = "Número de página", schema = @Schema(defaultValue = "0")),
-            @Parameter(name = "size", description = "Cantidad de resultados por página", schema = @Schema(defaultValue = "10"))
-    })
+    @Operation(summary = "Ver likes de contenido")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/{usuarioId}/likes/contenido")
     public ResponseEntity<Page<ContenidoLike>> getContenidoLikes(
             @PathVariable Long usuarioId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
         Page<ContenidoLike> likes = contenidoLikeService.obtenerLikes(usuarioId, page, size);
         return ResponseEntity.ok(likes);
     }
 
+    // ------------------- Likes a reseñas
+    @Operation(summary = "Dar like a reseña")
+    @PreAuthorize("hasAuthority('USUARIO_LIKE')")
     @PostMapping("/{usuarioId}/like/resenia/{reseniaId}")
-    public ResponseEntity<String> likeResenia(
-            @PathVariable Long usuarioId,
-            @PathVariable Long reseniaId) {
-
+    public ResponseEntity<String> likeResenia(@PathVariable Long usuarioId, @PathVariable Long reseniaId) {
         reseniaLikeService.darLike(usuarioId, reseniaId);
         return ResponseEntity.ok("Like a reseña registrado");
     }
 
+    @Operation(summary = "Quitar like a reseña")
+    @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
     @DeleteMapping("/{usuarioId}/like/resenia/{reseniaId}")
-    public ResponseEntity<String> quitarLikeResenia(
-            @PathVariable Long usuarioId,
-            @PathVariable Long reseniaId) {
-
+    public ResponseEntity<String> quitarLikeResenia(@PathVariable Long usuarioId, @PathVariable Long reseniaId) {
         boolean eliminado = reseniaLikeService.quitarLike(usuarioId, reseniaId);
         if (eliminado) {
             return ResponseEntity.ok("Like a reseña eliminado");
@@ -188,37 +161,32 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Ver likes de reseñas")
+    @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/{usuarioId}/likes/resenia")
     public ResponseEntity<Page<ReseniaLike>> getReseniaLikes(
             @PathVariable Long usuarioId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
         Page<ReseniaLike> likes = reseniaLikeService.obtenerLikes(usuarioId, page, size);
         return ResponseEntity.ok(likes);
-    @Operation(summary = "Ver contenido con like", description = "Devuelve una lista paginada de los contenidos a los que el usuario dio like.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Listado de likes obtenido correctamente")
-    })
-    @Parameters({
-            @Parameter(name = "page", description = "Número de página", schema = @Schema(defaultValue = "0")),
-            @Parameter(name = "size", description = "Cantidad de resultados por página", schema = @Schema(defaultValue = "10"))
-    })
+    }
+
+    // ------------------- Listar contenido con likes
+    @Operation(summary = "Ver contenidos con like")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/{idUsuario}/likes")
-    public ResponseEntity<Page<ContenidoEntity>> obtenerLikes(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int size,
-                                                              @PathVariable Long idUsuario) {
+    public ResponseEntity<Page<ContenidoMostrarDTO>> obtenerLikes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable Long idUsuario) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ContenidoEntity> pagina = usuarioService.obtenerLikes(idUsuario, pageable);
+        Page<ContenidoMostrarDTO> pagina = usuarioService.obtenerLikes(idUsuario, pageable);
         return ResponseEntity.ok(pagina);
     }
 
     // ------------------- Listar usuarios activos / desactivados
-    @Operation(summary = "Listar usuarios activos", description = "Filtra y devuelve usuarios activos según filtros opcionales.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Listado de usuarios activos")
-    })
+    @Operation(summary = "Listar usuarios activos")
     @PreAuthorize("hasAuthority('USUARIO_LISTAR')")
     @GetMapping("/listarActivos")
     public ResponseEntity<Page<UsuarioDTO>> filtrarUsuarios(
@@ -228,24 +196,6 @@ public class UsuarioController {
             @RequestParam(required = false) String username,
             Pageable pageable) {
         Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, true, pageable);
-
         return ResponseEntity.ok(resultado);
     }
-
-    @Operation(summary = "Listar usuarios desactivados", description = "Filtra y devuelve usuarios que están desactivados.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Listado de usuarios desactivados")
-    })
-    @PreAuthorize("hasAuthority('USUARIO_LISTAR_DESACTIVADOS')")
-    @GetMapping("/listarDesactivados")
-    public ResponseEntity<Page<UsuarioDTO>> filtrarUsuariosDesactivados(
-            @RequestParam(required = false) String nombre,
-            @RequestParam(required = false) String apellido,
-            @RequestParam(required = false) String email,
-            @RequestParam(required = false) String username,
-            Pageable pageable) {
-        Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, false, pageable);
-        return ResponseEntity.ok(resultado);
-    }
-
 }

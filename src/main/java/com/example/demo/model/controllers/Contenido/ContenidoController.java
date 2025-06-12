@@ -126,4 +126,12 @@ public class ContenidoController {
         contenidoService.darDeBajaContenido(id);
         return ResponseEntity.ok("Contenido eliminado correctamente.");
     }
+
+    @PreAuthorize("hasAuthority('BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE')")
+    @GetMapping("/contenido/buscar-api")
+    public ResponseEntity<ContenidoDTO> buscarContenidoDesdeAPI(@RequestParam String titulo) {
+        System.out.println("pete");
+        return ResponseEntity.ok(contenidoService.buscarContenidoPorNombreDesdeAPI(titulo));
+    }
+
 }

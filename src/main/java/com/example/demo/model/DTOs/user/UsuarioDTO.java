@@ -1,11 +1,8 @@
 package com.example.demo.model.DTOs.user;
 
-import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.enums.Genero;
-import com.example.demo.model.entities.User.CredencialEntity;
 import lombok.*;
 
 
