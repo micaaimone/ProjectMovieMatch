@@ -1,6 +1,6 @@
 package com.example.demo.model.repositories.Contenido;
 
-import com.example.demo.model.entities.ReseniaEntity;
+import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

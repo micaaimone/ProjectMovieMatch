@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 public class UsuarioDTO {
+    private Long id;
     private String username;
     private CredentialDTOForUser credencial;
     private Boolean activo;

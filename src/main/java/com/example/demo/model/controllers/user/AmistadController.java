@@ -1,10 +1,12 @@
 package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.NewSolicitudAmistadDTO;
-import com.example.demo.model.DTOs.SolicitudAmistadDTO;
-import com.example.demo.model.services.AmistadService;
+import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.services.Usuarios.AmistadService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -16,12 +18,13 @@ import org.springframework.web.bind.annotation.*;
 public class AmistadController {
     private final AmistadService solicitudAmistadService;
 
+    @Autowired
     public AmistadController(AmistadService solicitudAmistadService) {
         this.solicitudAmistadService = solicitudAmistadService;
     }
 
     @PostMapping("/enviarSolicitud")
-    public ResponseEntity<String> enviarSolicitud(@Valid @RequestBody  NewSolicitudAmistadDTO s)
+    public ResponseEntity<String> enviarSolicitud(@Valid @RequestBody NewSolicitudAmistadDTO s)
     {
         solicitudAmistadService.save(s);
         return ResponseEntity.ok("Solicitud enviada con exito.");

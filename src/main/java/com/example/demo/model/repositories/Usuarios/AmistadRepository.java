@@ -1,6 +1,6 @@
-package com.example.demo.model.repositories;
+package com.example.demo.model.repositories.Usuarios;
 
-import com.example.demo.model.entities.AmistadEntity;
+import com.example.demo.model.entities.User.AmistadEntity;
 import com.example.demo.model.enums.EstadoSolicitud;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

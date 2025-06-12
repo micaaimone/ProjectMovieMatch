@@ -3,7 +3,7 @@ package com.example.demo.model.mappers.Contenido;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.ReseniaEntity;
+import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;

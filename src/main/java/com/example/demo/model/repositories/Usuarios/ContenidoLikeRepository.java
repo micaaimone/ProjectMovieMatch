@@ -1,7 +1,6 @@
 package com.example.demo.model.repositories.Usuarios;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.ContenidoLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import org.springframework.data.domain.Page;

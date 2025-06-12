@@ -21,13 +21,13 @@ public class SerieService {
         this.serieMapper = serieMapper;
     }
 
-    public Page<SerieDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, String temporadas, Long id){
+    public Page<SerieDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Boolean activo, String clasificacion, String temporadas, Long id){
         Specification<SerieEntity> specification = Specification
                 .where(SerieSpecification.genero(genero))
                 .and(SerieSpecification.anio(anio))
                 .and(SerieSpecification.tituloParecido(titulo))
                 .and(SerieSpecification.puntuacion(puntuacion))
-                .and(SerieSpecification.estado(estado))
+                .and(SerieSpecification.activo(activo))
                 .and(SerieSpecification.clasificacion(clasificacion))
                 .and(SerieSpecification.temporadas(temporadas))
                 .and(SerieSpecification.id(id));

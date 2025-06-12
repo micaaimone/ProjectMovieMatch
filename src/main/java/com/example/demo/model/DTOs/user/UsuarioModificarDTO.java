@@ -29,4 +29,5 @@ public class UsuarioModificarDTO {
 
     @Size(min = 1, max = 3, message = "Debes elegir minimo 1 genero y maximo 3")
     private Set<Genero> generos;
+
 }

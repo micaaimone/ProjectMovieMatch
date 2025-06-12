@@ -5,7 +5,7 @@ import com.example.demo.Seguridad.repositories.CredentialsRepository;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.ReseniaEntity;
+import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaAlredyExists;

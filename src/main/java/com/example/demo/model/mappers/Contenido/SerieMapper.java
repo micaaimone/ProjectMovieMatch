@@ -15,6 +15,7 @@ public class SerieMapper {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
     private ReseniaMapper reseñaMapper;
 
     public SerieDTO convertToDTO(SerieEntity serieEntity)

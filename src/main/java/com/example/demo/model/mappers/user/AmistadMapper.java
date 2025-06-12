@@ -1,8 +1,9 @@
-package com.example.demo.model.mappers;
+package com.example.demo.model.mappers.user;
 
-import com.example.demo.model.DTOs.NewSolicitudAmistadDTO;
-import com.example.demo.model.DTOs.SolicitudAmistadDTO;
-import com.example.demo.model.entities.AmistadEntity;
+import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.entities.User.AmistadEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 

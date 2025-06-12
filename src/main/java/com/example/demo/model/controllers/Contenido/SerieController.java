@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 public class SerieController {
     private final SerieService serieService;
 
+    @Autowired
     public SerieController(SerieService serieService) {
         this.serieService = serieService;
     }
@@ -67,7 +69,7 @@ public class SerieController {
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(serieService.buscar(pageable, genero, anio, titulo, puntuacion, 0, clasificacion, temporadas, id));
+        return ResponseEntity.ok(serieService.buscar(pageable, genero, anio, titulo, puntuacion, true, clasificacion, temporadas, id));
     }
 
     @Schema(name = "SeriePage", description = "Página de resultados con series")

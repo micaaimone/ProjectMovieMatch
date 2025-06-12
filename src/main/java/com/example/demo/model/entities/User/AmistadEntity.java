@@ -1,4 +1,4 @@
-package com.example.demo.model.entities;
+package com.example.demo.model.entities.User;
 
 import com.example.demo.model.enums.EstadoSolicitud;
 import jakarta.persistence.Entity;

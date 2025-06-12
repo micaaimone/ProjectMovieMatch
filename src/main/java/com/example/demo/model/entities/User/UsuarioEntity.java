@@ -10,7 +10,7 @@ import java.util.Set;
 import com.example.demo.model.enums.Genero;
 import com.example.demo.Seguridad.Entities.CredentialsEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.ReseniaEntity;
+import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

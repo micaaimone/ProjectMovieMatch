@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,7 +22,7 @@ public class PeliculaController {
 
     private final PeliculaService peliculaService;
 
-
+    @Autowired
     public PeliculaController(PeliculaService peliculaService) {
         this.peliculaService = peliculaService;
     }
@@ -71,7 +72,7 @@ public class PeliculaController {
     {
         Pageable pageable = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(peliculaService.buscar(pageable, genero, anio, titulo, puntuacion, 0, clasificacion, metascore, id));
+        return ResponseEntity.ok(peliculaService.buscar(pageable, genero, anio, titulo, puntuacion, true, clasificacion, metascore, id));
     }
 
 }

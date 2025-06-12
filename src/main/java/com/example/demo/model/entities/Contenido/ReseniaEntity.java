@@ -1,7 +1,6 @@
-package com.example.demo.model.entities;
+package com.example.demo.model.entities.Contenido;
 
 
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ReseniaLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import jakarta.persistence.*;

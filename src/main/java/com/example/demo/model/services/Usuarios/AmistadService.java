@@ -1,19 +1,20 @@
-package com.example.demo.model.services;
+package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.NewSolicitudAmistadDTO;
-import com.example.demo.model.DTOs.SolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
+import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.AmistadEntity;
+import com.example.demo.model.entities.User.AmistadEntity;
 import com.example.demo.model.entities.User.ContenidoLike;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.enums.EstadoSolicitud;
-import com.example.demo.model.exceptions.SolicitudAlreadyExistsException;
-import com.example.demo.model.exceptions.SolicitudNotFound;
+import com.example.demo.model.exceptions.UsuarioExceptions.SolicitudAlreadyExistsException;
+import com.example.demo.model.exceptions.UsuarioExceptions.SolicitudNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
-import com.example.demo.model.mappers.AmistadMapper;
-import com.example.demo.model.repositories.AmistadRepository;
+import com.example.demo.model.mappers.user.AmistadMapper;
+import com.example.demo.model.repositories.Usuarios.AmistadRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -21,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class AmistadService {

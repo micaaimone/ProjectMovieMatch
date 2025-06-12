@@ -11,7 +11,7 @@ import lombok.*;
 @ToString
 @Builder
 public class ReseniaMostrarUsuarioDTO {
-
+    private Long id;
 
     @Schema(description = "Nombre del usuario que realizó la reseña", example = "Juan Pérez")
     private String nombre;

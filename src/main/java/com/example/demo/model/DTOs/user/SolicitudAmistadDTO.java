@@ -1,5 +1,6 @@
-package com.example.demo.model.DTOs;
+package com.example.demo.model.DTOs.user;
 
+import com.example.demo.model.enums.EstadoSolicitud;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.*;
@@ -10,14 +11,11 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 @Builder
-public class NewSolicitudAmistadDTO {
+public class SolicitudAmistadDTO {
 
-    @NotNull(message = "El id emisor de ser ingresado")
-    @Positive
-    private Long idEmisor;
-
-    @NotNull(message = "El id receptor de ser ingresado")
+    @NotNull(message = "El id de ser ingresado")
     @Positive
     private Long idReceptor;
 
+    private EstadoSolicitud estadoSolicitud;
 }

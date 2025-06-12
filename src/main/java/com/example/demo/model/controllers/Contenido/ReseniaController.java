@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/resenia")
 public class ReseniaController {
-
+    //funcan
     private final ReseniaService reseniaService;
 
     @Autowired

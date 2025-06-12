@@ -1,6 +1,5 @@
 package com.example.demo.model.entities.Contenido;
 
-import com.example.demo.model.entities.ReseniaEntity;
 import com.example.demo.model.entities.User.ContenidoLike;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

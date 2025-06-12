@@ -101,6 +101,16 @@ public class UsuarioService {
         UsuarioEntity existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontró el usuario con el id: " + id));
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UsuarioEntity usuarioAutenticado = getUsuarioAutenticado();
+
+        boolean esAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (!esAdmin && !usuarioAutenticado.getId().equals(id)) {
+            throw new AccessDeniedException("No tenés permiso para modificar datos este usuario.");
+        }
+
         if (nuevosDatos.getTelefono() != null) {
             existente.setTelefono(nuevosDatos.getTelefono());
         }

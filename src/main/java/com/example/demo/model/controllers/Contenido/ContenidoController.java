@@ -74,6 +74,7 @@ public class ContenidoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
 
+    //me lo deja ver aunque sea user normal
     @PreAuthorize("hasAuthority('VER_CONTENIDO_BAJA')")
     @GetMapping("/bajados")
     public ResponseEntity<Page<ContenidoDTO>> allDesactivados(
@@ -81,7 +82,6 @@ public class ContenidoController {
             @RequestParam(required = false) String anio,
             @RequestParam(required = false) String titulo,
             @RequestParam(required = false) Double puntuacion,
-            @RequestParam(required = false) Integer estado,
             @RequestParam(required = false) String clasificacion,
             @RequestParam(required = false) Long id,
             @RequestParam(defaultValue = "0") int page,
@@ -120,6 +120,7 @@ public class ContenidoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
 
+    //me lo deja bajar aunque sea user normal
     @PreAuthorize("hasAuthority('DESACTIVAR_CONTENIDO')")
     @PatchMapping("/{id}/desactivar")
     public ResponseEntity<String> borrarContenido(@PathVariable long id) {
