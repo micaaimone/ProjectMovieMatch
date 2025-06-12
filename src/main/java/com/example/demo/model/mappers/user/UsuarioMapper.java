@@ -102,12 +102,10 @@ public class UsuarioMapper {
     public UsuarioEntity convertToNewEntity(NewUsuarioDTO usuarioDTO) {
         return UsuarioEntity.builder()
                 .edad(usuarioDTO.getEdad())
-                //.email(usuarioDTO.getEmail())
                 .apellido(usuarioDTO.getApellido())
                 .nombre(usuarioDTO.getNombre())
                 .telefono(usuarioDTO.getTelefono())
                 .username(usuarioDTO.getUsername())
-                //.contrasenia(usuarioDTO.getContrasenia())
                 .activo(true)
                 .generos(usuarioDTO.getGeneros())
                 .build();
