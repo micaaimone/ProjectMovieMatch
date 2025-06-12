@@ -1,4 +1,4 @@
-package com.example.demo.model.controllers;
+package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.NewSolicitudAmistadDTO;
@@ -67,6 +67,8 @@ public class AmistadController {
         return ResponseEntity.noContent().build();
     }
 
+
+//cambiar, falta q  aparezca bn el emisor
     @GetMapping("/{idReceptor}/pendientes")
     public ResponseEntity<Page<SolicitudAmistadDTO>> listarSolicitudesPendientes(
             @PathVariable Long idReceptor,
