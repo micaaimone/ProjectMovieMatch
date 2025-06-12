@@ -14,6 +14,8 @@ import java.util.List;
 @ToString
 public class ContenidoDTO {
 
+    private Long id;
+
     @Schema(description = "Título del contenido", example = "Breaking Bad")
     private String titulo;
 
