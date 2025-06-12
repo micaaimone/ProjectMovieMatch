@@ -46,11 +46,12 @@ public class CredentialsEntity implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> authorities = new HashSet<>();
 
-        for (RoleEntity role : roles) {
-            // Agregar cada permiso del rol
-            role.getPermits().forEach(permit ->
-                    authorities.add(new SimpleGrantedAuthority(permit.getPermit().name()))
-            );
+        for (RoleEntity roleEntity : roles) {
+            authorities.add(new SimpleGrantedAuthority(roleEntity.getRole().name()));
+
+            for (PermitEntity permit : roleEntity.getPermits()) {
+                authorities.add(new SimpleGrantedAuthority(permit.getPermit().name()));
+            }
         }
 
         return authorities;
