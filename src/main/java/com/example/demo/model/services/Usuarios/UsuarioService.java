@@ -96,6 +96,7 @@ public class UsuarioService {
     }
 
     // actualizar datos de usuario
+    //tengo q hacer verificacion de que no me deje modificar a un usuario q no sea el q inicio sesion
     public void actualizarUsuario(Long id, UsuarioModificarDTO nuevosDatos) {
         UsuarioEntity existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontró el usuario con el id: " + id));
@@ -105,6 +106,16 @@ public class UsuarioService {
         }
         if (nuevosDatos.getUsername() != null) {
             existente.setUsername(nuevosDatos.getUsername());
+        }
+        if(nuevosDatos.getContrasenia() != null)
+        {
+            existente.getCredencial().setPassword(passwordEncoder.encode(nuevosDatos.getContrasenia()));
+        }
+        if(nuevosDatos.getGeneros() != null)
+        {
+            nuevosDatos.getGeneros()
+                            .forEach(g -> existente.getGeneros().add(g));
+
         }
 
         usuarioRepository.save(existente);
