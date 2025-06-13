@@ -3,6 +3,7 @@ package com.example.demo.model.controllers.user;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.entities.User.ContenidoLike;
 import com.example.demo.model.entities.User.ReseniaLike;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
 import com.example.demo.model.services.Usuarios.ReseniaLikeService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -34,17 +35,21 @@ public class LikeController {
     // ------------------- Likes a contenido
     @Operation(summary = "Dar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_LIKE')")
-    @PostMapping("/{usuarioId}/like/contenido/{contenidoId}")
-    public ResponseEntity<String> likeContenido(@PathVariable Long usuarioId, @PathVariable Long contenidoId) {
-        contenidoLikeService.darLike(usuarioId, contenidoId);
+    @PostMapping("/contenido/{contenidoId}")
+    public ResponseEntity<String> likeContenido( @PathVariable Long contenidoId) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        System.out.println("usuario autenticado");
+        contenidoLikeService.darLike(usuarioAutenticado.getId(), contenidoId);
         return ResponseEntity.ok("Like a contenido registrado");
     }
 
     @Operation(summary = "Quitar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
-    @DeleteMapping("/{usuarioId}/like/contenido/{contenidoId}")
-    public ResponseEntity<String> quitarLikeContenido(@PathVariable Long usuarioId, @PathVariable Long contenidoId) {
-        boolean eliminado = contenidoLikeService.quitarLike(usuarioId, contenidoId);
+    @DeleteMapping("/contenido/{contenidoId}")
+    public ResponseEntity<String> quitarLikeContenido(@PathVariable Long contenidoId) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+
+        boolean eliminado = contenidoLikeService.quitarLike(usuarioAutenticado.getId(), contenidoId);
         if (eliminado) {
             return ResponseEntity.ok("Like a contenido eliminado");
         } else {
@@ -52,31 +57,34 @@ public class LikeController {
         }
     }
 
+    //modificar, tiene que devolver un dto
     @Operation(summary = "Ver likes de contenido")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
-    @GetMapping("/{usuarioId}/likes/contenido")
+    @GetMapping("/contenidosLikeados")
     public ResponseEntity<Page<ContenidoLike>> getContenidoLikes(
-            @PathVariable Long usuarioId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ContenidoLike> likes = contenidoLikeService.obtenerLikes(usuarioId, page, size);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        Page<ContenidoLike> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
     }
 
     // ------------------- Likes a reseñas
     @Operation(summary = "Dar like a reseña")
     @PreAuthorize("hasAuthority('USUARIO_LIKE')")
-    @PostMapping("/{usuarioId}/like/resenia/{reseniaId}")
-    public ResponseEntity<String> likeResenia(@PathVariable Long usuarioId, @PathVariable Long reseniaId) {
-        reseniaLikeService.darLike(usuarioId, reseniaId);
+    @PostMapping("/resenia/{reseniaId}")
+    public ResponseEntity<String> likeResenia(@PathVariable Long reseniaId) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        reseniaLikeService.darLike(usuarioAutenticado.getId(), reseniaId);
         return ResponseEntity.ok("Like a reseña registrado");
     }
 
     @Operation(summary = "Quitar like a reseña")
     @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
-    @DeleteMapping("/{usuarioId}/like/resenia/{reseniaId}")
-    public ResponseEntity<String> quitarLikeResenia(@PathVariable Long usuarioId, @PathVariable Long reseniaId) {
-        boolean eliminado = reseniaLikeService.quitarLike(usuarioId, reseniaId);
+    @DeleteMapping("/resenia/{reseniaId}")
+    public ResponseEntity<String> quitarLikeResenia( @PathVariable Long reseniaId) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        boolean eliminado = reseniaLikeService.quitarLike(usuarioAutenticado.getId(), reseniaId);
         if (eliminado) {
             return ResponseEntity.ok("Like a reseña eliminado");
         } else {
@@ -84,27 +92,28 @@ public class LikeController {
         }
     }
 
+    //modificar, tiene que devolver un dto
     @Operation(summary = "Ver likes de reseñas")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
-    @GetMapping("/{usuarioId}/likes/resenia")
+    @GetMapping("/reseniasLikeadas")
     public ResponseEntity<Page<ReseniaLike>> getReseniaLikes(
-            @PathVariable Long usuarioId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Page<ReseniaLike> likes = reseniaLikeService.obtenerLikes(usuarioId, page, size);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        Page<ReseniaLike> likes = reseniaLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
     }
 
     // ------------------- Listar contenido con likes
     @Operation(summary = "Ver contenidos con like")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
-    @GetMapping("/{idUsuario}/likes")
+    @GetMapping("/likes")
     public ResponseEntity<Page<ContenidoMostrarDTO>> obtenerLikes(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @PathVariable Long idUsuario) {
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ContenidoMostrarDTO> pagina = usuarioService.obtenerLikes(idUsuario, pageable);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        Page<ContenidoMostrarDTO> pagina = usuarioService.obtenerLikes(usuarioAutenticado.getId(), pageable);
         return ResponseEntity.ok(pagina);
     }
 }

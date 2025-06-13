@@ -3,6 +3,7 @@ package com.example.demo.model.controllers.user;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -36,7 +37,6 @@ public class UsuarioController {
             @ApiResponse(responseCode = "200", description = "Usuario creado con éxito"),
             @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
-    @PreAuthorize("permitAll()")
     @PostMapping("/registrar")
     public ResponseEntity<String> agregarUsuario(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -63,26 +63,48 @@ public class UsuarioController {
         return ResponseEntity.ok(usuarioService.findById(id));
     }
 
+    @Operation(summary = "Ver mi perfil")
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/miPerfil")
+    public ResponseEntity<UsuarioDTO> verMiPerfil() {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+
+        return ResponseEntity.ok(usuarioService.mostrarMiPerfil(usuarioAutenticado));
+    }
+
     // ------------------- Actualizar datos
     @Operation(summary = "Actualizar usuario", description = "Actualiza los datos de un usuario existente.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Usuario actualizado correctamente"),
             @ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content)
     })
-    @PreAuthorize("hasAuthority('USUARIO_MODIFICAR')")
-    @PutMapping("/modificar/{id}")
+    @PreAuthorize("isAuthenticated()")
+    @PutMapping("/modificar")
     public ResponseEntity<String> modificarUsuario(
-            @PathVariable Long id,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos a modificar del usuario",
                     required = true,
                     content = @Content(schema = @Schema(implementation = UsuarioModificarDTO.class))
             )
             @Valid @RequestBody UsuarioModificarDTO usuarioActualizado) {
-        usuarioService.actualizarUsuario(id, usuarioActualizado);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+
+        usuarioService.actualizarUsuario(usuarioAutenticado.getId(), usuarioActualizado);
         return ResponseEntity.ok("Usuario actualizado correctamente");
     }
 
+    @Operation(summary = "Desactivar usuario")
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/darmeDeBaja")
+    public ResponseEntity<String> desactivarMiUsuario() {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        usuarioService.cambiarEstadoUsuario(usuarioAutenticado.getId(), false);
+        return ResponseEntity.ok("Usuario desactivado.");
+    }
+
+
+
+    //estos son metodos que solo el admin puede hacer
     // ------------------- Activar / desactivar usuario
     @Operation(summary = "Activar usuario")
     @PreAuthorize("hasAuthority('USUARIO_REACTIVAR')")
@@ -113,4 +135,6 @@ public class UsuarioController {
         Page<UsuarioDTO> resultado = usuarioService.buscarUsuarios(nombre, apellido, email, username, true, pageable);
         return ResponseEntity.ok(resultado);
     }
+
+
 }

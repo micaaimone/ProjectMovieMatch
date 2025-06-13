@@ -3,8 +3,9 @@ package com.example.demo.model.controllers.user;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
 import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
-import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.AmistadService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +18,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/usuarios/amistades")
 public class AmistadController {
     private final AmistadService solicitudAmistadService;
+    //uso el service unicamente por la autenticacion
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public AmistadController(AmistadService solicitudAmistadService) {
+    public AmistadController(AmistadService solicitudAmistadService, UsuarioService usuarioService) {
         this.solicitudAmistadService = solicitudAmistadService;
+        this.usuarioService = usuarioService;
     }
 
     @PostMapping("/enviarSolicitud")
@@ -30,71 +34,75 @@ public class AmistadController {
         return ResponseEntity.ok("Solicitud enviada con exito.");
     }
 
-    @PostMapping("/{idReceptor}/aceptarSolicitud/{idEmisor}")
-    public ResponseEntity<String> aceptarSolicitud(@PathVariable Long idReceptor, @PathVariable Long idEmisor) {
-        solicitudAmistadService.aceptarSolicitud(idEmisor, idReceptor);
+    @PostMapping("/aceptarSolicitud/{idEmisor}")
+    public ResponseEntity<String> aceptarSolicitud( @PathVariable Long idEmisor) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        solicitudAmistadService.aceptarSolicitud(idEmisor, usuarioAutenticado.getId());
         return ResponseEntity.ok("Solicitud aceptada");
     }
 
-    @PostMapping("/{idReceptor}/rechazarSolicitud/{idEmisor}")
-    public ResponseEntity<String> rechazarSolicitud(@PathVariable Long idReceptor, @PathVariable Long idEmisor) {
-        solicitudAmistadService.rechazarSolicitud(idEmisor, idReceptor);
+    @PostMapping("/rechazarSolicitud/{idEmisor}")
+    public ResponseEntity<String> rechazarSolicitud(@PathVariable Long idEmisor) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        solicitudAmistadService.rechazarSolicitud(idEmisor, usuarioAutenticado.getId());
         return ResponseEntity.ok("Solicitud rechazada");
     }
 
-    @PostMapping("/{idReceptor}/bloquear/{idEmisor}")
-    public ResponseEntity<String> bloquear(@PathVariable Long idReceptor, @PathVariable Long idEmisor) {
-        solicitudAmistadService.bloquearSolicitud(idEmisor, idReceptor);
+    @PostMapping("/bloquear/{idEmisor}")
+    public ResponseEntity<String> bloquear(@PathVariable Long idEmisor) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        solicitudAmistadService.bloquearSolicitud(idEmisor, usuarioAutenticado.getId());
         return ResponseEntity.ok("Solicitud bloqueada");
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Page<SolicitudAmistadDTO>> listarPorID(@PathVariable("id") Long idEmisor,
-                                                                 @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
+    @GetMapping
+    public ResponseEntity<Page<SolicitudAmistadDTO>> listarPorID(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
-
-        return ResponseEntity.ok(solicitudAmistadService.listarMisSolicitudes(idEmisor, pageable));
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        return ResponseEntity.ok(solicitudAmistadService.listarMisSolicitudes(usuarioAutenticado.getId(), pageable));
     }
 
-    @GetMapping("/{idEmisor}/solicitud/{idReceptor}")
+    @GetMapping("/solicitud/{idReceptor}")
     public ResponseEntity<SolicitudAmistadDTO> verSolicitud(
-            @PathVariable Long idEmisor,
             @PathVariable Long idReceptor) {
-        return ResponseEntity.ok(solicitudAmistadService.obtenerSolicitud(idEmisor, idReceptor));
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        return ResponseEntity.ok(solicitudAmistadService.obtenerSolicitud(usuarioAutenticado.getId(), idReceptor));
     }
 
-    @DeleteMapping("/{idEmisor}/cancelar/{idReceptor}")
-    public ResponseEntity<Void> cancelarSolicitud(@PathVariable Long idEmisor, @PathVariable Long idReceptor) {
-        solicitudAmistadService.cancelarSolicitud(idEmisor, idReceptor);
+    @DeleteMapping("/cancelar/{idReceptor}")
+    public ResponseEntity<Void> cancelarSolicitud( @PathVariable Long idReceptor) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        solicitudAmistadService.cancelarSolicitud(usuarioAutenticado.getId(), idReceptor);
         return ResponseEntity.noContent().build();
     }
 
 
-//cambiar, falta q  aparezca bn el emisor
-    @GetMapping("/{idReceptor}/pendientes")
+    //cambiar, falta q  aparezca bn el emisor
+    @GetMapping("/pendientes")
     public ResponseEntity<Page<SolicitudAmistadDTO>> listarSolicitudesPendientes(
-            @PathVariable Long idReceptor,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(solicitudAmistadService.listarSolicitudesPendientes(idReceptor, pageable));
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        return ResponseEntity.ok(solicitudAmistadService.listarSolicitudesPendientes(usuarioAutenticado.getId(), pageable));
     }
 
     @DeleteMapping("/{idUsuario}/amigos/{idAmigo}")
-    public ResponseEntity<?> eliminarAmigo(@PathVariable Long idUsuario, @PathVariable Long idAmigo) {
-        solicitudAmistadService.eliminarAmigo(idUsuario, idAmigo);
+    public ResponseEntity<?> eliminarAmigo(@PathVariable Long idAmigo) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        solicitudAmistadService.eliminarAmigo(usuarioAutenticado.getId(), idAmigo);
         return ResponseEntity.ok("Amigo eliminado");
     }
 
-    @GetMapping("/{idEmisor}/coincidencias/{idReceptor}")
+    @GetMapping("/coincidencias/{idReceptor}")
     public ResponseEntity<Page<ContenidoMostrarDTO>> visualizarCoincidencias(
-            @PathVariable Long idEmisor,
             @PathVariable Long idReceptor,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size)
     {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ContenidoMostrarDTO> coincidencias = solicitudAmistadService.visualizarCoincidencias(idEmisor, idReceptor, pageable);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        Page<ContenidoMostrarDTO> coincidencias = solicitudAmistadService.visualizarCoincidencias(usuarioAutenticado.getId(), idReceptor, pageable);
         return ResponseEntity.ok(coincidencias);
     }
 
