@@ -4,6 +4,7 @@ import com.example.demo.Seguridad.Enum.Permit;
 import com.example.demo.Seguridad.Enum.Role;
 import org.springframework.stereotype.Component;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -11,9 +12,14 @@ import java.util.Set;
 @Component
 public class RolePermitMapper {
 
-    private static final Map<Role, Set<Permit>> rolePermissions = new HashMap<>();
 
-    static {
+    private final Map<Role, Set<Permit>> rolePermissions = new EnumMap<>(Role.class);
+
+    public RolePermitMapper() {
+        initializeMappings();
+    }
+
+    private void initializeMappings() {
         rolePermissions.put(Role.ROLE_USER, Set.of(
                 Permit.SERIES_READ,
                 Permit.VER_PELICULAS,

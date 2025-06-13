@@ -2,12 +2,14 @@ package com.example.demo.Seguridad.Config;
 
 import com.example.demo.Seguridad.Filters.JwtAuthenticationFilter;
 import com.example.demo.Seguridad.Filters.RestAuthenticationEntryPoint;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -19,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
@@ -52,7 +55,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/usuarios/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
-                        .requestMatchers("/api/").hasAnyRole("USER", "ADMIN", "PREMIUM")
+                        .requestMatchers("/api/**").hasAnyRole("USER", "ADMIN", "PREMIUM")
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
@@ -64,8 +67,19 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(e -> e.authenticationEntryPoint(restAuthenticationEntryPoint));
-
+                .exceptionHandling(e -> e.authenticationEntryPoint(restAuthenticationEntryPoint)
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setContentType("application/json");
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    String jsonResponse = String.format(
+                            "{\"error\": \"%s\", \"status\": %d, \"path\": \"%s\"}",
+                            "Acceso denegado",
+                            HttpServletResponse.SC_FORBIDDEN,
+                            request.getRequestURI()
+                    );
+                    response.getWriter().write(jsonResponse);
+                    response.getWriter().flush();
+                }));
         return http.build();
     }
 

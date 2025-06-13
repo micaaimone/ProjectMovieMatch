@@ -57,9 +57,20 @@ public class RoleInitializer {
                             .orElseThrow(() -> new RuntimeException("Permiso no encontrado: " + permitEnum)))
                     .collect(Collectors.toSet());
 
-            roleEntity.getPermits().clear();
-            roleEntity.getPermits().addAll(permitEntities);
-            roleRepository.save(roleEntity);
+            roleEntity.setPermits(permitEntities); // reemplazá el set completo
+            roleRepository.saveAndFlush(roleEntity); // forzá sincronización con la base
+
         }
+        System.out.println("\n🧩 Verificación de permisos por rol:");
+        for (Role rol : Role.values()) {
+            Set<Permit> permisos = rolePermitMapper.getPermissionsForRole(rol);
+            System.out.println(rol.name() + " → " + (permisos != null ? permisos.size() : 0) + " permisos");
+            if (permisos != null) {
+                for (Permit p : permisos) {
+                    System.out.println("   - " + p.name());
+                }
+            }
+        }
+
     }
 }
