@@ -14,7 +14,6 @@ import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoEx
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.user.UsuarioMapper;
-import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.Specifications.UsuarioSpecification;
 
@@ -28,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,32 +35,59 @@ public class UsuarioService {
 
     private final UsuarioMapper usuarioMapper;
     private final UsuarioRepository usuarioRepository;
-    private final ContenidoRepository contenidoRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final CredentialsRepository credentialsRepository;
     private final ContenidoMapper contenidoMapper;
 
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository,
+    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository,
                           RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository, ContenidoMapper contenidoMapper) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
-        this.contenidoRepository = contenidoRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.credentialsRepository = credentialsRepository;
         this.contenidoMapper = contenidoMapper;
     }
 
-    // crear un nuevo usuario
-    public void save(NewUsuarioDTO usuarioDTO) {
-        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
-            throw new UsuarioYaExisteException("Ya existe un usuario con el email especificado");
+    public void validarUsuarioExistente(NewUsuarioDTO usuarioDTO)
+    {
+        Optional<CredentialsEntity> credencialOptional = credentialsRepository.findByEmail(usuarioDTO.getEmail());
+
+        if (credencialOptional.isPresent()) {
+            UsuarioEntity usuarioExistente = credencialOptional.get().getUsuario();
+
+            if (!usuarioExistente.getActivo()) {
+                usuarioExistente.setActivo(true);
+                // Actualizar datos con los del DTO
+                usuarioExistente.setNombre(usuarioDTO.getNombre());
+                usuarioExistente.setApellido(usuarioDTO.getApellido());
+                usuarioExistente.setEdad(usuarioDTO.getEdad());
+                usuarioExistente.setTelefono(usuarioDTO.getTelefono());
+                usuarioExistente.setUsername(usuarioDTO.getUsername());
+                usuarioExistente.setGeneros(usuarioDTO.getGeneros());
+
+                // Actualizar contraseña en credenciales
+                CredentialsEntity credentialsEntity = credencialOptional.get();
+                credentialsEntity.setPassword(passwordEncoder.encode(usuarioDTO.getContrasenia()));
+
+                // Guardar cambios
+                usuarioRepository.save(usuarioExistente);
+                credentialsRepository.save(credentialsEntity);
+                throw new UsuarioYaExisteException("Se volvió a dar de alta al usuario con mail: " + usuarioDTO.getEmail() + " con la contraseña y datos que ingreso recientemente");
+            } else {
+                throw new UsuarioYaExisteException("Ya existe un usuario activo con el email especificado.");
+            }
         }
 
         if (usuarioRepository.existsByUsername(usuarioDTO.getUsername())) {
             throw new UsuarioYaExisteException("Ya existe un usuario con el username especificado");
         }
+    }
+    // crear un nuevo usuario
+    public void save(NewUsuarioDTO usuarioDTO) {
+
+        validarUsuarioExistente(usuarioDTO);
 
         UsuarioEntity usuario = usuarioMapper.convertToNewEntity(usuarioDTO);
 
@@ -79,6 +106,16 @@ public class UsuarioService {
         usuario.setCredencial(credencial);
 
         usuarioRepository.save(usuario);
+    }
+
+    public UsuarioDTO mostrarMiPerfil(UsuarioEntity usuarioEntity)
+    {
+        if(usuarioEntity.getActivo())
+        {
+            return usuarioMapper.convertToDTO(usuarioEntity);
+        } else {
+            throw new UsuarioNoEncontradoException("El usuario no se encuentra activo.");
+        }
     }
 
     // buscar usuario por ID
@@ -194,7 +231,7 @@ public class UsuarioService {
     }
 
     // obtener usuario autenticado desde el contexto de seguridad
-    private UsuarioEntity getUsuarioAutenticado() {
+    public UsuarioEntity getUsuarioAutenticado() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         CredentialsEntity credencialAutenticada = credentialsRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario autenticado no encontrado."));
