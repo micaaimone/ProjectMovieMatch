@@ -25,7 +25,7 @@ public class UsuarioModificarDTO {
     private String username;
 
     @Length(min = 6, message = "La contraseña debe tener un minimo de 6 caracteres")
-    private String contrasenia;
+    private String password;
 
     @Size(min = 1, max = 3, message = "Debes elegir minimo 1 genero y maximo 3")
     private Set<Genero> generos;

@@ -1,5 +1,6 @@
 package com.example.demo.model.DTOs.user;
 
+import com.example.demo.model.DTOs.Amistad.AmigoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.enums.Genero;
@@ -18,7 +19,6 @@ public class UsuarioDTO {
     private Long id;
     private String username;
     private CredentialDTOForUser credencial;
-    private Boolean activo;
     private List<ContenidoMostrarDTO> contenidoLikes;
     private List<ReseniaMostrarUsuarioDTO> reseniaLikes;
     private List<AmigoDTO> amigos;

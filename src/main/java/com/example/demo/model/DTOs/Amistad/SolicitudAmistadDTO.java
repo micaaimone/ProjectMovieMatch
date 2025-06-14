@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs.user;
+package com.example.demo.model.DTOs.Amistad;
 
 import com.example.demo.model.enums.EstadoSolicitud;
 import jakarta.validation.constraints.NotNull;
