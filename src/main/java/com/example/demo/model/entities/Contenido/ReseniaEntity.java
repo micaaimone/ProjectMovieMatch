@@ -1,7 +1,7 @@
 package com.example.demo.model.entities.Contenido;
 
 
-import com.example.demo.model.entities.User.ReseniaLike;
+import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,7 +40,7 @@ public class ReseniaEntity {
     private LocalDateTime fecha;
 
     @OneToMany(mappedBy = "resenia", cascade = CascadeType.ALL)
-    private List<ReseniaLike> likes = new ArrayList<>();
+    private List<ReseniaLikeEntity> likes = new ArrayList<>();
 
 
 }

@@ -65,10 +65,10 @@ public class UsuarioEntity {
     private SuscripcionEntity suscripcion;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ContenidoLike> contenidoLikes = new ArrayList<>();
+    private List<ContenidoLikeEntity> contenidoLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReseniaLike> reseniaLikes = new ArrayList<>();
+    private List<ReseniaLikeEntity> reseniaLikes = new ArrayList<>();
 
     // Likes a contenidos
     @ManyToMany
