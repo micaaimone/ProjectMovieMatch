@@ -2,7 +2,6 @@ package com.example.demo.model.entities.User;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -15,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table
-public class ContenidoLike {
+public class ContenidoLikeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
