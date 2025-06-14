@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @ToString
 @Entity
 @Table
-public class ReseniaLike {
+public class ReseniaLikeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
