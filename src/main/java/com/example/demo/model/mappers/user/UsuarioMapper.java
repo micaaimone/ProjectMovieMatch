@@ -5,16 +5,17 @@ import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import java.util.Set;
 
 import com.example.demo.model.DTOs.user.CredentialDTOForUser;
-import com.example.demo.model.DTOs.user.AmigoDTO;
+import com.example.demo.model.DTOs.Amistad.AmigoDTO;
 import com.example.demo.model.DTOs.user.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
-import com.example.demo.model.entities.User.ContenidoLike;
-import com.example.demo.model.entities.User.ReseniaLike;
+import com.example.demo.model.entities.User.ContenidoLikeEntity;
+import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class UsuarioMapper {
     private final ContenidoMapper contenidoMapper;
     private final ListasMapper listasMapper;
 
+    @Autowired
     public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper) {
         this.modelMapper = modelMapper;
         this.reseniaMapper = reseniaMapper;
@@ -45,7 +47,7 @@ public class UsuarioMapper {
         if (usuarioEntity.getContenidoLikes() != null) {
             List<ContenidoMostrarDTO> contenidoDTOS = usuarioEntity.getContenidoLikes()
                     .stream()
-                    .map(ContenidoLike::getContenido)
+                    .map(ContenidoLikeEntity::getContenido)
                     .map(contenidoMapper::convertToDTOForAdmin)
                     .toList();
             dto.setContenidoLikes(contenidoDTOS);
@@ -54,7 +56,7 @@ public class UsuarioMapper {
         if (usuarioEntity.getReseniaLikes() != null) {
             List<ReseniaMostrarUsuarioDTO> reseniaDTOS = usuarioEntity.getReseniaLikes()
                     .stream()
-                    .map(ReseniaLike::getResenia)
+                    .map(ReseniaLikeEntity::getResenia)
                     .map(reseniaMapper::convertToDTOUsuario)
                     .toList();
             dto.setReseniaLikes(reseniaDTOS);

@@ -14,10 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class PeliculaMapper {
 
+    private final ModelMapper modelMapper;
+    private final ReseniaMapper reseñaMapper;
+
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private ReseniaMapper reseñaMapper;
+    public PeliculaMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper) {
+        this.modelMapper = modelMapper;
+        this.reseñaMapper = reseñaMapper;
+    }
 
     public PeliculaDTO convertToDTO(PeliculaEntity peliculaEntity)
     {

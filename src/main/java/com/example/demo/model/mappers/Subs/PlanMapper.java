@@ -3,11 +3,14 @@ package com.example.demo.model.mappers.Subs;
 import com.example.demo.model.DTOs.subs.PlanDTO;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PlanMapper {
     private final ModelMapper modelMapper;
+
+    @Autowired
     public PlanMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }

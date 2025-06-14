@@ -6,6 +6,7 @@ import com.example.demo.model.DTOs.user.ListasSinContDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +14,8 @@ import java.util.List;
 @Component
 public class ListasMapper {
     private final ModelMapper modelMapper;
+
+    @Autowired
     public ListasMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
