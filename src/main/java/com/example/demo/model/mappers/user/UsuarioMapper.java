@@ -4,11 +4,11 @@ import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import java.util.Set;
 
-import com.example.demo.model.DTOs.user.CredentialDTOForUser;
+import com.example.demo.model.DTOs.user.*;
 import com.example.demo.model.DTOs.Amistad.AmigoDTO;
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.NewUsuarioDTO;
-import com.example.demo.model.DTOs.user.UsuarioDTO;
+import com.example.demo.model.DTOs.user.Grupo.UsuarioGrupoDTO;
+import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
@@ -28,17 +28,24 @@ public class UsuarioMapper {
     private final ReseniaMapper reseniaMapper;
     private final ContenidoMapper contenidoMapper;
     private final ListasMapper listasMapper;
+    private final GrupoMapper grupoMapper;
 
     @Autowired
-    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper) {
+    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper, GrupoMapper grupoMapper) {
         this.modelMapper = modelMapper;
         this.reseniaMapper = reseniaMapper;
         this.contenidoMapper = contenidoMapper;
         this.listasMapper = listasMapper;
+        this.grupoMapper = grupoMapper;
     }
 
     public AmigoDTO convertAmigoToDTO(UsuarioEntity usuarioEntity) {
         return modelMapper.map(usuarioEntity, AmigoDTO.class);
+    }
+
+    public UsuarioGrupoDTO convertUsuarioGrupoDTO(UsuarioEntity usuarioEntity)
+    {
+        return modelMapper.map(usuarioEntity, UsuarioGrupoDTO.class);
     }
 
     public UsuarioDTO convertToDTO(UsuarioEntity usuarioEntity) {
@@ -85,6 +92,16 @@ public class UsuarioMapper {
                     .toList();
             dto.setListas(listasDTO);
         }
+
+        if (usuarioEntity.getGrupos() != null)
+        {
+            Set<VisualizarGrupoDTO> grupoDTOS = usuarioEntity.getGrupos()
+                    .stream()
+                    .map (grupoMapper::convertToVisualizarGrupo)
+                    .collect(Collectors.toSet());
+            dto.setGrupos(grupoDTOS);
+        }
+
 
 
         Set<String> roles = usuarioEntity.getCredencial().getRoles().stream()

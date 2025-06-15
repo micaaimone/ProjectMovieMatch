@@ -3,6 +3,7 @@ package com.example.demo.model.entities.User;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -93,4 +94,7 @@ public class UsuarioEntity {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ListasContenidoEntity> listas = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "listaUsuarios", fetch = FetchType.LAZY)
+    private Set<GrupoEntity> grupos = new HashSet<>();
 }
