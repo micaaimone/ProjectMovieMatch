@@ -34,7 +34,7 @@ public class MPController {
             @ApiResponse(responseCode = "500", description = "Error interno al procesar la notificación", content = @Content)
     })
     @PostMapping("/notification")
-    public ResponseEntity<Void> recibirNoti(
+    public ResponseEntity<String> recibirNoti(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Cuerpo con los datos de la notificación enviada por Mercado Pago",
                     required = true,

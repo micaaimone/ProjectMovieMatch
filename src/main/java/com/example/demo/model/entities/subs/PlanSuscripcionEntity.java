@@ -8,7 +8,8 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
+@ToString(exclude = "ofertas")
 
 @Entity
 @Table(name = "plan_suscripcion")

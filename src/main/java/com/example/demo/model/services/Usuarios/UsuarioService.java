@@ -6,7 +6,9 @@ import com.example.demo.Seguridad.Enum.Role;
 import com.example.demo.Seguridad.repositories.CredentialsRepository;
 import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
+import com.example.demo.model.DTOs.MailDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
+import com.example.demo.model.DTOs.user.RecuperarPassDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
@@ -18,6 +20,8 @@ import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.Specifications.UsuarioSpecification;
 
+import com.example.demo.model.services.Email.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UsuarioService {
@@ -40,9 +45,11 @@ public class UsuarioService {
     private final PasswordEncoder passwordEncoder;
     private final CredentialsRepository credentialsRepository;
     private final ContenidoMapper contenidoMapper;
+    private final EmailService emailService;
 
     public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository,
-                          RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository, ContenidoMapper contenidoMapper) {
+                          RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository,
+                          ContenidoMapper contenidoMapper, EmailService emailService) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
@@ -50,6 +57,7 @@ public class UsuarioService {
         this.passwordEncoder = passwordEncoder;
         this.credentialsRepository = credentialsRepository;
         this.contenidoMapper = contenidoMapper;
+        this.emailService = emailService;
     }
 
     // crear un nuevo usuario
@@ -193,5 +201,39 @@ public class UsuarioService {
 
     public Page<ContenidoMostrarDTO> obtenerLikes(Long id, Pageable pageable) {
         return usuarioRepository.findLikes(id, pageable).map(contenidoMapper::convertToDTOForAdmin);
+    }
+
+    //mail de soporte-----------------------------------------------
+
+    public void soporte(Long idUser, MailDTO mailDTO) {
+        UsuarioEntity user = usuarioRepository.findById(idUser)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario con el id: " + idUser));
+
+        try {
+            emailService.recibirEmail(mailDTO, user.getNombre(), user.getEmail());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void recuperarPassword(RecuperarPassDTO mail) {
+
+        UsuarioEntity existe = usuarioRepository.findByEmail(mail.getMail())
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Ningun usuario registrado con el email: " + mail.getMail()));
+
+        String passRandom = UUID.randomUUID().toString().replace("-", "").substring(0, 10);
+
+        existe.getCredencial().setPassword(passwordEncoder.encode(passRandom));
+
+        String msj = "Hola "+ existe.getNombre()+ ", si olvidaste tu contraseña aqui te generamos una: \n "+ passRandom+ "\n\n " +
+                "Recorda no compartirla con nadie y al iniciar sesion dirigete a cambiar contraseña. \n\n " +
+                "Si no solicitaste el cambio de contraseña recomendamos que la cambies deprisa.\n\n" +
+                "Atte: Movie-Match";
+
+        emailService.sendEmail(mail.getMail(), " Cambio de Contraseña", msj);
+
+        usuarioRepository.save(existe);
+
+
     }
 }

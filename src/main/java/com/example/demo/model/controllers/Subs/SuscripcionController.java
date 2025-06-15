@@ -81,8 +81,8 @@ public class SuscripcionController {
     })
     @Parameter(name = "idUsuario", description = "ID del usuario que renueva la suscripción", required = true, schema = @Schema(type = "integer", example = "5"))
     @PreAuthorize("hasAuthority('SUSCRIPCION_RENOVAR')")
-    @PostMapping("/renovar")
-    public ResponseEntity<String> renovarSuscripcion(@RequestParam Long idUsuario) throws MPException, MPApiException {
+    @PostMapping("/{id}/renovar")
+    public ResponseEntity<String> renovarSuscripcion(@PathVariable("id") Long idUsuario) throws MPException, MPApiException {
         String init = mpService.crearPreferencia(suscripcionService.renovar(idUsuario));
         return ResponseEntity.ok(init);
     }

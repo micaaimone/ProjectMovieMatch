@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "plan")
 
 @Entity
 @Table(name = "ofertas")
