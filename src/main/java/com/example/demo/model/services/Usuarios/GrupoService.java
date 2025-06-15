@@ -3,6 +3,7 @@ package com.example.demo.model.services.Usuarios;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.GrupoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
@@ -10,6 +11,7 @@ import com.example.demo.model.exceptions.AmistadExceptions.UsuariosNoSonAmigos;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEsAdminException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.user.GrupoMapper;
+import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.GrupoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,12 +30,14 @@ public class GrupoService {
     private final GrupoMapper grupoMapper;
     private final GrupoRepository grupoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ContenidoRepository contenidoRepository;
 
     @Autowired
-    public GrupoService(GrupoMapper grupoMapper, GrupoRepository grupoRepository, UsuarioRepository usuarioRepository) {
+    public GrupoService(GrupoMapper grupoMapper, GrupoRepository grupoRepository, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository) {
         this.grupoMapper = grupoMapper;
         this.grupoRepository = grupoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.contenidoRepository = contenidoRepository;
     }
 
     public void save(NewGrupoDTO grupoDTO, Long idUsuario) {
@@ -234,5 +239,9 @@ public class GrupoService {
         grupoRepository.save(grupo);
     }
 
+    public Page<ContenidoEntity> obtenerMatchDeGrupo(List<Long> idsUsuarios, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return contenidoRepository.obtenerMatchDeGrupo(idsUsuarios, pageable);
+    }
 
 }

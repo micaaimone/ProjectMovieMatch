@@ -3,7 +3,9 @@ package com.example.demo.model.controllers.user;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.services.Contenido.ContenidoService;
 import com.example.demo.model.services.Usuarios.GrupoService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +17,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/usuarios/grupo")
@@ -134,6 +138,21 @@ public class GrupoController {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.eliminarGrupo(usuarioAutenticado.getId(), idGrupo);
         return ResponseEntity.ok("Grupo eliminado correctamente");
+    }
+
+    @Operation(summary = "Listar matches de grupos", description = "Permite al usuario listar los matches de un grupo")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Matches obtenidos correctamente")
+    })
+    @PreAuthorize("hasAuthority('LISTAR_MATCHES')")
+    @GetMapping("/matches")
+    public ResponseEntity<Page<ContenidoEntity>> obtenerMatchDeGrupo(
+            @RequestParam List<Long> idsUsuarios,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ContenidoEntity> matches = grupoService.obtenerMatchDeGrupo(idsUsuarios, page, size);
+        return ResponseEntity.ok(matches);
     }
 
 }
