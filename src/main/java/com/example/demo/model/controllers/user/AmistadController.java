@@ -1,8 +1,9 @@
 package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
-import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
+import com.example.demo.model.DTOs.Amistad.AmigoDTO;
+import com.example.demo.model.DTOs.Amistad.NewSolicitudAmistadDTO;
+import com.example.demo.model.DTOs.Amistad.SolicitudAmistadDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.AmistadService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -77,9 +78,7 @@ public class AmistadController {
         return ResponseEntity.noContent().build();
     }
 
-
-    //cambiar, falta q  aparezca bn el emisor
-    @GetMapping("/pendientes")
+    @GetMapping("/pendientesPropias")
     public ResponseEntity<Page<SolicitudAmistadDTO>> listarSolicitudesPendientes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
@@ -88,7 +87,16 @@ public class AmistadController {
         return ResponseEntity.ok(solicitudAmistadService.listarSolicitudesPendientes(usuarioAutenticado.getId(), pageable));
     }
 
-    @DeleteMapping("/{idUsuario}/amigos/{idAmigo}")
+    @GetMapping("/misAmigos")
+    public ResponseEntity<Page<AmigoDTO>> listarAmigosMios(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        return ResponseEntity.ok(solicitudAmistadService.mostrarMisAmigos(usuarioAutenticado.getId(), pageable));
+    }
+
+    @DeleteMapping("/amigos/{idAmigo}")
     public ResponseEntity<?> eliminarAmigo(@PathVariable Long idAmigo) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         solicitudAmistadService.eliminarAmigo(usuarioAutenticado.getId(), idAmigo);

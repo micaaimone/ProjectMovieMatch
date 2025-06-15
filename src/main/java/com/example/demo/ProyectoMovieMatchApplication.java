@@ -8,8 +8,6 @@ public class ProyectoMovieMatchApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProyectoMovieMatchApplication.class, args);
-
-		//desactivar cors y csrf de security
 	}
 
 }

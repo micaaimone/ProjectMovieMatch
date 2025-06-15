@@ -15,14 +15,19 @@ import java.util.stream.Collectors;
 
 @Component
 public class ContenidoMapper {
+    private final ModelMapper modelMapper;
+    private final ReseniaMapper reseñaMapper;
+
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private ReseniaMapper reseñaMapper;
+    public ContenidoMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper) {
+        this.modelMapper = modelMapper;
+        this.reseñaMapper = reseñaMapper;
+    }
 
     public ContenidoMostrarDTO convertToDTOForAdmin(ContenidoEntity contenidoEntity)
     {
         return ContenidoMostrarDTO.builder()
+                .id(contenidoEntity.getId_contenido())
                 .titulo(contenidoEntity.getTitulo())
                 .tipo(contenidoEntity.getTipo())
                 .build();

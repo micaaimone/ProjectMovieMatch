@@ -15,5 +15,3 @@ public class RatingDTO {
     @Schema(description = "Valor de la puntuación según la fuente", example = "8.2/10")
     private String valor;
 }
-
-//

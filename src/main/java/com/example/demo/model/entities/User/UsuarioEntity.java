@@ -3,6 +3,7 @@ package com.example.demo.model.entities.User;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -65,10 +66,10 @@ public class UsuarioEntity {
     private SuscripcionEntity suscripcion;
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ContenidoLike> contenidoLikes = new ArrayList<>();
+    private List<ContenidoLikeEntity> contenidoLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReseniaLike> reseniaLikes = new ArrayList<>();
+    private List<ReseniaLikeEntity> reseniaLikes = new ArrayList<>();
 
     // Likes a contenidos
     @ManyToMany
@@ -93,4 +94,7 @@ public class UsuarioEntity {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<ListasContenidoEntity> listas = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "listaUsuarios", fetch = FetchType.LAZY)
+    private Set<GrupoEntity> grupos = new HashSet<>();
 }

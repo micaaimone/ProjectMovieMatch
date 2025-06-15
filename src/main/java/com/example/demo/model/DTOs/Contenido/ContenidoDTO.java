@@ -40,9 +40,6 @@ public class ContenidoDTO {
     // lo traemos porque nos sirve para la interfaz en un futuro
     // private String poster;
 
-    // lo comento porque no creo que al usuario le interese de dónde sale la puntuación api
-    // private List<RatingDTO> ratings;
-
     @Schema(description = "Puntuación de una API externa (por ejemplo, IMDb)", example = "8.9")
     private double puntuacionApi;
 
@@ -53,6 +50,4 @@ public class ContenidoDTO {
     @Schema(description = "Promedio de puntuaciones dadas por los usuarios registrados", example = "9.1")
     private double promedioPuntuacionUsuario;
 
-// importan los votos de la puntuación api???
-// private String imdbVotos;
 }

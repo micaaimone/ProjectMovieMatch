@@ -1,4 +1,4 @@
-package com.example.demo.model.exceptions.UsuarioExceptions;
+package com.example.demo.model.exceptions.AmistadExceptions;
 
 public class SolicitudNotFound extends RuntimeException {
     public SolicitudNotFound(String message) {

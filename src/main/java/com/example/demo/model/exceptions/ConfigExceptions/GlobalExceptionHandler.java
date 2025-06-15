@@ -1,15 +1,17 @@
 package com.example.demo.model.exceptions.ConfigExceptions;
 
 import com.example.demo.Seguridad.DTO.AuthErrorDTO;
+import com.example.demo.model.exceptions.AmistadExceptions.UsuariosNoSonAmigos;
 import com.example.demo.model.exceptions.ContenidoExceptions.*;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
-import com.example.demo.model.exceptions.UsuarioExceptions.SolicitudAlreadyExistsException;
-import com.example.demo.model.exceptions.UsuarioExceptions.SolicitudNotFound;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
-import com.example.demo.model.exceptions.UsuarioExceptions.*;
+import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
+import com.example.demo.model.exceptions.AmistadExceptions.SolicitudAlreadyExistsException;
+import com.example.demo.model.exceptions.AmistadExceptions.SolicitudNotFound;
+import com.example.demo.model.exceptions.ListasExceptions.ListAlreadyExistsException;
+import com.example.demo.model.exceptions.ListasExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.SuscripcionException.*;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEsAdminException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -306,6 +308,31 @@ public class GlobalExceptionHandler {
     // like
     @ExceptionHandler(LikeAlreadyExistsException.class)
     public ResponseEntity<ErrorDetalles> handlerLikeAlreadyExists(LikeAlreadyExistsException ex) {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                status.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, status);
+    }
+
+    //amigos y grupos
+    @ExceptionHandler(UsuariosNoSonAmigos.class)
+    public ResponseEntity<ErrorDetalles> handlerUsuariosNoSonAmigos(UsuariosNoSonAmigos ex)
+    {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                status.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, status);
+    }
+
+    @ExceptionHandler(UsuarioNoEsAdminException.class)
+    public ResponseEntity<ErrorDetalles> handlerUsuariosNoSonAmigos(UsuarioNoEsAdminException ex)
+    {
         HttpStatus status = HttpStatus.CONFLICT;
         ErrorDetalles errorDetalles = new ErrorDetalles(
                 ex.getMessage(),

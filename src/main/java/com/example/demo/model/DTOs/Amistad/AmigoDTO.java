@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs.user;
+package com.example.demo.model.DTOs.Amistad;
 
 import lombok.*;
 
@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Builder
 public class AmigoDTO {
     private Long id;
     private String username;

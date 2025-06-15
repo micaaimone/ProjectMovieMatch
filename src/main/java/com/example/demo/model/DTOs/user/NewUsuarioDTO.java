@@ -40,7 +40,7 @@ public class NewUsuarioDTO {
 
     @NotBlank(message = "La contraseña es requerida")
     @Length(min = 6, message = "La contraseña debe tener un minimo de 6 caracteres")
-    private String contrasenia;
+    private String password;
 
     @NotNull(message = "Debe elegir al menos dos generos")
     @Size(min = 1, max = 3, message = "Debes elegir minimo 1 genero y maximo 3")

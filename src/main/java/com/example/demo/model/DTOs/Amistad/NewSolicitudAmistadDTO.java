@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs.user;
+package com.example.demo.model.DTOs.Amistad;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -19,5 +19,4 @@ public class NewSolicitudAmistadDTO {
     @NotNull(message = "El id receptor de ser ingresado")
     @Positive
     private Long idReceptor;
-
 }

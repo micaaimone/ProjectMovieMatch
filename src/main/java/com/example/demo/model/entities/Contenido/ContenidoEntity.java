@@ -1,6 +1,6 @@
 package com.example.demo.model.entities.Contenido;
 
-import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -93,7 +93,7 @@ public abstract class ContenidoEntity {
     private String respuesta;
 
     @OneToMany(mappedBy = "contenido", cascade = CascadeType.ALL)
-    private List<ContenidoLike> likes = new ArrayList<>();
+    private List<ContenidoLikeEntity> likes = new ArrayList<>();
 
     public boolean isActivo() {
         return activo;

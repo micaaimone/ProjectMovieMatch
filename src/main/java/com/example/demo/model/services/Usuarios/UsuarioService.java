@@ -69,7 +69,7 @@ public class UsuarioService {
 
                 // Actualizar contraseña en credenciales
                 CredentialsEntity credentialsEntity = credencialOptional.get();
-                credentialsEntity.setPassword(passwordEncoder.encode(usuarioDTO.getContrasenia()));
+                credentialsEntity.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
 
                 // Guardar cambios
                 usuarioRepository.save(usuarioExistente);
@@ -93,7 +93,7 @@ public class UsuarioService {
 
         CredentialsEntity credencial = new CredentialsEntity();
         credencial.setEmail(usuarioDTO.getEmail());
-        credencial.setPassword(passwordEncoder.encode(usuarioDTO.getContrasenia()));
+        credencial.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
         credencial.setUsuario(usuario);
 
         RoleEntity roleUser = roleRepository.findByRole(Role.ROLE_USER)
@@ -154,9 +154,9 @@ public class UsuarioService {
         if (nuevosDatos.getUsername() != null) {
             existente.setUsername(nuevosDatos.getUsername());
         }
-        if(nuevosDatos.getContrasenia() != null)
+        if(nuevosDatos.getPassword() != null)
         {
-            existente.getCredencial().setPassword(passwordEncoder.encode(nuevosDatos.getContrasenia()));
+            existente.getCredencial().setPassword(passwordEncoder.encode(nuevosDatos.getPassword()));
         }
         if(nuevosDatos.getGeneros() != null)
         {

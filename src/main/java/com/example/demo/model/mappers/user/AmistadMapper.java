@@ -1,10 +1,12 @@
 package com.example.demo.model.mappers.user;
 
-import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
-import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
-import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.DTOs.Amistad.AmigoDTO;
+import com.example.demo.model.DTOs.Amistad.NewSolicitudAmistadDTO;
+import com.example.demo.model.DTOs.Amistad.SolicitudAmistadDTO;
 import com.example.demo.model.entities.User.AmistadEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,6 +14,7 @@ public class AmistadMapper {
 
     private final ModelMapper modelMapper;
 
+    @Autowired
     public AmistadMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }
@@ -21,6 +24,14 @@ public class AmistadMapper {
         return AmistadEntity.builder()
                 .idEmisor(newSolicitudAmistadDTO.getIdEmisor())
                 .idReceptor(newSolicitudAmistadDTO.getIdReceptor())
+                .build();
+    }
+
+    public AmigoDTO convertToAmigoDTO(UsuarioEntity usuario)
+    {
+        return AmigoDTO.builder()
+                .id(usuario.getId())
+                .username(usuario.getUsername())
                 .build();
     }
 

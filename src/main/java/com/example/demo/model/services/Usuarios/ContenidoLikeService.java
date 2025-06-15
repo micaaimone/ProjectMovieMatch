@@ -1,10 +1,10 @@
 package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
-import com.example.demo.model.exceptions.UsuarioExceptions.LikeAlreadyExistsException;
+import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
@@ -41,7 +41,7 @@ public class ContenidoLikeService {
             throw new LikeAlreadyExistsException("Ya diste like a este contenido");
         }
 
-        ContenidoLike like = new ContenidoLike();
+        ContenidoLikeEntity like = new ContenidoLikeEntity();
         like.setUsuario(usuario);
         like.setContenido(contenido);
         like.setFechaLike(LocalDateTime.now());
@@ -55,7 +55,7 @@ public class ContenidoLikeService {
         ContenidoEntity contenido = contenidoRepository.findById(contenidoId)
                 .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
 
-        Optional<ContenidoLike> likeOpt = contenidoLikeRepository.findByUsuarioAndContenido(usuario, contenido);
+        Optional<ContenidoLikeEntity> likeOpt = contenidoLikeRepository.findByUsuarioAndContenido(usuario, contenido);
         if (likeOpt.isPresent()) {
             contenidoLikeRepository.delete(likeOpt.get());
             return true;
@@ -63,7 +63,7 @@ public class ContenidoLikeService {
         return false;
     }
 
-    public Page<ContenidoLike> obtenerLikes(Long usuarioId, int page, int size) {
+    public Page<ContenidoLikeEntity> obtenerLikes(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 

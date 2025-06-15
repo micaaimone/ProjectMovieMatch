@@ -1,16 +1,16 @@
 package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.user.NewSolicitudAmistadDTO;
-import com.example.demo.model.DTOs.user.SolicitudAmistadDTO;
-import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.DTOs.Amistad.AmigoDTO;
+import com.example.demo.model.DTOs.Amistad.NewSolicitudAmistadDTO;
+import com.example.demo.model.DTOs.Amistad.SolicitudAmistadDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.AmistadEntity;
-import com.example.demo.model.entities.User.ContenidoLike;
+import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.enums.EstadoSolicitud;
-import com.example.demo.model.exceptions.UsuarioExceptions.SolicitudAlreadyExistsException;
-import com.example.demo.model.exceptions.UsuarioExceptions.SolicitudNotFound;
+import com.example.demo.model.exceptions.AmistadExceptions.SolicitudAlreadyExistsException;
+import com.example.demo.model.exceptions.AmistadExceptions.SolicitudNotFound;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.user.AmistadMapper;
@@ -30,14 +30,15 @@ public class AmistadService {
     private final UsuarioRepository usuarioRepository;
     private final AmistadMapper solicitudAmistadMapper;
     private final ContenidoMapper contenidoMapper;
+    private final AmistadMapper amistadMapper;
 
-    public AmistadService(AmistadRepository solicitudAmistadRepository, UsuarioRepository usuarioRepository, AmistadMapper solicitudAmistadMapper, ContenidoMapper contenidoMapper) {
+    public AmistadService(AmistadRepository solicitudAmistadRepository, UsuarioRepository usuarioRepository, AmistadMapper solicitudAmistadMapper, ContenidoMapper contenidoMapper, AmistadMapper amistadMapper) {
         this.solicitudAmistadRepository = solicitudAmistadRepository;
         this.usuarioRepository = usuarioRepository;
         this.solicitudAmistadMapper = solicitudAmistadMapper;
         this.contenidoMapper = contenidoMapper;
+        this.amistadMapper = amistadMapper;
     }
-
 
     private UsuarioEntity validarUsuario(Long id) {
         UsuarioEntity usuario = usuarioRepository.findById(id)
@@ -50,10 +51,7 @@ public class AmistadService {
         return usuario;
     }
 
-
-
-    public AmistadEntity validarSolicitud(Long idEmisor, Long idReceptor)
-    {
+    public AmistadEntity validarSolicitud(Long idEmisor, Long idReceptor) {
         AmistadEntity solicitud = solicitudAmistadRepository
                 .findByIdEmisorAndIdReceptor(idEmisor, idReceptor)
                 .orElseThrow(() -> new SolicitudNotFound("No se encontró una solicitud con los ID's enviados"));
@@ -64,7 +62,6 @@ public class AmistadService {
 
         return solicitud;
     }
-
 
     public void save(NewSolicitudAmistadDTO solicitudAmistadDTO) {
 
@@ -113,9 +110,7 @@ public class AmistadService {
         solicitudAmistadRepository.save(solicitudNueva);
     }
 
-
-    public void aceptarSolicitud(Long idEmisor, Long idReceptor)
-    {
+    public void aceptarSolicitud(Long idEmisor, Long idReceptor) {
         //validamos usuarios
         validarUsuario(idEmisor);
         validarUsuario(idReceptor);
@@ -142,8 +137,7 @@ public class AmistadService {
         usuarioRepository.save(receptor);
     }
 
-    public void rechazarSolicitud(Long idEmisor, Long idReceptor)
-    {
+    public void rechazarSolicitud(Long idEmisor, Long idReceptor) {
         //validamos usuarios
         validarUsuario(idEmisor);
         validarUsuario(idReceptor);
@@ -161,8 +155,7 @@ public class AmistadService {
 
     }
 
-    public void bloquearSolicitud(Long idEmisor, Long idReceptor)
-    {
+    public void bloquearSolicitud(Long idEmisor, Long idReceptor) {
         //validamos usuarios
         validarUsuario(idEmisor);
         validarUsuario(idReceptor);
@@ -180,8 +173,7 @@ public class AmistadService {
         solicitudAmistadRepository.save(solicitud);
     }
 
-    public Page<SolicitudAmistadDTO> listarMisSolicitudes(Long idEmisor, Pageable pageable)
-    {
+    public Page<SolicitudAmistadDTO> listarMisSolicitudes(Long idEmisor, Pageable pageable) {
         //validamos usuarios
         validarUsuario(idEmisor);
 
@@ -223,7 +215,6 @@ public class AmistadService {
         solicitudAmistadRepository.delete(solicitud);
     }
 
-
     public Page<ContenidoMostrarDTO> visualizarCoincidencias(Long idEmisor, Long idReceptor, Pageable pageable) {
         UsuarioEntity emisor = validarUsuario(idEmisor);
         UsuarioEntity receptor = validarUsuario(idReceptor);
@@ -231,12 +222,12 @@ public class AmistadService {
         // Sacamos los ContenidoEntity de los likes de cada usuario
         List<ContenidoEntity> likesEmisor = emisor.getContenidoLikes()
                 .stream()
-                .map(ContenidoLike::getContenido)
+                .map(ContenidoLikeEntity::getContenido)
                 .toList();
 
         List<ContenidoEntity> likesReceptor = receptor.getContenidoLikes()
                 .stream()
-                .map(ContenidoLike::getContenido)
+                .map(ContenidoLikeEntity::getContenido)
                 .toList();
 
         // Buscamos las coincidencias entre los dos sets de contenidos
@@ -253,9 +244,6 @@ public class AmistadService {
         return new PageImpl<>(coincidencias, pageable, coincidencias.size());
     }
 
-
-
-
     public Page<SolicitudAmistadDTO> listarSolicitudesPendientes(Long idReceptor, Pageable pageable) {
         // validamos usuario
         validarUsuario(idReceptor);
@@ -270,10 +258,7 @@ public class AmistadService {
         return solicitudes.map(solicitudAmistadMapper::convertToDTO);
     }
 
-    public void eliminarAmigo(Long idUsuario, Long idAmigo) {
-        Long idEmisor = idUsuario;
-        Long idReceptor = idAmigo;
-
+    public void eliminarAmigo(Long idEmisor, Long idReceptor) {
         // validamos usuarios
         UsuarioEntity emisor = validarUsuario(idEmisor);
         UsuarioEntity receptor = validarUsuario(idReceptor);
@@ -300,5 +285,20 @@ public class AmistadService {
             throw new RuntimeException("No existe la relación de amistad entre los usuarios.");
         }
     }
+
+    public Page<AmigoDTO> mostrarMisAmigos(Long idEmisor, Pageable pageable) {
+        // validamos usuario
+        UsuarioEntity emisor = validarUsuario(idEmisor);
+
+        List<UsuarioEntity> amigos = emisor.getAmigos();
+
+        List<AmigoDTO> amigosDTOs = amigos.stream()
+                .map(amistadMapper::convertToAmigoDTO)
+                .toList();
+
+        return new PageImpl<>(amigosDTOs, pageable, amigosDTOs.size());
+
+    }
+
 
 }

@@ -11,6 +11,8 @@ import lombok.*;
 @ToString
 @Builder
 public class ContenidoMostrarDTO {
+    private Long id;
+
     @Schema(description = "Título del contenido", example = "El Señor de los Anillos")
     private String titulo;
 

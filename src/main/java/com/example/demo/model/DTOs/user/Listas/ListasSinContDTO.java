@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs.user;
+package com.example.demo.model.DTOs.user.Listas;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

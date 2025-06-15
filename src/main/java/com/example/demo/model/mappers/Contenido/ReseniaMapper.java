@@ -15,10 +15,16 @@ import java.time.LocalDateTime;
 
 @Component
 public class ReseniaMapper {
+    private final ModelMapper modelMapper;
+    private final UsuarioRepository usuarioRepository;
+    private final ContenidoRepository contenidoRepository;
+
     @Autowired
-    private ModelMapper modelMapper;
-    private UsuarioRepository usuarioRepository;
-    private ContenidoRepository contenidoRepository;
+    public ReseniaMapper(ModelMapper modelMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository) {
+        this.modelMapper = modelMapper;
+        this.usuarioRepository = usuarioRepository;
+        this.contenidoRepository = contenidoRepository;
+    }
 
     public ReseniaDTO convertToDTO(ReseniaEntity reseñaEntity)
     {
@@ -33,6 +39,7 @@ public class ReseniaMapper {
     public ReseniaMostrarUsuarioDTO convertToDTOUsuario(ReseniaEntity reseñaEntity)
     {
         return ReseniaMostrarUsuarioDTO.builder()
+                .id(reseñaEntity.getId_resenia())
                 .nombre(reseñaEntity.getContenido().getTitulo())
                 .puntuacionU(reseñaEntity.getPuntuacionU())
                 .comentario(reseñaEntity.getComentario())
@@ -42,7 +49,6 @@ public class ReseniaMapper {
     public ReseniaEntity convertToEntity(ReseniaDTO reseñaDTO, UsuarioEntity usuario, ContenidoEntity contenido)
     {
         return ReseniaEntity.builder()
-//                .id_resenia(reseñaDTO.getId())
                 .usuario(usuario)
                 .contenido(contenido)
                 .puntuacionU(reseñaDTO.getPuntuacionU())

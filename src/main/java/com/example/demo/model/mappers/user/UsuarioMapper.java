@@ -4,17 +4,18 @@ import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import java.util.Set;
 
-import com.example.demo.model.DTOs.user.CredentialDTOForUser;
-import com.example.demo.model.DTOs.user.AmigoDTO;
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.NewUsuarioDTO;
-import com.example.demo.model.DTOs.user.UsuarioDTO;
-import com.example.demo.model.entities.User.ContenidoLike;
-import com.example.demo.model.entities.User.ReseniaLike;
+import com.example.demo.model.DTOs.user.*;
+import com.example.demo.model.DTOs.Amistad.AmigoDTO;
+import com.example.demo.model.DTOs.user.Grupo.UsuarioGrupoDTO;
+import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
+import com.example.demo.model.entities.User.ContenidoLikeEntity;
+import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -27,16 +28,24 @@ public class UsuarioMapper {
     private final ReseniaMapper reseniaMapper;
     private final ContenidoMapper contenidoMapper;
     private final ListasMapper listasMapper;
+    private final GrupoMapper grupoMapper;
 
-    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper) {
+    @Autowired
+    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper, GrupoMapper grupoMapper) {
         this.modelMapper = modelMapper;
         this.reseniaMapper = reseniaMapper;
         this.contenidoMapper = contenidoMapper;
         this.listasMapper = listasMapper;
+        this.grupoMapper = grupoMapper;
     }
 
     public AmigoDTO convertAmigoToDTO(UsuarioEntity usuarioEntity) {
         return modelMapper.map(usuarioEntity, AmigoDTO.class);
+    }
+
+    public UsuarioGrupoDTO convertUsuarioGrupoDTO(UsuarioEntity usuarioEntity)
+    {
+        return modelMapper.map(usuarioEntity, UsuarioGrupoDTO.class);
     }
 
     public UsuarioDTO convertToDTO(UsuarioEntity usuarioEntity) {
@@ -45,7 +54,7 @@ public class UsuarioMapper {
         if (usuarioEntity.getContenidoLikes() != null) {
             List<ContenidoMostrarDTO> contenidoDTOS = usuarioEntity.getContenidoLikes()
                     .stream()
-                    .map(ContenidoLike::getContenido)
+                    .map(ContenidoLikeEntity::getContenido)
                     .map(contenidoMapper::convertToDTOForAdmin)
                     .toList();
             dto.setContenidoLikes(contenidoDTOS);
@@ -54,7 +63,7 @@ public class UsuarioMapper {
         if (usuarioEntity.getReseniaLikes() != null) {
             List<ReseniaMostrarUsuarioDTO> reseniaDTOS = usuarioEntity.getReseniaLikes()
                     .stream()
-                    .map(ReseniaLike::getResenia)
+                    .map(ReseniaLikeEntity::getResenia)
                     .map(reseniaMapper::convertToDTOUsuario)
                     .toList();
             dto.setReseniaLikes(reseniaDTOS);
@@ -83,6 +92,16 @@ public class UsuarioMapper {
                     .toList();
             dto.setListas(listasDTO);
         }
+
+        if (usuarioEntity.getGrupos() != null)
+        {
+            Set<VisualizarGrupoDTO> grupoDTOS = usuarioEntity.getGrupos()
+                    .stream()
+                    .map (grupoMapper::convertToVisualizarGrupo)
+                    .collect(Collectors.toSet());
+            dto.setGrupos(grupoDTOS);
+        }
+
 
 
         Set<String> roles = usuarioEntity.getCredencial().getRoles().stream()
