@@ -43,7 +43,8 @@ public class RolePermitMapper {
                 Permit.USUARIO_MODIFICAR,
                 Permit.USUARIO_LIKE,
                 Permit.USUARIO_QUITAR_LIKE,
-                Permit.USUARIO_VER_LIKES
+                Permit.USUARIO_VER_LIKES,
+                Permit.USUARIO_SOLICITAR_SOPORTE
         ));
 
         rolePermissions.put(Role.ROLE_PREMIUM, rolePermissions.get(Role.ROLE_USER));
@@ -93,7 +94,8 @@ public class RolePermitMapper {
                 Permit.USUARIO_QUITAR_LIKE,
                 Permit.USUARIO_VER_LIKES,
                 Permit.USUARIO_LISTAR_ACTIVOS,
-                Permit.USUARIO_LISTAR_DESACTIVADOS
+                Permit.USUARIO_LISTAR_DESACTIVADOS,
+                Permit.USUARIO_ENVIAR_ANUNCIO
         ));
     }
 
