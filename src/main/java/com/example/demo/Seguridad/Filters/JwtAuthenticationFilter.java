@@ -2,6 +2,7 @@ package com.example.demo.Seguridad.Filters;
 
 
 import com.example.demo.Seguridad.services.JwtService;
+import com.example.demo.Seguridad.services.TokenBlacklistService;
 import com.example.demo.Seguridad.services.UserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -22,11 +23,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     public JwtAuthenticationFilter(JwtService jwtService,
-                                   UserDetailsService userDetailsService) {
+                                   UserDetailsService userDetailsService, TokenBlacklistService tokenBlacklistService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
@@ -47,6 +50,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
+
+        if (tokenBlacklistService.isBlacklisted(jwt)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"error\": \"Token expirado o invalidado. Cerrá sesión e iniciá de nuevo.\"}");
+            response.getWriter().flush();
+            return;
+        }
+
         final String username = jwtService.extractUsername(jwt);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -59,7 +71,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 null,
                                 userDetails.getAuthorities()
                         );
-                System.out.println("⛔ Filtro JWT ejecutado para: " + request.getRequestURI());
 
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);

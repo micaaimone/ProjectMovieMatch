@@ -5,26 +5,26 @@ import com.example.demo.Seguridad.DTO.AuthResponse;
 import com.example.demo.Seguridad.DTO.RefreshTokenRequest;
 import com.example.demo.Seguridad.services.AuthService;
 import com.example.demo.Seguridad.services.JwtService;
+import com.example.demo.Seguridad.services.TokenBlacklistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
+    private final TokenBlacklistService blacklistService;
 
-    public AuthController(AuthService authService, JwtService jwtService) {
+    public AuthController(AuthService authService, JwtService jwtService, TokenBlacklistService blacklistService) {
         this.authService = authService;
         this.jwtService = jwtService;
+        this.blacklistService = blacklistService;
     }
     @Operation(
             summary = "Autenticación de usuario",
@@ -63,4 +63,20 @@ public class AuthController {
 
         return ResponseEntity.badRequest().build();
     }
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken,
+                                         @RequestBody RefreshTokenRequest refreshTokenRequest) {
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            String token = accessToken.substring(7);
+            blacklistService.blacklist(token); // invalida el access
+        }
+
+        String refreshToken = refreshTokenRequest.getRefreshToken();
+        if (refreshToken != null && !refreshToken.isBlank()) {
+            blacklistService.blacklist(refreshToken); // invalida el refresh
+        }
+
+        return ResponseEntity.ok("Sesión cerrada correctamente.");
+    }
+
 }
