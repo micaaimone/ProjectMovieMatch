@@ -4,14 +4,10 @@ import com.example.demo.Seguridad.Enum.Permit;
 import com.example.demo.Seguridad.Enum.Role;
 import org.springframework.stereotype.Component;
 
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Component
 public class RolePermitMapper {
-
 
     private final Map<Role, Set<Permit>> rolePermissions = new EnumMap<>(Role.class);
 
@@ -49,10 +45,30 @@ public class RolePermitMapper {
                 Permit.USUARIO_MODIFICAR,
                 Permit.USUARIO_LIKE,
                 Permit.USUARIO_QUITAR_LIKE,
-                Permit.USUARIO_VER_LIKES
+                Permit.USUARIO_VER_LIKES,
+                Permit.CREAR_GRUPO,
+                Permit.VER_GRUPO,
+                Permit.ENVIAR_SOLICITUD_AMISTAD,
+                Permit.ACEPTAR_SOLICITUD_AMISTAD,
+                Permit.RECHAZAR_SOLICITUD_AMISTAD,
+                Permit.BLOQUEAR_USUARIO,
+                Permit.CANCELAR_SOLICITUD,
+                Permit.VER_SOLICITUD,
+                Permit.VER_SOLICITUDES,
+                Permit.VER_AMIGOS,
+                Permit.ELIMINAR_AMIGO,
+                Permit.VER_COINCIDENCIAS
         ));
 
-        rolePermissions.put(Role.ROLE_PREMIUM, rolePermissions.get(Role.ROLE_USER));
+        // ROLE_PREMIUM hereda de USER + permisos adicionales
+        Set<Permit> premiumPermits = new HashSet<>(rolePermissions.get(Role.ROLE_USER));
+        premiumPermits.addAll(Set.of(
+                Permit.GENERO_ILIMITADO,
+                Permit.MODIFICAR_GRUPO,
+                Permit.AGREGAR_USUARIO_A_GRUPO,
+                Permit.ELIMINAR_USUARIO_DE_GRUPO
+        ));
+        rolePermissions.put(Role.ROLE_PREMIUM, Set.copyOf(premiumPermits));
 
         rolePermissions.put(Role.ROLE_ADMIN, Set.of(
                 Permit.SERIES_READ,
@@ -99,7 +115,23 @@ public class RolePermitMapper {
                 Permit.USUARIO_QUITAR_LIKE,
                 Permit.USUARIO_VER_LIKES,
                 Permit.USUARIO_LISTAR_ACTIVOS,
-                Permit.USUARIO_LISTAR_DESACTIVADOS
+                Permit.USUARIO_LISTAR_DESACTIVADOS,
+                Permit.CREAR_GRUPO,
+                Permit.VER_GRUPO,
+                Permit.MODIFICAR_GRUPO,
+                Permit.AGREGAR_USUARIO_A_GRUPO,
+                Permit.ELIMINAR_USUARIO_DE_GRUPO,
+                Permit.ELIMINAR_GRUPO,
+                Permit.ENVIAR_SOLICITUD_AMISTAD,
+                Permit.ACEPTAR_SOLICITUD_AMISTAD,
+                Permit.RECHAZAR_SOLICITUD_AMISTAD,
+                Permit.BLOQUEAR_USUARIO,
+                Permit.CANCELAR_SOLICITUD,
+                Permit.VER_SOLICITUD,
+                Permit.VER_SOLICITUDES,
+                Permit.VER_AMIGOS,
+                Permit.ELIMINAR_AMIGO,
+                Permit.VER_COINCIDENCIAS
         ));
     }
 

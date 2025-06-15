@@ -28,6 +28,11 @@ public class GrupoEntity {
     private UsuarioEntity administrador;
 
     @ManyToMany
+    @JoinTable(
+            name = "grupos_lista_usuarios",
+            joinColumns = @JoinColumn(name = "grupo_id"),
+            inverseJoinColumns = @JoinColumn(name = "usuario_id")
+    )
     private Set<UsuarioEntity> listaUsuarios = new HashSet<>();
 
 }
