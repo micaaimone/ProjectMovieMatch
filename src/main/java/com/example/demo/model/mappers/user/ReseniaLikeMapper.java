@@ -1,6 +1,6 @@
 package com.example.demo.model.mappers.user;
 
-import com.example.demo.model.DTOs.user.ReseniaLikeDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
 import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

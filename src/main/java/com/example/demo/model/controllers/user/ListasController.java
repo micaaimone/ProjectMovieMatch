@@ -1,7 +1,7 @@
 package com.example.demo.model.controllers.user;
 
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.ListasSinContDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ListasService;
 import com.example.demo.model.services.Usuarios.UsuarioService;

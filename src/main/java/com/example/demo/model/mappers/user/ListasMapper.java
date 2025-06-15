@@ -1,8 +1,8 @@
 package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.ListasSinContDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import org.modelmapper.ModelMapper;

@@ -1,7 +1,5 @@
-package com.example.demo.model.DTOs.user;
+package com.example.demo.model.DTOs.Resenia;
 
-import com.example.demo.model.entities.Contenido.ReseniaEntity;
-import com.example.demo.model.entities.User.UsuarioEntity;
 import lombok.*;
 
 import java.time.LocalDateTime;

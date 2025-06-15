@@ -1,4 +1,4 @@
-package com.example.demo.model.DTOs.user;
+package com.example.demo.model.DTOs.user.Listas;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import lombok.*;

@@ -1,9 +1,8 @@
 package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.user.ReseniaLikeDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
-import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
 import com.example.demo.model.services.Usuarios.ReseniaLikeService;

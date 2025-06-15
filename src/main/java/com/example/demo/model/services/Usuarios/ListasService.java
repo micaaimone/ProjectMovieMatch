@@ -1,15 +1,15 @@
 package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.ListasSinContDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
+import com.example.demo.model.exceptions.ListasExceptions.ListAlreadyExistsException;
+import com.example.demo.model.exceptions.ListasExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;

@@ -1,26 +1,23 @@
 package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.DTOs.user.ReseniaLikeDTO;
+import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
 import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ReseniaNotFound;
-import com.example.demo.model.exceptions.UsuarioExceptions.LikeAlreadyExistsException;
+import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ReseniaLikeMapper;
 import com.example.demo.model.repositories.Contenido.ReseniaRepository;
 import com.example.demo.model.repositories.Usuarios.ReseniaLikeRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service

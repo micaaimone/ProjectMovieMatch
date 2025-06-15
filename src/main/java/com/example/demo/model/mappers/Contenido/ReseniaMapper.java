@@ -49,7 +49,6 @@ public class ReseniaMapper {
     public ReseniaEntity convertToEntity(ReseniaDTO reseñaDTO, UsuarioEntity usuario, ContenidoEntity contenido)
     {
         return ReseniaEntity.builder()
-//                .id_resenia(reseñaDTO.getId())
                 .usuario(usuario)
                 .contenido(contenido)
                 .puntuacionU(reseñaDTO.getPuntuacionU())

@@ -4,7 +4,7 @@ import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
-import com.example.demo.model.exceptions.UsuarioExceptions.LikeAlreadyExistsException;
+import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
