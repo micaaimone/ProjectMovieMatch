@@ -38,10 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         // Evita filtrar las rutas públicas
         String path = request.getServletPath();
-        if (path.equals("/auth") || path.equals("/auth/refresh") || path.equals("/usuarios/registrar")) {
+        if (path.startsWith("/v3/api-docs") ||
+                path.startsWith("/swagger-ui") ||
+                path.equals("/auth") || path.equals("/auth/refresh") || path.equals("/usuarios/registrar")) {
             filterChain.doFilter(request, response);
             return;
         }
+
 
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
