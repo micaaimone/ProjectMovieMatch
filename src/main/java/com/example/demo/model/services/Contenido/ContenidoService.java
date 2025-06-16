@@ -125,7 +125,7 @@ public class ContenidoService {
         return contenidoMapper.convertToDTO(contenido);
     }
 
-    // primeras reco
+    // primeras reco (basarlo en los generos fav)
 
 
 

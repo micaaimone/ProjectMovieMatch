@@ -58,7 +58,8 @@ public class RolePermitMapper {
                 Permit.VER_AMIGOS,
                 Permit.ELIMINAR_AMIGO,
                 Permit.VER_COINCIDENCIAS,
-                Permit.LISTAR_MATCHES
+                Permit.LISTAR_MATCHES,
+                Permit.VISUALIZAR_RECOMENDACIONES_POR_LIKES
         ));
 
         // ROLE_PREMIUM hereda de USER + permisos adicionales
@@ -132,7 +133,9 @@ public class RolePermitMapper {
                 Permit.VER_SOLICITUDES,
                 Permit.VER_AMIGOS,
                 Permit.ELIMINAR_AMIGO,
-                Permit.VER_COINCIDENCIAS
+                Permit.VER_COINCIDENCIAS,
+                Permit.LISTAR_MATCHES,
+                Permit.VISUALIZAR_RECOMENDACIONES_POR_LIKES
         ));
     }
 
