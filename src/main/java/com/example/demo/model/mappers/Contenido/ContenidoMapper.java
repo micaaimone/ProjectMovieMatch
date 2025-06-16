@@ -4,7 +4,6 @@ import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
-import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +62,7 @@ public class ContenidoMapper {
 
     public ContenidoEntity convertToEntity(ContenidoDTO contenidoDTO)
     {
-        ContenidoEntity entity = modelMapper.map(contenidoDTO, PeliculaEntity.class);
 
-        return entity;
+        return modelMapper.map(contenidoDTO, ContenidoEntity.class);
     }
 }
