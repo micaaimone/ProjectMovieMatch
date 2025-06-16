@@ -34,7 +34,7 @@ public class NewUsuarioDTO {
     private String telefono;
 
     @NotBlank(message = "El username es requerido")
-    @Pattern(regexp = "^(?!\\d+$).+", message = "No puede ser solo números")
+    @Pattern(regexp = "^(?!\\d+$).+", message = "El username no puede ser solo números")
     @Length(min = 4, message = "El username debe tener un minimo de 4 caracteres")
     private String username;
 

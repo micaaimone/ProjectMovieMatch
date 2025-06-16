@@ -85,7 +85,6 @@ public class UsuarioController {
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/modificar")
     public ResponseEntity<String> modificarUsuario(
-            @PathVariable Long id,
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos a modificar del usuario",
                     required = true,
@@ -119,14 +118,6 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario activado.");
     }
 
-    @Operation(summary = "Desactivar usuario")
-    @PreAuthorize("hasAuthority('USUARIO_REACTIVAR')")
-    @PatchMapping("/darDeBaja/{id}")
-    public ResponseEntity<String> desactivarUsuario(@PathVariable Long id) {
-        usuarioService.cambiarEstadoUsuario(id, false);
-        return ResponseEntity.ok("Usuario desactivado.");
-    }
-
     // ------------------- Listar usuarios activos / desactivados
     @Operation(summary = "Listar usuarios activos")
     @PreAuthorize("hasAuthority('USUARIO_LISTAR')")
@@ -146,10 +137,12 @@ public class UsuarioController {
     //recibimos un mail de queja de un usuario
     @Operation(summary = "Enviar un mail a soporte")
     @PreAuthorize("hasAuthority('USUARIO_SOLICITAR_SOPORTE')")
-    @PostMapping("/{idUser}/soporte")
-    public ResponseEntity<String> soporteUsuario(@PathVariable Long idUser, @Valid @RequestBody MailDTO mailDTO) {
+    @PostMapping("/soporte")
+    public ResponseEntity<String> soporteUsuario( @Valid @RequestBody MailDTO mailDTO) {
 
-        usuarioService.soporte(idUser, mailDTO);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+
+        usuarioService.soporte(usuarioAutenticado.getId(), mailDTO);
 
         return ResponseEntity.ok("Mail enviado al soporte");
     }
@@ -157,8 +150,8 @@ public class UsuarioController {
     //enviamos a todos los usuarios activos un mail de aviso de x cosa
     @Operation(summary = "Enviar anuncio a los usuaarios")
     @PreAuthorize("hasAuthority('USUARIO_ENVIAR_ANUNCIO')")
-    @PostMapping("/{idAdmin}/anuncio")
-    public ResponseEntity<String> anuncioUsuario(@PathVariable Long idAdmin, @Valid @RequestBody MailDTO mailDTO) {
+    @PostMapping("/anuncio")
+    public ResponseEntity<String> anuncioUsuario(@Valid @RequestBody MailDTO mailDTO) {
         emailService.SendMailToAll(mailDTO);
         return ResponseEntity.ok("Anuncio enviado a los usuarios");
     }

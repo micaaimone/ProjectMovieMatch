@@ -12,6 +12,7 @@ import com.example.demo.model.DTOs.user.RecuperarPassDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.exceptions.UsuarioExceptions.EstadoInvalidoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
@@ -172,7 +173,10 @@ public class UsuarioService {
         {
             nuevosDatos.getGeneros()
                             .forEach(g -> existente.getGeneros().add(g));
-
+        }
+        if(nuevosDatos.getEmail() != null)
+        {
+            existente.setEmail(nuevosDatos.getEmail());
         }
 
         usuarioRepository.save(existente);
@@ -193,6 +197,15 @@ public class UsuarioService {
         UsuarioEntity usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
+        if(activo == usuario.getActivo())
+        {
+            if(!activo)
+            {
+                throw new EstadoInvalidoException("El usuario ya esta dado de baja.");
+            } else {
+                throw new EstadoInvalidoException("El usuario ya esta dado de alta.");
+            }
+        }
         usuario.setActivo(activo);
         usuarioRepository.save(usuario);
     }

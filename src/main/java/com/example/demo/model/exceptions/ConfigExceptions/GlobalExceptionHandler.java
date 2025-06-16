@@ -10,6 +10,7 @@ import com.example.demo.model.exceptions.AmistadExceptions.SolicitudNotFound;
 import com.example.demo.model.exceptions.ListasExceptions.ListAlreadyExistsException;
 import com.example.demo.model.exceptions.ListasExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.SuscripcionException.*;
+import com.example.demo.model.exceptions.UsuarioExceptions.EstadoInvalidoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEsAdminException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
@@ -341,5 +342,19 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(errorDetalles, status);
     }
+
+    @ExceptionHandler(EstadoInvalidoException.class)
+    public ResponseEntity<ErrorDetalles> handlerEstadoInvalidoException(EstadoInvalidoException ex)
+    {
+        HttpStatus status = HttpStatus.CONFLICT;
+        ErrorDetalles errorDetalles = new ErrorDetalles(
+                ex.getMessage(),
+                status.value(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDetalles, status);
+    }
+
+
 
 }
