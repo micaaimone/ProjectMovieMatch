@@ -2,6 +2,7 @@ package com.example.demo.Seguridad.Config;
 
 import com.example.demo.Seguridad.Filters.JwtAuthenticationFilter;
 import com.example.demo.Seguridad.Filters.RestAuthenticationEntryPoint;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

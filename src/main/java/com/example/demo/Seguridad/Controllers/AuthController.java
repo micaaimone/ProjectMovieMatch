@@ -25,8 +25,8 @@ public class AuthController {
     private final TokenBlacklistService blacklistService;
     private final UsuarioService usuarioService;
 
-    public AuthController(AuthService authService, JwtService jwtService, TokenBlacklistService blacklistService) {
-    public AuthController(AuthService authService, JwtService jwtService, UsuarioService usuarioService) {
+
+    public AuthController(AuthService authService, JwtService jwtService, TokenBlacklistService blacklistService, UsuarioService usuarioService) {
         this.authService = authService;
         this.jwtService = jwtService;
         this.blacklistService = blacklistService;

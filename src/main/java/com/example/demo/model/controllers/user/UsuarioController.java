@@ -1,8 +1,11 @@
 package com.example.demo.model.controllers.user;
 
+import com.example.demo.model.DTOs.MailDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.services.Email.EmailService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

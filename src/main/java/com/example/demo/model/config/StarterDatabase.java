@@ -113,7 +113,6 @@ public class StarterDatabase {
         traerPeliculaAPI();
         traerSeriesAPI();
         initPlan();
-        validarSubs();
         initCredenciales();
         initUsers();
         initReseñas();
@@ -243,11 +242,6 @@ public class StarterDatabase {
         });
     }
 
-
-    //falta cambiar de rol
-    public void validarSubs() {
-
-    }
 
     private boolean checkPeliBDD(String imdbId) {
         return peliculaRepository.findAll().stream()
@@ -391,6 +385,8 @@ public class StarterDatabase {
     public void bajarSubs(){
         suscripcionService.desactivarSuscripion();
     }
+
+
 }
 
 

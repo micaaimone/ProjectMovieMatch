@@ -57,8 +57,7 @@ public class RolePermitMapper {
                 Permit.VER_SOLICITUDES,
                 Permit.VER_AMIGOS,
                 Permit.ELIMINAR_AMIGO,
-                Permit.VER_COINCIDENCIAS
-                Permit.USUARIO_VER_LIKES,
+                Permit.VER_COINCIDENCIAS,
                 Permit.USUARIO_SOLICITAR_SOPORTE
         ));
 
@@ -133,8 +132,7 @@ public class RolePermitMapper {
                 Permit.VER_SOLICITUDES,
                 Permit.VER_AMIGOS,
                 Permit.ELIMINAR_AMIGO,
-                Permit.VER_COINCIDENCIAS
-                Permit.USUARIO_LISTAR_DESACTIVADOS,
+                Permit.VER_COINCIDENCIAS,
                 Permit.USUARIO_ENVIAR_ANUNCIO
         ));
     }

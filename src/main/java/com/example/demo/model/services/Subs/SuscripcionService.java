@@ -182,14 +182,18 @@ public class SuscripcionService {
     public void desactivarSuscripion(){
         List<SuscripcionEntity> subs = suscripcionRepository.bajarSub(LocalDate.now());
 
+        if(subs.isEmpty()){
+            return;
+        }
         List<CredentialsEntity> credenciales = subs.stream()
                 .map(suscripcionEntity -> suscripcionEntity.getUsuario().getCredencial())
                 .collect(Collectors.toList());
 
-        RoleEntity rolUser = roleRepository.findByRole(Role.ROLE_USER)
-                .orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
+        // Buscamos el rol PREMIUM
+        RoleEntity rolPremium = roleRepository.findByRole(Role.ROLE_PREMIUM)
+                .orElseThrow(() -> new RuntimeException("Rol PREMIUM no encontrado"));
 
-        credenciales.forEach(credentialsEntity -> credentialsEntity.setRoles(Set.of(rolUser)));
+        credenciales.forEach(credentialsEntity -> credentialsEntity.getRoles().remove(rolPremium));
 
         credentialsRepository.saveAll(credenciales);
 

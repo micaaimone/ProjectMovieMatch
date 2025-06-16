@@ -6,7 +6,9 @@ import com.example.demo.Seguridad.Enum.Role;
 import com.example.demo.Seguridad.repositories.CredentialsRepository;
 import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
+import com.example.demo.model.DTOs.MailDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
+import com.example.demo.model.DTOs.user.RecuperarPassDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
@@ -18,6 +20,8 @@ import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.Specifications.UsuarioSpecification;
 
+import com.example.demo.model.services.Email.EmailService;
+import jakarta.mail.MessagingException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -28,7 +32,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 
 @Service
 public class UsuarioService {
@@ -41,8 +47,7 @@ public class UsuarioService {
     private final ContenidoMapper contenidoMapper;
     private final EmailService emailService;
 
-    public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository,
-                          RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository, ContenidoMapper contenidoMapper) {
+
     public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository,
                           RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository,
                           ContenidoMapper contenidoMapper, EmailService emailService) {
