@@ -13,11 +13,23 @@ public enum Genero {
 
     @JsonCreator
     public static Genero fromValue(String value) {
+//        for (Genero genero : Genero.values()) {
+//            if (genero.name().equalsIgnoreCase(value)) {
+//                return genero;
+//            }
+//        }
+
+        // para evitar los espacios
+        if (value == null) return null;
+
+        String cleanValue = value.trim().replace(" ", "").toLowerCase();
+
         for (Genero genero : Genero.values()) {
-            if (genero.name().equalsIgnoreCase(value)) {
+            if (genero.name().replace(" ", "").toLowerCase().equals(cleanValue)) {
                 return genero;
             }
         }
+
         String opcionesDisponibles = Arrays.stream(Genero.values())
                 .map(Enum::name)
                 .collect(Collectors.joining(", "));

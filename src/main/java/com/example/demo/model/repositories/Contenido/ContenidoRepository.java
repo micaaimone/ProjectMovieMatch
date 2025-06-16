@@ -24,7 +24,7 @@ public interface ContenidoRepository extends JpaRepository<ContenidoEntity, Long
     Page<ContenidoEntity> obtenerMatchDeGrupo(@Param("grupo") List<Long> idsUsuarios, Pageable pageable);
 
     @Query("SELECT c FROM contenido c " +
-            "WHERE c.genero IN :generosUsuario " +
+            "WHERE LOWER(c.genero)  IN :generosUsuario " +
             "AND c.clasificacion <= :edadUsuario")
     Page<ContenidoEntity> recomendarContenidoPorGeneroYEdad(
             @Param("generosUsuario") List<String> generos,

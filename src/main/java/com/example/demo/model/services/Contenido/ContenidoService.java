@@ -24,6 +24,7 @@ import java.time.Period;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -128,66 +129,52 @@ public class ContenidoService {
     // primeras reco (basarlo en los generos fav)
 
 
-
-
-    // una vez ya likeadas
+    // una vex likeadas
     public Page<ContenidoDTO> obtenerRecomendaciones(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         List<String> generosLikeados = contenidoLikeRepository.obtenerGenerosLikeadosPorUsuario(usuarioId);
-
         Pageable pageable = PageRequest.of(page, size);
-        Page<ContenidoEntity> contenidos = contenidoRepository.recomendarContenidoPorGeneroYEdad(
-                generosLikeados,
-                usuario.getEdad(),
-                pageable
-        );
+
+        Page<ContenidoEntity> contenidos;
+
+        if (!generosLikeados.isEmpty()) {
+            contenidos = contenidoRepository.recomendarContenidoPorGeneroYEdad(
+                    generosLikeados,
+                    usuario.getEdad(),
+                    pageable
+            );
+
+            // Si devuelve vacío, usar fallback
+            if (!contenidos.hasContent()) {
+                contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
+            }
+        } else {
+            contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
+        }
 
         return contenidos.map(contenidoMapper::convertToDTO);
     }
 
-    // combinacion de ambas
-//    public Page<ContenidoDTO> obtenerRecomendacionesMixtas(Long usuarioId, int page, int size) {
-//        UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
-//                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
-//
-//        Set<ContenidoEntity> resultados = new LinkedHashSet<>();
-//
-//        List<String> generosPreferidos = usuario.getGeneros()
-//                .stream().map(Enum::name).toList();
-//        if (!generosPreferidos.isEmpty()) {
-//            resultados.addAll(contenidoRepository.recomendarContenidoPorGeneroYEdad(generosPreferidos, usuario.getEdad()));
-//        }
-//
-//        List<String> generosLikeados = contenidoLikeRepository.obtenerGenerosLikeadosPorUsuario(usuarioId);
-//        if (!generosLikeados.isEmpty()) {
-//            resultados.addAll(contenidoRepository.recomendarContenidoPorGeneroYEdad(generosLikeados, usuario.getEdad()));
-//        }
-//
-////        if (resultados.size() < size) {
-////            resultados.addAll(contenidoRepository.buscarPopularesPorEdad(usuario.getEdad()));
-////        }
-////
-////        if (resultados.size() < size) {
-////            resultados.addAll(contenidoRepository.buscarAleatoriosPorEdad(usuario.getEdad()));
-////        }
-//
-//        List<ContenidoDTO> dtos = resultados.stream()
-//                .map(contenidoMapper::convertToDTO)
-//                .toList();
-//
-//        return paginarResultados(dtos, page, size);
-//    }
+    // metodo auxiliar
+    public Page<ContenidoEntity> obtenerFallbackPorGeneroFavorito(UsuarioEntity usuario, Pageable pageable) {
+        List<String> generos = usuario.getGeneros()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
 
+        if (generos.isEmpty()) {
+            return Page.empty(pageable);
+        }
 
-//    private Page<ContenidoDTO> paginarResultados(List<ContenidoDTO> dtos, int page, int size) {
-//        int start = page * size;
-//        int end = Math.min(start + size, dtos.size());
-//
-//        if (start > end) return Page.empty(PageRequest.of(page, size));
-//        return new PageImpl<>(dtos.subList(start, end), PageRequest.of(page, size), dtos.size());
-//    }
+        return contenidoRepository.recomendarContenidoPorGeneroYEdad(
+                generos,
+                usuario.getEdad(),
+                pageable
+        );
+    }
+
 
 
 }
