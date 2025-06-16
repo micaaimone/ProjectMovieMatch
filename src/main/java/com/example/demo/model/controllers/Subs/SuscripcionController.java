@@ -1,9 +1,11 @@
 package com.example.demo.model.controllers.Subs;
 
 import com.example.demo.model.DTOs.subs.SuscripcionDTO;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.services.Subs.MPService;
 import com.example.demo.model.services.Subs.SuscripcionService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,11 +30,13 @@ import org.springframework.web.bind.annotation.*;
 public class SuscripcionController {
     private final SuscripcionService suscripcionService;
     private final MPService mpService;
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public SuscripcionController(SuscripcionService suscripcionService, MPService mpService) {
+    public SuscripcionController(SuscripcionService suscripcionService, MPService mpService, UsuarioService usuarioService) {
         this.suscripcionService = suscripcionService;
         this.mpService = mpService;
+        this.usuarioService = usuarioService;
     }
 
     /* ----esquema de como funciona
@@ -67,10 +71,20 @@ public class SuscripcionController {
             @Parameter(name = "tipo", description = "Tipo de suscripción", required = true, schema = @Schema(implementation = TipoSuscripcion.class))
     })
     @PreAuthorize("hasAuthority('SUSCRIPCION_CREAR')")
-    @PostMapping("/{idUser}/crear")
-    public ResponseEntity<String> crearSuscripcion(@PathVariable("idUser") Long idUsuario,
-                                                   @RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
-        String init = mpService.crearPreferencia(suscripcionService.save(idUsuario, tipo));
+    @PostMapping("/crear")
+    public ResponseEntity<String> crearSuscripcion(@RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        String init = mpService.crearPreferencia(suscripcionService.save(usuarioAutenticado.getId(), tipo));
+        return ResponseEntity.ok(init);
+    }
+
+    //cambiar plan
+    @Operation(summary = "Cambiar Plan")
+    @PreAuthorize("hasAuthority('SUSCRIPCION_CAMBIAR_PLAN')")
+    @PostMapping("/cambiarPlan")
+    public ResponseEntity<String> cambiarPlan(@RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        String init = mpService.crearPreferencia(suscripcionService.cambiarPlan(usuarioAutenticado, tipo));
         return ResponseEntity.ok(init);
     }
 
@@ -84,9 +98,10 @@ public class SuscripcionController {
     })
     @Parameter(name = "idUsuario", description = "ID del usuario que renueva la suscripción", required = true, schema = @Schema(type = "integer", example = "5"))
     @PreAuthorize("hasAuthority('SUSCRIPCION_RENOVAR')")
-    @PostMapping("/{id}/renovar")
-    public ResponseEntity<String> renovarSuscripcion(@PathVariable("id") Long idUsuario) throws MPException, MPApiException {
-        String init = mpService.crearPreferencia(suscripcionService.renovar(idUsuario));
+    @PostMapping("/renovar")
+    public ResponseEntity<String> renovarSuscripcion() throws MPException, MPApiException {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        String init = mpService.crearPreferencia(suscripcionService.renovar(usuarioAutenticado.getId()));
         return ResponseEntity.ok(init);
     }
 

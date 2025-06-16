@@ -37,7 +37,7 @@ public class MPService {
     public String crearPreferencia(SuscripcionEntity sub) throws MPException, MPApiException {
 
         //RECORDAR CAMBIAR LA URL EN NOTIFICACIONES EN LA WEB DE MP
-        String ngrokUrl = "https://8011-2803-9800-9995-6e65-a0fd-db13-a065-4499.ngrok-free.app";
+        String ngrokUrl = "https://685f-2803-9800-9995-6e65-3deb-e0c5-4ffe-b90b.ngrok-free.app";
         //el monto en la api de mp es bigDecimal
         BigDecimal pf = BigDecimal.valueOf(sub.getMonto());
 
