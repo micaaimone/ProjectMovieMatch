@@ -1,6 +1,7 @@
 package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.services.Contenido.ContenidoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -131,8 +132,17 @@ public class ContenidoController {
     @PreAuthorize("hasAuthority('BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE')")
     @GetMapping("/contenido/buscar-api")
     public ResponseEntity<ContenidoDTO> buscarContenidoDesdeAPI(@RequestParam String titulo) {
-        System.out.println("pete");
         return ResponseEntity.ok(contenidoService.buscarContenidoPorNombreDesdeAPI(titulo));
     }
 
+    @PreAuthorize("hasAuthority('VISUALIZAR_RECOMENDACIONES_POR_LIKES')")
+    @GetMapping("/{usuarioId}/recomendaciones")
+    public ResponseEntity<Page<ContenidoDTO>> obtenerRecomendacionesPorLikes(
+            @PathVariable Long usuarioId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        Page<ContenidoDTO> recomendaciones = contenidoService.obtenerRecomendaciones(usuarioId, page, size);
+        return ResponseEntity.ok(recomendaciones);
+    }
 }
