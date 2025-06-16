@@ -2,7 +2,6 @@ package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
-import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
 import com.example.demo.model.services.Usuarios.ReseniaLikeService;
@@ -63,11 +62,11 @@ public class LikeController {
     @Operation(summary = "Ver likes de contenido")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/contenidosLikeados")
-    public ResponseEntity<Page<ContenidoLikeEntity>> getContenidoLikes(
+    public ResponseEntity<Page<ReseniaLikeDTO>> getContenidoLikes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        Page<ContenidoLikeEntity> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
+        Page<ReseniaLikeDTO> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
     }
 
