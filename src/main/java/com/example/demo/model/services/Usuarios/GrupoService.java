@@ -50,16 +50,19 @@ public class GrupoService {
                 })
                 .collect(Collectors.toSet());
 
+        // 🔽 Acá insertás lo nuevo:
         GrupoEntity grupo = grupoMapper.convertToEntity(grupoDTO);
+        System.out.println("DEBUG - Grupo mapeado: " + grupo);
 
-        // seteo los usuarios validados
         grupo.setListaUsuarios(usuariosValidos);
-
-        // seteo al admin
         grupo.setAdministrador(admin);
 
+        System.out.println("DEBUG - Grupo final listo para guardar: " + grupo);
+
         grupoRepository.save(grupo);
+        System.out.println("DEBUG - Grupo guardado correctamente");
     }
+
 
     public VisualizarGrupoDTO mostrarGrupoPorID(Long idGrupo, Long idUsuario) {
         //traigo al usuario q busca porque sino no puede visualizar el grupo

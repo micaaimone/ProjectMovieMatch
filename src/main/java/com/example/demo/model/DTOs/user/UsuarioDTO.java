@@ -6,8 +6,8 @@ import com.example.demo.model.DTOs.Resenia.ReseniaMostrarUsuarioDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
 import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
 import com.example.demo.model.enums.Genero;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-
 
 import java.util.List;
 import java.util.Set;
@@ -17,7 +17,9 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Schema(description = "DTO que representa los datos del usuario autenticado")
 public class UsuarioDTO {
+
     private Long id;
 
     private String username;
@@ -37,5 +39,4 @@ public class UsuarioDTO {
     private Set<Genero> generos;
 
     private Set<VisualizarGrupoDTO> grupos;
-
 }
