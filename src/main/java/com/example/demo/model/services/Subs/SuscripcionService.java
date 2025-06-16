@@ -1,5 +1,10 @@
 package com.example.demo.model.services.Subs;
 
+import com.example.demo.Seguridad.Entities.CredentialsEntity;
+import com.example.demo.Seguridad.Entities.RoleEntity;
+import com.example.demo.Seguridad.Enum.Role;
+import com.example.demo.Seguridad.repositories.CredentialsRepository;
+import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.subs.OfertaEntity;
@@ -20,7 +25,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class SuscripcionService {
@@ -30,14 +39,19 @@ public class SuscripcionService {
     private final UsuarioRepository usuarioRepository;
     private final PlanService planService;
     private final SuscripcionMapper suscripcionMapper;
+    private final CredentialsRepository credentialsRepository;
+    private final RoleRepository roleRepository;
 
 
-    public SuscripcionService(SuscripcionRepository suscripcionRepository, PlanRepository planRepository,UsuarioRepository usuarioRepository, PlanService planService, SuscripcionMapper suscripcionMapper) {
+    public SuscripcionService(SuscripcionRepository suscripcionRepository, PlanRepository planRepository, UsuarioRepository usuarioRepository,
+                              PlanService planService, SuscripcionMapper suscripcionMapper, CredentialsRepository credentialsRepository, RoleRepository roleRepository) {
         this.suscripcionRepository = suscripcionRepository;
         this.planRepository = planRepository;
         this.usuarioRepository = usuarioRepository;
         this.planService = planService;
         this.suscripcionMapper = suscripcionMapper;
+        this.credentialsRepository = credentialsRepository;
+        this.roleRepository = roleRepository;
 
     }
 
@@ -66,13 +80,13 @@ public class SuscripcionService {
         UsuarioEntity usuario = usuarioRepository.findById(id_usuario)
                 .orElseThrow(()-> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
-        if(usuario.getSuscripcion()==null){
+        if(usuario.getSuscripcion()!=null){
             throw new SubAlreadyExistException("Este usuario ya cuenta con suscripcion");
         }
 
         //buscamos el plan
         PlanSuscripcionEntity plan = planRepository.findByTipo(dato)
-                .orElseThrow(() -> new PlanNotFoundException("no se enocntro el plan"));
+                .orElseThrow(() -> new PlanNotFoundException("no se encontro el plan"));
 
         //buscamos oferta activa
         Optional<OfertaEntity> oferta = planService.getOfertaActiva(plan);
@@ -99,15 +113,12 @@ public class SuscripcionService {
     }
 
     //renovamos la sub si se esta por vencer
+    //creo q no funcionaria asi
     public SuscripcionEntity renovar (Long id){
         SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
                 .orElseThrow(()-> new SubNotFoundException("Suscripcion no encontrada"));
 
-        if(suscripcion.getFecha_inicio().isBefore(suscripcion.getFecha_fin())){
-            suscripcion.setEstado(true);
-        }else{
-            suscripcion.setEstado(false);
-        }
+
         suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getPlan().getTipo()));
         suscripcionRepository.save(suscripcion);
         return suscripcion;
@@ -128,9 +139,67 @@ public class SuscripcionService {
                 .map(suscripcionMapper::convertToDTO);
     }
 
-    //activar la sub cuando se concrete el pago
+    //activar la sub cuando se concrete el pago y cambiamos el rol
     public void activarSuscripion(Long id){
-        suscripcionRepository.activarSub(id);
+        SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
+                .orElseThrow(() -> new SubNotFoundException("No se encontro la suscripcion"));
+
+        UsuarioEntity user = usuarioRepository.findById(suscripcion.getUsuario().getId())
+                .orElseThrow(() -> new UsuarioNoEncontradoException("No se encontro el usuario"));
+
+        // Buscamos las credenciales asociadas
+        CredentialsEntity credencial = credentialsRepository.findById(suscripcion.getUsuario().getCredencial().getId())
+                .orElseThrow(() -> new RuntimeException("Credencial no encontrada"));
+
+
+        // Buscamos el rol PREMIUM
+        RoleEntity rolPremium = roleRepository.findByRole(Role.ROLE_PREMIUM)
+                .orElseThrow(() -> new RuntimeException("Rol PREMIUM no encontrado"));
+
+
+        if (credencial.getRoles().contains(rolPremium)) {
+            // Ya es premium
+            suscripcion.setEstado(true);
+            suscripcionRepository.save(suscripcion);
+
+            return;
+        }
+
+        Set<RoleEntity> nuevosRoles = new HashSet<>(credencial.getRoles());
+        nuevosRoles.add(rolPremium);
+        credencial.setRoles(nuevosRoles);
+
+        credentialsRepository.save(credencial);
+
+        suscripcion.setEstado(true);
+        suscripcionRepository.save(suscripcion);
+        user.setSuscripcion(suscripcion);
+        usuarioRepository.save(user);
+
     }
 
+    //desactivamos sub si vencio y cambiamos el rol
+    public void desactivarSuscripion(){
+        List<SuscripcionEntity> subs = suscripcionRepository.bajarSub(LocalDate.now());
+
+        List<CredentialsEntity> credenciales = subs.stream()
+                .map(suscripcionEntity -> suscripcionEntity.getUsuario().getCredencial())
+                .collect(Collectors.toList());
+
+        RoleEntity rolUser = roleRepository.findByRole(Role.ROLE_USER)
+                .orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
+
+        credenciales.forEach(credentialsEntity -> credentialsEntity.setRoles(Set.of(rolUser)));
+
+        credentialsRepository.saveAll(credenciales);
+
+        subs.forEach(suscripcionEntity -> suscripcionEntity.setEstado(false));
+
+        suscripcionRepository.saveAll(subs);
+
+    }
+
+    public List<SuscripcionEntity> avisarVencimiento(){
+        return suscripcionRepository.porVencer(LocalDate.now().plusDays(5));
+    }
 }

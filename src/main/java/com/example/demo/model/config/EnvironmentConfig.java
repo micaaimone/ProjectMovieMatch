@@ -25,6 +25,9 @@ public class EnvironmentConfig {
         String port = dotenv.get("PORT");
         System.out.println("Puerto: " + port);
 
+        System.setProperty("MAIL", dotenv.get("MAIL"));
+        System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
+
         System.setProperty("jwt.secret", Objects.requireNonNull(dotenv.get("JWT_SECRET")));
 
     }

@@ -12,4 +12,6 @@ import org.springframework.stereotype.Repository;
 public interface PagoRepository extends JpaRepository<PagoEntity, Long> {
     @Query("SELECT p from PagoEntity p where p.suscripcion.id_suscripcion = :id")
     Page<PagoEntity> findBySuscripcionId(@Param("id") Long id, Pageable pageable);
+
+    boolean existsByIdMP(Long idMP);
 }

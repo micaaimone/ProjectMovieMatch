@@ -5,11 +5,14 @@ import com.example.demo.Seguridad.DTO.AuthResponse;
 import com.example.demo.Seguridad.DTO.RefreshTokenRequest;
 import com.example.demo.Seguridad.services.AuthService;
 import com.example.demo.Seguridad.services.JwtService;
+import com.example.demo.model.DTOs.user.RecuperarPassDTO;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import com.example.demo.Seguridad.services.TokenBlacklistService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +23,14 @@ public class AuthController {
     private final AuthService authService;
     private final JwtService jwtService;
     private final TokenBlacklistService blacklistService;
+    private final UsuarioService usuarioService;
 
     public AuthController(AuthService authService, JwtService jwtService, TokenBlacklistService blacklistService) {
+    public AuthController(AuthService authService, JwtService jwtService, UsuarioService usuarioService) {
         this.authService = authService;
         this.jwtService = jwtService;
         this.blacklistService = blacklistService;
+        this.usuarioService = usuarioService;
     }
     @Operation(
             summary = "Autenticación de usuario",
@@ -41,6 +47,14 @@ public class AuthController {
         String refreshToken = jwtService.generateRefreshToken(user); // nuevo
         return ResponseEntity.ok(new AuthResponse(accessToken, refreshToken));
     }
+
+
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<String> forgotPassword(@Valid @RequestBody RecuperarPassDTO recuperarPassDTO){
+        usuarioService.recuperarPassword(recuperarPassDTO);
+        return ResponseEntity.ok("Mail con nueva contraseña enviado!");
+    }
+
     @Operation(
             summary = "Renovar token de acceso",
             description = "Usa un refresh token válido para obtener un nuevo token de acceso y un nuevo refresh token."

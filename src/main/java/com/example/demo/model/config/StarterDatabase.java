@@ -12,6 +12,7 @@ import com.example.demo.model.entities.Contenido.SerieEntity;
 import com.example.demo.model.entities.Contenido.ReseniaEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.subs.PlanSuscripcionEntity;
+import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 
@@ -23,9 +24,12 @@ import com.example.demo.model.repositories.Subs.PlanRepository;
 import com.example.demo.model.repositories.Subs.SuscripcionRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
+import com.example.demo.model.services.Email.EmailService;
+import com.example.demo.model.services.Subs.SuscripcionService;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
@@ -44,27 +48,34 @@ public class StarterDatabase {
     private final PeliculaRepository peliculaRepository;
     private final SerieRepository serieRepository;
     private final PlanRepository planRepository;
-    private final SuscripcionRepository suscripcionRepository;
+    private final SuscripcionService suscripcionService;
     private final UsuarioRepository usuarioRepository;
     private final ReseniaRepository reseñaRepository;
     private final ContenidoRepository contenidoRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final CredentialsRepository credentialsRepository;
+    private final EmailService emailService;
 
-    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository, PeliculaRepository peliculaRepository, SerieRepository serieRepository, PlanRepository planRepository, SuscripcionRepository suscripcionRepository, UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository, ContenidoRepository contenidoRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository) {
+    public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository,
+                           PeliculaRepository peliculaRepository, SerieRepository serieRepository,
+                           PlanRepository planRepository, SuscripcionService suscripcionService,
+                           UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository,
+                           ContenidoRepository contenidoRepository, RoleRepository roleRepository,
+                           PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository, EmailService emailService) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
         this.serieRepository = serieRepository;
         this.planRepository = planRepository;
-        this.suscripcionRepository = suscripcionRepository;
+        this.suscripcionService = suscripcionService;
         this.usuarioRepository = usuarioRepository;
         this.reseñaRepository = reseñaRepository;
         this.contenidoRepository = contenidoRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.credentialsRepository = credentialsRepository;
+        this.emailService = emailService;
     }
 
 
@@ -111,7 +122,7 @@ public class StarterDatabase {
 
 
     public void initUsers() {
-        crearUsuarioSiNoExiste("lautaM", "Lautaro", "Martínez", 28, "1123456789", "rama@gmail.com", Role.ROLE_USER);
+        crearUsuarioSiNoExiste("lautaA", "Lautaro", "Martínez", 28, "1123456789", "lau9araya@gmail.com", Role.ROLE_USER);
         crearUsuarioSiNoExiste("meliR", "Melina", "Rodríguez", 25, "1123456790", "meli@gmail.com", Role.ROLE_PREMIUM);
         crearUsuarioSiNoExiste("tomiG", "Tomás", "Gómez", 30, "1123456791", "tomi@gmail.com", Role.ROLE_ADMIN);
         crearUsuarioSiNoExiste("sofiP", "Sofía", "Pérez", 27, "1123456792", "sofi@gmail.com", Role.ROLE_USER);
@@ -130,6 +141,7 @@ public class StarterDatabase {
                     .edad(edad)
                     .telefono(telefono)
                     .username(username)
+                    .email(email)
                     .activo(true)
                     .build();
 
@@ -155,9 +167,6 @@ public class StarterDatabase {
             usuarioRepository.save(usuario);
         }
     }
-
-
-
 
 
     private void initReseñas() {
@@ -234,8 +243,10 @@ public class StarterDatabase {
         });
     }
 
+
+    //falta cambiar de rol
     public void validarSubs() {
-        suscripcionRepository.VerificarSuscripcion(LocalDate.now());
+
     }
 
     private boolean checkPeliBDD(String imdbId) {
@@ -358,6 +369,27 @@ public class StarterDatabase {
                 .orElseThrow(() -> new NoSuchElementException("No hay ratings disponibles"));
         // Redondear a 2 decimales
         return Math.round(promedio * 100.0) / 100.0;
+    }
+
+    //tendria que crear una clase de tareas diarias???????
+    //todos los dias a las 12pm
+    @Scheduled(cron = "0 0 12 * *  ?")
+    public void avisarVencimiento(){
+
+        String msj = "Buenas Tardes, le comunicamos que su suscripcion a Movie-Match esta proxima a vencer, si quiere seguir disfrutando del premiun, recuerte renovar" +
+                "\n\n Atte. Movie-Match";
+        String subject = "Suscripcion proxima a vencer";
+
+        List<SuscripcionEntity> userVencimiento = suscripcionService.avisarVencimiento();
+
+        userVencimiento.forEach(suscripcion -> emailService.sendEmail(suscripcion.getUsuario().getEmail(), subject, msj));
+
+    }
+
+    //bajamos todas las subs vencidas y cambiamos rol
+    @Scheduled(cron = "0 0 12 * *  ?")
+    public void bajarSubs(){
+        suscripcionService.desactivarSuscripion();
     }
 }
 
