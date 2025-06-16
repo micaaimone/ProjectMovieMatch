@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -20,10 +21,12 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>, J
 
     Optional<UsuarioEntity> findByUsername(String username);
 
+    Optional<UsuarioEntity> findByEmail(String email);
+
     boolean existsByUsername(String username);
 
 
-
+    List<UsuarioEntity> findAllByActivo(boolean activo);
 
     @Query("SELECT u.likes FROM UsuarioEntity u JOIN u.likes WHERE u.id = :usuarioId")
     Page<ContenidoEntity> findLikes(@Param("usuarioId")Long usuarioId, Pageable pageable);

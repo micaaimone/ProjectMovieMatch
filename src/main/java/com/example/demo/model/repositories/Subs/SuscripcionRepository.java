@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Repository
@@ -19,13 +20,10 @@ public interface SuscripcionRepository extends JpaRepository<SuscripcionEntity, 
     @Query(value = "SELECT * FROM suscripciones WHERE estado = 1", nativeQuery = true)
     Page<SuscripcionEntity> findActivos(Pageable pageable);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE SuscripcionEntity s SET s.estado = true WHERE s.id_suscripcion = :id")
-    void activarSub(@Param("id") Long id);
-    @Modifying
-    @Transactional
-    @Query("UPDATE SuscripcionEntity s SET s.estado = false WHERE :now > s.fecha_fin")
-    void VerificarSuscripcion(@Param("now") LocalDate now);
+    @Query("SELECT s FROM SuscripcionEntity s where s.fecha_fin > :now and s.estado = true")
+    List<SuscripcionEntity> bajarSub(@Param("now") LocalDate now);
+
+    @Query("SELECT u FROM SuscripcionEntity u WHERE u.estado = true AND u.fecha_fin = :fecha")
+    List<SuscripcionEntity> porVencer(@Param("fecha") LocalDate fecha);
 
 }

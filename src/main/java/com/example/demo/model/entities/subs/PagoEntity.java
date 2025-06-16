@@ -21,6 +21,7 @@ public class PagoEntity {
     private String medio_pago;
     private LocalDateTime fecha_pago;
     private BigDecimal valor_pago;
+    private Long idMP;
 
     @ManyToOne
     @JoinColumn(name = "id_suscripcion", nullable = false)
