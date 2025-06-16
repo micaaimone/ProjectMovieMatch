@@ -40,7 +40,7 @@ public class GrupoController {
             @ApiResponse(responseCode = "500", description = "Error del servidor")
     })
     @PreAuthorize("hasAuthority('CREAR_GRUPO')")
-    @PostMapping
+    @PostMapping("/crear")
     public ResponseEntity<String> crearGrupo(@Valid @RequestBody NewGrupoDTO newGrupoDTO) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.save(newGrupoDTO, usuarioAutenticado.getId());
@@ -65,7 +65,7 @@ public class GrupoController {
             @ApiResponse(responseCode = "200", description = "Grupos obtenidos correctamente")
     })
     @PreAuthorize("hasAuthority('VER_GRUPO')")
-    @GetMapping
+    @GetMapping("/visualizar")
     public ResponseEntity<Page<VisualizarGrupoDTO>> visualizarGruposDelUsuario(@RequestParam(defaultValue = "0") int page,
                                                                                @RequestParam(defaultValue = "10") int size) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
