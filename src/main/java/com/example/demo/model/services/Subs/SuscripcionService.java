@@ -68,9 +68,8 @@ public class SuscripcionService {
     }
 
     public SuscripcionEntity findByIdEntity(Long id) {
-        SuscripcionEntity suscripcion = suscripcionRepository.findById(id)
+        return suscripcionRepository.findById(id)
                 .orElseThrow(()-> new SubNotFoundException("No se encontro la suscripcion"));
-        return suscripcion;
     }
 
     //crear sub nueva
@@ -106,7 +105,7 @@ public class SuscripcionService {
         suscripcion.setPlan(plan);
         suscripcion.setUsuario(usuario);
         suscripcion.setFecha_inicio(LocalDate.now());
-        suscripcion.setFecha_fin(calcularFechaFin(dato));
+        suscripcion.setFecha_fin(LocalDate.now());
         suscripcionRepository.save(suscripcion);
         usuario.setSuscripcion(suscripcion);
         return suscripcion;
@@ -119,18 +118,19 @@ public class SuscripcionService {
                 .orElseThrow(()-> new SubNotFoundException("Suscripcion no encontrada"));
 
 
-        suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getPlan().getTipo()));
+        suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getFecha_fin(), suscripcion.getPlan().getTipo()));
         suscripcionRepository.save(suscripcion);
         return suscripcion;
     }
 
     //indica cuando se terminara la sub segun el tipo
-    private LocalDate calcularFechaFin(TipoSuscripcion tipo) {
-        return switch (tipo) {
-            case MENSUAL -> LocalDate.now().plusMonths(1);
-            case SEMESTRAL -> LocalDate.now().plusMonths(6);
-            case ANUAL -> LocalDate.now().plusYears(1);
-        };
+    private LocalDate calcularFechaFin(LocalDate fecha, TipoSuscripcion tipo) {
+        switch (tipo) {
+            case MENSUAL -> fecha = fecha.plusMonths(1);
+            case SEMESTRAL -> fecha = fecha.plusMonths(6);
+            case ANUAL -> fecha = fecha.plusYears(1);
+        }
+        return fecha;
     }
 
     //listar activos
@@ -159,6 +159,7 @@ public class SuscripcionService {
 
         if (credencial.getRoles().contains(rolPremium)) {
             // Ya es premium
+            suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getFecha_fin(), suscripcion.getPlan().getTipo()));
             suscripcion.setEstado(true);
             suscripcionRepository.save(suscripcion);
 
@@ -171,6 +172,7 @@ public class SuscripcionService {
 
         credentialsRepository.save(credencial);
 
+        suscripcion.setFecha_fin(calcularFechaFin(suscripcion.getFecha_fin(), suscripcion.getPlan().getTipo()));
         suscripcion.setEstado(true);
         suscripcionRepository.save(suscripcion);
         user.setSuscripcion(suscripcion);
@@ -205,5 +207,27 @@ public class SuscripcionService {
 
     public List<SuscripcionEntity> avisarVencimiento(){
         return suscripcionRepository.porVencer(LocalDate.now().plusDays(5));
+    }
+
+    //cambiar de plan
+    public SuscripcionEntity cambiarPlan(UsuarioEntity usuario, TipoSuscripcion tipo){
+        SuscripcionEntity sub = suscripcionRepository.findById(usuario.getSuscripcion().getId_suscripcion())
+                .orElseThrow(() -> new SubNotFoundException("No Cuenta con una suscripcion"));
+
+        PlanSuscripcionEntity plan = planRepository.findByTipo(tipo).orElseThrow(()-> new PlanNotFoundException("No se encontro el plan"));
+
+        //buscamos oferta activa
+        Optional<OfertaEntity> oferta = planService.getOfertaActiva(plan);
+
+        float precioFinal = oferta
+                .map(ofertaEntity -> planService.precioFinal(plan.getPrecio(), ofertaEntity.getDescuento()))
+                .orElse(plan.getPrecio());
+
+        sub.setMonto(precioFinal);
+        sub.setPlan(plan);
+        sub.setFecha_fin(calcularFechaFin(sub.getFecha_fin(), tipo));
+        suscripcionRepository.save(sub);
+
+        return sub;
     }
 }

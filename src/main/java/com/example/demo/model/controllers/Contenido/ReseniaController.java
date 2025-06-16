@@ -44,7 +44,7 @@ public class ReseniaController {
     }
 
     @PreAuthorize("hasAuthority('ELIMINAR_RESENIA')")
-    @Operation(summary = "Eliminar reseña por usuario y contenido", description = "Elimina una reseña según el ID del usuario y del contenido")
+    @Operation(summary = "Eliminar reseña hecha por usuario, eliminando por id contenido", description = "Elimina una reseña según el ID del usuario y del contenido")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reseña eliminada correctamente"),
             @ApiResponse(responseCode = "404", description = "Reseña no encontrada")

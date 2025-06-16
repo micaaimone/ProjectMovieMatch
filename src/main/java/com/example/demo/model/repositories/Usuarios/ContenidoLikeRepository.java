@@ -13,8 +13,8 @@ import java.util.Optional;
 @Repository
 public interface ContenidoLikeRepository extends JpaRepository<ContenidoLikeEntity, Long> {
     boolean existsByUsuarioAndContenido(UsuarioEntity usuario, ContenidoEntity contenido);
+
     Optional<ContenidoLikeEntity> findByUsuarioAndContenido(UsuarioEntity usuario, ContenidoEntity contenido);
-    long countByContenido(ContenidoEntity contenido);
 
     Page<ContenidoLikeEntity> findAllByUsuario(UsuarioEntity usuario, Pageable pageable);
 }

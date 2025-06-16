@@ -74,7 +74,7 @@ public class AmistadController {
         return ResponseEntity.ok("Solicitud bloqueada");
     }
 
-    @Operation(summary = "Listar solicitudes recibidas")
+    @Operation(summary = "Listar solicitudes enviadas")
     @ApiResponse(responseCode = "200", description = "Lista de solicitudes recibidas")
     @GetMapping
     public ResponseEntity<Page<SolicitudAmistadDTO>> listarPorID(@RequestParam(defaultValue = "0") int page,
