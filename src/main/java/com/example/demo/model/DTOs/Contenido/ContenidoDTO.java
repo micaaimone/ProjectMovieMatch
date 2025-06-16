@@ -16,6 +16,8 @@ public class ContenidoDTO {
 
     private Long id;
 
+    private boolean activo;
+
     @Schema(description = "Título del contenido", example = "Breaking Bad")
     private String titulo;
 
