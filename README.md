@@ -48,6 +48,7 @@
 |:-----------------|:-----------------|
 | **MercadoPago**   | Gestión de pagos para suscripciones premium. |
 | **OpenAPI (Swagger UI)** | Documentación interactiva de los endpoints REST. |
+| **OMDb API** | Documentacion para obtener datos de los contenidos, ademas de ser interactiva de los endpoints REST. |
 
 ---
 
@@ -62,7 +63,7 @@
 ## 📄 Documentación de Endpoints
 
 Accesible desde:
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html#/auth-controller/authenticateUser
 
 
 ---
@@ -70,7 +71,7 @@ http://localhost:8080/swagger-ui/index.html
 ## 📝 Instalación y Ejecución
 
 1. Clonar el repositorio.
-2. Crear un archivo `.env` con las variables de entorno necesarias (puerto, credenciales de base de datos, claves JWT, MercadoPago, etc).
+2. Crear un archivo `.env` con las variables de entorno necesarias (puerto, credenciales de base de datos, claves JWT, MercadoPago, tu propia API KEY de OMDB, etc).
 3. Configurar `application.properties` para usar las variables del `.env`.
 4. Levantar MySQL y crear la base de datos.
 5. Ejecutar.
