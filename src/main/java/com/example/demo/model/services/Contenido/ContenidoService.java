@@ -143,10 +143,8 @@ public class ContenidoService {
         if (!generosLikeados.isEmpty()) {
             contenidos = contenidoRepository.recomendarContenidoPorGeneroYEdad(
                     generosLikeados,
-                    usuario.getEdad(),
                     pageable
             );
-
             // si devuelve vacío, muestra segun generos fav
             if (!contenidos.hasContent()) {
                 contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
@@ -171,7 +169,6 @@ public class ContenidoService {
 
         return contenidoRepository.recomendarContenidoPorGeneroYEdad(
                 generos,
-                usuario.getEdad(),
                 pageable
         );
     }

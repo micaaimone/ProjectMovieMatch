@@ -61,11 +61,11 @@ public class LikeController {
     @Operation(summary = "Ver likes de contenido")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/contenidosLikeados")
-    public ResponseEntity<Page<ContenidoLikeEntity>> getContenidoLikes(
+    public ResponseEntity<Page<ContenidoMostrarDTO>> getContenidoLikes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        Page<ContenidoLikeEntity> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
+        Page<ContenidoMostrarDTO> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
     }
 
@@ -104,16 +104,4 @@ public class LikeController {
         return ResponseEntity.ok(likes);
     }
 
-    // ------------------- Listar contenido con likes
-    @Operation(summary = "Ver contenidos con like")
-    @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
-    @GetMapping("/likes")
-    public ResponseEntity<Page<ContenidoMostrarDTO>> obtenerLikes(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        Page<ContenidoMostrarDTO> pagina = usuarioService.obtenerLikes(usuarioAutenticado.getId(), pageable);
-        return ResponseEntity.ok(pagina);
-    }
 }

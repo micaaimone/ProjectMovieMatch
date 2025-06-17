@@ -26,10 +26,9 @@ public interface ContenidoRepository extends JpaRepository<ContenidoEntity, Long
 
 
     @Query("SELECT c FROM contenido c " +
-            "WHERE c.genero IN :generosUsuario " +
-            "AND c.clasificacion <= :edadUsuario")
+            "WHERE c.genero IN :generosUsuario")
     Page<ContenidoEntity> recomendarContenidoPorGeneroYEdad(
             @Param("generosUsuario") List<String> generos,
-            @Param("edadUsuario") int edad,
             Pageable pageable);
+
 }

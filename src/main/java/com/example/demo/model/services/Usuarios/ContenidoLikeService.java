@@ -1,11 +1,13 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
+import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
@@ -23,11 +25,13 @@ public class ContenidoLikeService {
     private final UsuarioRepository usuarioRepository;
     private final ContenidoRepository contenidoRepository;
     private final ContenidoLikeRepository contenidoLikeRepository;
+    private final ContenidoMapper contenidoMapper;
 
-    public ContenidoLikeService(UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoLikeRepository contenidoLikeRepository) {
+    public ContenidoLikeService(UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoLikeRepository contenidoLikeRepository, ContenidoMapper contenidoMapper) {
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
         this.contenidoLikeRepository = contenidoLikeRepository;
+        this.contenidoMapper = contenidoMapper;
     }
 
     public void darLike(Long usuarioId, Long contenidoId) {
@@ -63,12 +67,13 @@ public class ContenidoLikeService {
         return false;
     }
 
-    public Page<ContenidoLikeEntity> obtenerLikes(Long usuarioId, int page, int size) {
+    public Page<ContenidoMostrarDTO> obtenerLikes(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         Pageable pageable = PageRequest.of(page, size);
-        return contenidoLikeRepository.findAllByUsuario(usuario, pageable);
+        Page<ContenidoEntity> likes = contenidoLikeRepository.findAllByUsuario(usuario, pageable);
+        return likes.map(contenidoMapper::convertToDTOForAdmin);
     }
 
 

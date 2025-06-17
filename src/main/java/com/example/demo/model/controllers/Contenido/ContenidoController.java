@@ -138,6 +138,7 @@ public class ContenidoController {
         return ResponseEntity.ok(contenidoService.buscarContenidoPorNombreDesdeAPI(titulo));
     }
 
+
     @PreAuthorize("hasAuthority('VISUALIZAR_RECOMENDACIONES_POR_LIKES')")
     @GetMapping("/recomendaciones")
     public ResponseEntity<Page<ContenidoDTO>> obtenerRecomendacionesPorLikes(
