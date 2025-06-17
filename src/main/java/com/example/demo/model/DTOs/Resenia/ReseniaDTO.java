@@ -12,8 +12,6 @@ import lombok.*;
 @Builder
 
 public class ReseniaDTO {
-    private long idContenido;
-
     @NotNull(message = "id de usuario es necesario")
     @Schema(description = "ID del usuario que realiza la reseña", example = "5")
     private Long id_usuario;

@@ -1,5 +1,6 @@
 package com.example.demo.model.mappers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
@@ -62,7 +63,12 @@ public class ContenidoMapper {
 
     public ContenidoEntity convertToEntity(ContenidoDTO contenidoDTO)
     {
-
         return modelMapper.map(contenidoDTO, ContenidoEntity.class);
     }
+
+    public ContenidoEntity convertFromContenidoCompleltoToEntity(ContenidoCompletoDTO contenidoDTO)
+    {
+        return modelMapper.map(contenidoDTO, ContenidoEntity.class);
+    }
+
 }

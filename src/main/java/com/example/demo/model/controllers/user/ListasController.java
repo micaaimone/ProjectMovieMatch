@@ -64,13 +64,14 @@ public class ListasController {
             @ApiResponse(responseCode = "200", description = "Contenido agregado a la lista correctamente")
     })
     @PreAuthorize("hasAuthority('LISTA_AGREGAR_CONTENIDO')")
-    @PatchMapping("/agregarALista")
+    @PatchMapping("/agregarALista/{idLista}")
     public ResponseEntity<String> agregarALista(
-            @Parameter(description = "Nombre de la lista a modificar", required = true)
-            @RequestParam String nombre
+            @Parameter(description = "Nombre del contenido a agregar", required = true)
+            @RequestParam String nombre,
+            @PathVariable Long idLista
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        listasService.agregarContenido(usuarioAutenticado.getId(), nombre);
+        listasService.agregarContenido(idLista, nombre);
         return ResponseEntity.ok("Lista Agregada!");
     }
 
@@ -168,10 +169,11 @@ public class ListasController {
     @DeleteMapping("/sacarDelista")
     public ResponseEntity<String> eliminarDeLista(
             @Parameter(description = "Nombre de la lista", required = true)
-            @RequestParam String nombre
+            @RequestParam String nombre,
+            @PathVariable Long idLista
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        listasService.eliminarContenido(usuarioAutenticado.getId(), nombre);
+        listasService.eliminarContenido(idLista, nombre);
         return ResponseEntity.ok("Contenido eliminado!");
     }
 
@@ -202,7 +204,7 @@ public class ListasController {
     })
     @Parameter(name = "username", description = "Nombre de usuario", required = true)
     @PreAuthorize("hasAuthority('LISTA_VER_PUBLICAS')")
-    @GetMapping("/{username}/verListasDeUser")
+    @GetMapping("verListasDeUser")
     public ResponseEntity<Page<ListaContenidoDTO>> verListas(
             @PathVariable("username") String username,
             Pageable pageable

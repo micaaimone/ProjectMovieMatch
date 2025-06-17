@@ -22,7 +22,7 @@ public class ReseniaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id_resenia;
-//1 usuario a muchas reseñas
+    //1 usuario a muchas reseñas
 
     @ManyToOne
     @JoinColumn(name = "id_usuario")

@@ -32,7 +32,6 @@ public class EnvironmentConfig {
 
     }
 
-    //deberia de crear una clase nueva para mantener solid??? preguntar
     //esto registra el resttemplate para q lo podamos inyectar a donde necesitemos
     @Bean
     public RestTemplate restTemplate() {

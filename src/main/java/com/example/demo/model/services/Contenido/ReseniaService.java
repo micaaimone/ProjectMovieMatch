@@ -15,6 +15,7 @@ import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Contenido.ReseniaRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -63,6 +64,11 @@ public class ReseniaService {
         UsuarioEntity usuario = existeUsuario(dto);
 
         ContenidoEntity contenido = existeContenido(dto);
+
+        if(!contenido.isActivo())
+        {
+            throw new ContenidoNotFound("No se encontro el contenido con id " + contenido.getId_contenido());
+        }
 
         if (reseniaRepository.findByIDAndContenido(dto.getId_usuario(), dto.getId_contenido()).isEmpty())
         {
@@ -180,5 +186,22 @@ public class ReseniaService {
         }
 
         reseniaRepository.save(resenia);
+    }
+
+    @Transactional
+    public void quitarReseniaPorBajaLogica(Long idContenido, int page, int size) {
+        ContenidoEntity contenido = contenidoRepository.findById(idContenido)
+                .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ReseniaEntity> reseniasPage;
+
+        do {
+            reseniasPage = reseniaRepository.findAllByContenido(contenido, pageable);
+            if (!reseniasPage.isEmpty()) {
+                reseniaRepository.deleteAll(reseniasPage.getContent());
+            }
+            pageable = reseniasPage.hasNext() ? reseniasPage.nextPageable() : null;
+        } while (pageable != null);
     }
 }

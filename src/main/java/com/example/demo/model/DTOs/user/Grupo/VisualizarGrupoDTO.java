@@ -14,6 +14,8 @@ import java.util.Set;
 @Schema(description = "DTO para visualizar un grupo, incluyendo su nombre, descripción, administrador y usuarios integrantes")
 public class VisualizarGrupoDTO {
 
+    private Long idGrupo;
+
     @Schema(
             description = "Nombre del grupo",
             example = "Amigos de Cine",

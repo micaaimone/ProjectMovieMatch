@@ -26,6 +26,7 @@ public class GrupoMapper {
 
     public VisualizarGrupoDTO convertToVisualizarGrupo(GrupoEntity grupoEntity) {
         return VisualizarGrupoDTO.builder()
+                .idGrupo(grupoEntity.getIdGrupo())
                 .nombre(grupoEntity.getNombre())
                 .descripcion(grupoEntity.getDescripcion())
                 .admin(usuarioMapper.convertUsuarioGrupoDTO(grupoEntity.getAdministrador()))

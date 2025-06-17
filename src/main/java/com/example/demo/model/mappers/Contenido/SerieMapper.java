@@ -1,5 +1,6 @@
 package com.example.demo.model.mappers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.SerieEntity;
@@ -42,8 +43,11 @@ public class SerieMapper {
 
     public SerieEntity convertToEntity(SerieDTO serieDTO)
     {
-        SerieEntity entity = modelMapper.map(serieDTO, SerieEntity.class);
 
-        return entity;
+        return modelMapper.map(serieDTO, SerieEntity.class);
+    }
+
+    public SerieEntity convertFromContenidoCompletoToSerieEntity(ContenidoCompletoDTO dto) {
+        return modelMapper.map(dto, SerieEntity.class);
     }
 }

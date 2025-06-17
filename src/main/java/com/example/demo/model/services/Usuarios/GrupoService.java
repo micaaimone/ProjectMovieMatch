@@ -150,7 +150,7 @@ public class GrupoService {
 
         //validamos q el q quiere eliminar sea realmente admin
         if(grupo.getAdministrador().getId().equals(idAdmin)
-                || esPremium(usuario))
+                || esPremium(admin))
         {
             grupo.getListaUsuarios().removeIf(u -> u.getId().equals(idUsuario));
         } else {
@@ -177,7 +177,7 @@ public class GrupoService {
 
         //validamos q el q sea realmente admin
         if(grupo.getAdministrador().getId().equals(idAdmin)
-                || esPremium(usuario))
+                || esPremium(admin))
 
         {
             // validamos que el usuario no esté ya en el grupo
@@ -306,8 +306,17 @@ public class GrupoService {
     }
 
     private boolean esPremium(UsuarioEntity usuario) {
-        return usuario.getCredencial().getRoles().stream()
-                .anyMatch(role -> role.equals(Role.ROLE_PREMIUM));
+        if (usuario.getCredencial() == null) {
+            System.out.println("Usuario " + usuario.getId() + " sin credencial");
+            return false;
+        }
+        boolean isPremium = usuario.getCredencial().getRoles().stream()
+                .anyMatch(roleEntity -> {
+                    System.out.println("User " + usuario.getId() + " role: " + roleEntity.getRole());
+                    return roleEntity.getRole() == Role.ROLE_PREMIUM;
+                });
+        System.out.println("Usuario " + usuario.getId() + " es premium? " + isPremium);
+        return isPremium;
     }
 
 
