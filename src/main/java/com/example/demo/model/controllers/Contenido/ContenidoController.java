@@ -1,9 +1,12 @@
 package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoPageDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Contenido.ContenidoService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -24,10 +27,12 @@ import org.springframework.web.bind.annotation.*;
 public class ContenidoController {
 
     private final ContenidoService contenidoService;
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public ContenidoController(ContenidoService contenidoService) {
+    public ContenidoController(ContenidoService contenidoService, UsuarioService usuarioService) {
         this.contenidoService = contenidoService;
+        this.usuarioService = usuarioService;
     }
 
     @Operation(
@@ -137,21 +142,15 @@ public class ContenidoController {
     }
 
     @PreAuthorize("hasAuthority('VISUALIZAR_RECOMENDACIONES_POR_LIKES')")
-    @GetMapping("/{usuarioId}/recomendaciones")
-    public ResponseEntity<ContenidoPageDTO> obtenerRecomendacionesPorLikes(
-            @PathVariable Long usuarioId,
+    @GetMapping("/recomendaciones")
+    public ResponseEntity<ContenidoMostrarDTO> obtenerRecomendacionesPorLikes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        Page<ContenidoDTO> recomendaciones = contenidoService.obtenerRecomendaciones(usuarioId, page, size);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        Page<ContenidoMostrarDTO> recomendaciones = contenidoService.obtenerRecomendaciones(usuarioAutenticado.getId(), page, size);
 
-        ContenidoPageDTO respuesta = new ContenidoPageDTO(
-                recomendaciones.getContent(),
-                recomendaciones.getNumber(),
-                recomendaciones.getTotalPages(),
-                recomendaciones.getTotalElements()
-        );
 
-        return ResponseEntity.ok(respuesta);
+        return ResponseEntity.ok(recomendaciones);
     }
 }

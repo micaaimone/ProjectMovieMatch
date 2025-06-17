@@ -4,6 +4,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.enums.Genero;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
@@ -146,7 +147,7 @@ public class ContenidoService {
                     pageable
             );
 
-            // Si devuelve vacío, usar fallback
+            // si devuelve vacío, muestra segun generos fav
             if (!contenidos.hasContent()) {
                 contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
             }

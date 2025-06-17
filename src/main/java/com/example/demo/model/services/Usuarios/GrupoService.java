@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
@@ -10,6 +11,7 @@ import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoEx
 import com.example.demo.model.exceptions.AmistadExceptions.UsuariosNoSonAmigos;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEsAdminException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
+import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.user.GrupoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.GrupoRepository;
@@ -31,13 +33,15 @@ public class GrupoService {
     private final GrupoRepository grupoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ContenidoRepository contenidoRepository;
+    private final ContenidoMapper contenidoMapper;
 
     @Autowired
-    public GrupoService(GrupoMapper grupoMapper, GrupoRepository grupoRepository, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository) {
+    public GrupoService(GrupoMapper grupoMapper, GrupoRepository grupoRepository, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoMapper contenidoMapper) {
         this.grupoMapper = grupoMapper;
         this.grupoRepository = grupoRepository;
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
+        this.contenidoMapper = contenidoMapper;
     }
 
     public void save(NewGrupoDTO grupoDTO, Long idUsuario) {
@@ -239,9 +243,12 @@ public class GrupoService {
         grupoRepository.save(grupo);
     }
 
-    public Page<ContenidoEntity> obtenerMatchDeGrupo(List<Long> idsUsuarios, int page, int size) {
+    public Page<ContenidoDTO> obtenerMatchDeGrupo(List<Long> idsUsuarios, int page, int size) {
+
         Pageable pageable = PageRequest.of(page, size);
-        return contenidoRepository.obtenerMatchDeGrupo(idsUsuarios, pageable);
+        Page<ContenidoEntity> contenidoDTOS = contenidoRepository.obtenerMatchDeGrupo(idsUsuarios, pageable);
+
+        return contenidoDTOS.map(contenidoMapper::convertToDTO);
     }
 
 }
