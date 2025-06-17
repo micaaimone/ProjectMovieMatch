@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Contenido.ContenidoService;
@@ -125,17 +126,18 @@ public class ContenidoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
 
-    //me lo deja bajar aunque sea user normal
     @PreAuthorize("hasAuthority('DESACTIVAR_CONTENIDO')")
     @PatchMapping("/{id}/desactivar")
-    public ResponseEntity<String> borrarContenido(@PathVariable long id) {
-        contenidoService.darDeBajaContenido(id);
+    public ResponseEntity<String> borrarContenido(@PathVariable long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        contenidoService.darDeBajaContenido(id, page, size);
         return ResponseEntity.ok("Contenido eliminado correctamente.");
     }
 
     @PreAuthorize("hasAuthority('BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE')")
     @GetMapping("/contenido/buscar-api")
-    public ResponseEntity<ContenidoDTO> buscarContenidoDesdeAPI(@RequestParam String titulo) {
+    public ResponseEntity<ContenidoCompletoDTO> buscarContenidoDesdeAPI(@RequestParam String titulo) {
         return ResponseEntity.ok(contenidoService.buscarContenidoPorNombreDesdeAPI(titulo));
     }
 
