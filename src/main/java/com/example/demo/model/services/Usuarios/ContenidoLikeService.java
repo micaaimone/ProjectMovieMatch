@@ -44,6 +44,11 @@ public class ContenidoLikeService {
         ContenidoEntity contenido = contenidoRepository.findById(contenidoId)
                 .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
 
+        if(!contenido.isActivo())
+        {
+            throw new ContenidoNotFound("Contenido no encontrado");
+        }
+
         if (contenidoLikeRepository.existsByUsuarioAndContenido(usuario, contenido)) {
             throw new LikeAlreadyExistsException("Ya diste like a este contenido");
         }
@@ -61,6 +66,11 @@ public class ContenidoLikeService {
 
         ContenidoEntity contenido = contenidoRepository.findById(contenidoId)
                 .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
+
+        if(!contenido.isActivo())
+        {
+            throw new ContenidoNotFound("Contenido no encontrado");
+        }
 
         Optional<ContenidoLikeEntity> likeOpt = contenidoLikeRepository.findByUsuarioAndContenido(usuario, contenido);
         if (likeOpt.isPresent()) {
@@ -84,6 +94,23 @@ public class ContenidoLikeService {
 
         return likesPage.map(reseniaLikeMapper::convertToDTO);
     }
+
+    public void quitarLikesPorBajaLogica(Long idContenido, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ContenidoLikeEntity> likesPage;
+
+        ContenidoEntity contenido = contenidoRepository.findById(idContenido)
+                .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
+
+        do {
+            likesPage = contenidoLikeRepository.findAllByContenido(contenido, pageable);
+            if (!likesPage.isEmpty()) {
+                contenidoLikeRepository.deleteAll(likesPage.getContent());
+            }
+            pageable = likesPage.hasNext() ? likesPage.nextPageable() : null;
+        } while (pageable != null);
+    }
+
 
 
 }
