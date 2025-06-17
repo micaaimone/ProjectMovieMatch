@@ -48,7 +48,7 @@
 |:-----------------|:-----------------|
 | **MercadoPago**   | Gestión de pagos para suscripciones premium. |
 | **OpenAPI (Swagger UI)** | Documentación interactiva de los endpoints REST. |
-| **OMDb API** | Documentacion para obtener datos de los contenidos, ademas de ser interactiva de los endpoints REST. |
+| **OMDb API** | btención de información de películas y series (sinopsis, posters, calificaciones) desde una fuente externa. |
 
 ---
 
