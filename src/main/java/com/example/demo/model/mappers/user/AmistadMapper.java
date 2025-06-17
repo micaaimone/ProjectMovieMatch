@@ -22,7 +22,6 @@ public class AmistadMapper {
     public AmistadEntity convertToNewEntity(NewSolicitudAmistadDTO newSolicitudAmistadDTO)
     {
         return AmistadEntity.builder()
-                .idEmisor(newSolicitudAmistadDTO.getIdEmisor())
                 .idReceptor(newSolicitudAmistadDTO.getIdReceptor())
                 .build();
     }
@@ -39,6 +38,7 @@ public class AmistadMapper {
     {
         return SolicitudAmistadDTO.builder()
                 .idReceptor(solicitudAmistad.getIdReceptor())
+                .idEmisor(solicitudAmistad.getIdEmisor())
                 .estadoSolicitud(solicitudAmistad.getEstadoSolicitud())
                 .build();
     }
