@@ -71,7 +71,7 @@ public class ContenidoLikeService {
     }
 
 
-    public Page<ContenidoMostrarDTO> obtenerLikes(Long usuarioId, int page, int size) {
+    public Page<ContenidoLikeDTO> obtenerLikes(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
