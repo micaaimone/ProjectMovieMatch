@@ -1,6 +1,7 @@
 package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
@@ -146,13 +147,13 @@ public class GrupoController {
             @ApiResponse(responseCode = "200", description = "Matches obtenidos correctamente")
     })
     @PreAuthorize("hasAuthority('LISTAR_MATCHES')")
-    @GetMapping("/matches")
-    public ResponseEntity<Page<ContenidoDTO>> obtenerMatchDeGrupo(
-            @RequestParam List<Long> idsUsuarios,
+    @GetMapping("/matches/{idGrupo}")
+    public ResponseEntity<Page<ContenidoMostrarDTO>> obtenerMatchDeGrupo(
+            @PathVariable Long idGrupo,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
-        Page<ContenidoDTO> matches = grupoService.obtenerMatchDeGrupo(idsUsuarios, page, size);
+        UsuarioEntity user = usuarioService.getUsuarioAutenticado();
+        Page<ContenidoMostrarDTO> matches = grupoService.obtenerMatchDeGrupo(user, idGrupo, page, size);
         return ResponseEntity.ok(matches);
     }
 

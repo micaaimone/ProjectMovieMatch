@@ -1,6 +1,7 @@
 package com.example.demo.model.services.Usuarios;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
@@ -243,12 +244,19 @@ public class GrupoService {
         grupoRepository.save(grupo);
     }
 
-    public Page<ContenidoDTO> obtenerMatchDeGrupo(List<Long> idsUsuarios, int page, int size) {
-
+    public Page<ContenidoMostrarDTO> obtenerMatchDeGrupo(UsuarioEntity user, Long idGrupo, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<ContenidoEntity> contenidoDTOS = contenidoRepository.obtenerMatchDeGrupo(idsUsuarios, pageable);
 
-        return contenidoDTOS.map(contenidoMapper::convertToDTO);
+        GrupoEntity grupo = grupoRepository.findById(idGrupo)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("El Grupo no existe"));
+
+        if(!user.getGrupos().contains(grupo)){
+            throw new RuntimeException("El usuario no se encuentra en el grupo");
+        }
+
+        Page<ContenidoEntity> contenidoDTOS = contenidoRepository.obtenerMatchDeGrupo(grupo.getListaUsuarios(), pageable);
+
+        return contenidoDTOS.map(contenidoMapper::convertToDTOForAdmin);
     }
 
 }

@@ -35,4 +35,7 @@ public class GrupoEntity {
     )
     private Set<UsuarioEntity> listaUsuarios = new HashSet<>();
 
+    public Set<UsuarioEntity> getListaUsuarios() {
+        return listaUsuarios;
+    }
 }

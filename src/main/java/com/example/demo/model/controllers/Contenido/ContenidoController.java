@@ -1,9 +1,6 @@
 package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
-import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
-import com.example.demo.model.DTOs.Contenido.ContenidoPageDTO;
-import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Contenido.ContenidoService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -143,12 +140,12 @@ public class ContenidoController {
 
     @PreAuthorize("hasAuthority('VISUALIZAR_RECOMENDACIONES_POR_LIKES')")
     @GetMapping("/recomendaciones")
-    public ResponseEntity<ContenidoMostrarDTO> obtenerRecomendacionesPorLikes(
+    public ResponseEntity<Page<ContenidoDTO>> obtenerRecomendacionesPorLikes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        Page<ContenidoMostrarDTO> recomendaciones = contenidoService.obtenerRecomendaciones(usuarioAutenticado.getId(), page, size);
+        Page<ContenidoDTO> recomendaciones = contenidoService.obtenerRecomendaciones(usuarioAutenticado.getId(), page, size);
 
 
         return ResponseEntity.ok(recomendaciones);
