@@ -22,13 +22,13 @@ public class PeliculaService {
         this.peliculaMapper = peliculaMapper;
     }
 
-    public Page<PeliculaDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion, Integer estado, String clasificacion, String metascore, Long id){
+    public Page<PeliculaDTO> buscar(Pageable pageable,String genero, String anio, String titulo,Double puntuacion,Boolean activo, String clasificacion, String metascore, Long id){
         Specification<PeliculaEntity> specification = Specification
                 .where(PeliculaSpecification.genero(genero))
                 .and(PeliculaSpecification.anio(anio))
                 .and(PeliculaSpecification.tituloParecido(titulo))
                 .and(PeliculaSpecification.puntuacion(puntuacion))
-                .and(PeliculaSpecification.estado(estado))
+                .and(PeliculaSpecification.activo(activo))
                 .and(PeliculaSpecification.clasificacion(clasificacion))
                 .and(PeliculaSpecification.metascore(metascore))
                 .and(PeliculaSpecification.id(id));

@@ -1,85 +1,216 @@
 package com.example.demo.model.controllers.user;
 
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.ListasSinContDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ListasService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/usuarios/listas")
 public class ListasController {
     private final ListasService listasService;
+    //uso el service unicamente por la autenticacion
+    private final UsuarioService usuarioService;
 
-    public ListasController(ListasService listasService) {
+    @Autowired
+    public ListasController(ListasService listasService, UsuarioService usuarioService) {
         this.listasService = listasService;
+        this.usuarioService = usuarioService;
     }
 
     // metodos de listas de contenidos--------------------------
-    @PostMapping("/{id}/crearLista")
-    public ResponseEntity<String> crearLista(@PathVariable("id") Long idUser,@Valid @RequestBody ListasSinContDTO lista){
-        listasService.addLista(idUser, lista);
+
+    @Operation(summary = "Crear una nueva lista",
+            description = "Crea una lista vacía para un usuario específico.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista creada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
+    @PreAuthorize("hasAuthority('LISTA_CREAR')")
+    @PostMapping("/crearLista")
+    public ResponseEntity<String> crearLista(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "DTO con el nombre y estado de privacidad de la lista",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = ListasSinContDTO.class)))
+            @Valid @RequestBody ListasSinContDTO lista
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        listasService.addLista(usuarioAutenticado.getId(), lista);
         return ResponseEntity.ok("Lista Creada!");
     }
 
-    @PatchMapping("/{id}/agregarALista")
-    public ResponseEntity<String> agregarALista(@PathVariable("id") Long id,@RequestParam String nombre)
-    {
-        listasService.agregarContenido(id, nombre);
+    @Operation(summary = "Agregar contenido a una lista",
+            description = "Agrega un contenido a la lista de un usuario.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contenido agregado a la lista correctamente")
+    })
+    @PreAuthorize("hasAuthority('LISTA_AGREGAR_CONTENIDO')")
+    @PatchMapping("/agregarALista/{idLista}")
+    public ResponseEntity<String> agregarALista(
+            @Parameter(description = "Nombre del contenido a agregar", required = true)
+            @RequestParam String nombre,
+            @PathVariable Long idLista
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        listasService.agregarContenido(idLista, nombre);
         return ResponseEntity.ok("Lista Agregada!");
     }
 
     // mostrar listas con contenido y sin----------------------------------
 
-    @GetMapping("/{id}/verListas")
-    public ResponseEntity<Page<ListasSinContDTO>> verListas(@PathVariable("id") Long idUser, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+    @Operation(summary = "Ver todas las listas de un usuario",
+            description = "Devuelve una lista paginada de las listas (sin contenido) que pertenecen al usuario.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listas obtenidas correctamente")
+    })
+    @Parameters({
+            @Parameter(name = "page", description = "Número de página", schema = @Schema(defaultValue = "0")),
+            @Parameter(name = "size", description = "Cantidad de resultados por página", schema = @Schema(defaultValue = "5"))
+    })
+    @PreAuthorize("hasAuthority('LISTA_VER_PROPIAS')")
+    @GetMapping("/verListas")
+    public ResponseEntity<Page<ListasSinContDTO>> verListas(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(listasService.getListas(idUser, pageable));
+        return ResponseEntity.ok(listasService.getListas(usuarioAutenticado.getId(), pageable));
     }
 
-    @GetMapping("/{id}/verLista/{nombre}")
-    public ResponseEntity<ListaContenidoDTO>verLista(@PathVariable("id") Long idUser, @PathVariable("nombre") String nombre){
-        return ResponseEntity.ok(listasService.verListaXnombre(idUser, nombre));
+    // ------------------ Ver una lista específica
+
+    @Operation(summary = "Ver una lista específica",
+            description = "Devuelve una lista con su contenido por nombre para un usuario.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista encontrada exitosamente")
+    })
+    @PreAuthorize("hasAuthority('LISTA_VER_DETALLE')")
+    @GetMapping("/verLista/{nombre}")
+    public ResponseEntity<ListaContenidoDTO> verLista(
+            @Parameter(description = "Nombre de la lista", required = true)
+            @PathVariable("nombre") String nombre
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        return ResponseEntity.ok(listasService.verListaXnombre(usuarioAutenticado.getId(), nombre));
     }
 
     //-------------------- editar variables de listas ------------
-    @PatchMapping("/{id}/{nombre}/cambiarNombre")
-    public ResponseEntity<String> cambiarNombre(@PathVariable("id") Long id,@PathVariable("nombre") String nombre, @RequestParam String newNombre){
-        listasService.cambiarNombre(id, nombre, newNombre);
+
+    @Operation(summary = "Cambiar el nombre de una lista",
+            description = "Cambia el nombre de una lista existente.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Nombre cambiado exitosamente")
+    })
+    @PreAuthorize("hasAuthority('LISTA_CAMBIAR_NOMBRE')")
+    @PatchMapping("/{nombre}/cambiarNombre")
+    public ResponseEntity<String> cambiarNombre(
+
+            @Parameter(description = "Nombre actual de la lista", required = true)
+            @PathVariable("nombre") String nombre,
+
+            @Parameter(description = "Nuevo nombre de la lista", required = true)
+            @RequestParam String newNombre
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        listasService.cambiarNombre(usuarioAutenticado.getId(), nombre, newNombre);
         return ResponseEntity.ok("Nombre cambiado!");
     }
 
-    @PatchMapping("/{id}/{nombre}/cambiarEstado")
-    public ResponseEntity<String> cambiarEstado(@PathVariable("id") Long id,@PathVariable("nombre") String nombre, @RequestParam boolean newEstado){
-        listasService.cambiarPrivado(id, nombre, newEstado);
+    // ------------------ Cambiar estado de privacidad
+
+    @Operation(summary = "Cambiar privacidad de una lista",
+            description = "Modifica el estado de privacidad de una lista (pública o privada).")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Privacidad cambiada correctamente")
+    })
+    @PreAuthorize("hasAuthority('LISTA_CAMBIAR_ESTADO')")
+    @PatchMapping("/{nombre}/cambiarEstado")
+    public ResponseEntity<String> cambiarEstado(
+
+            @Parameter(description = "Nombre de la lista", required = true)
+            @PathVariable("nombre") String nombre,
+
+            @Parameter(description = "Nuevo estado de privacidad", required = true)
+            @RequestParam boolean newEstado
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        listasService.cambiarPrivado(usuarioAutenticado.getId(), nombre, newEstado);
         return ResponseEntity.ok("Privacidad cambiada!");
     }
 
-
     // ------------------------ borrar contenido o borrar lista completa------------
-    @DeleteMapping("/{id}/sacarDelista")
-    public ResponseEntity<String> eliminarDeLista(@PathVariable("id") Long id, @RequestParam String nombre){
-        listasService.eliminarContenido(id, nombre);
+
+    @Operation(summary = "Eliminar contenido de una lista",
+            description = "Quita un contenido de la lista especificada por nombre.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Contenido eliminado de la lista")
+    })
+    @PreAuthorize("hasAuthority('LISTA_ELIMINAR_CONTENIDO')")
+    @DeleteMapping("/sacarDelista")
+    public ResponseEntity<String> eliminarDeLista(
+            @Parameter(description = "Nombre de la lista", required = true)
+            @RequestParam String nombre,
+            @PathVariable Long idLista
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        listasService.eliminarContenido(idLista, nombre);
         return ResponseEntity.ok("Contenido eliminado!");
     }
 
-    @DeleteMapping("/{id}/eliminarLista")
-    public ResponseEntity<String> eliminarLista(@PathVariable("id") Long idUser, @RequestParam String nombre){
-        listasService.eliminarLista(idUser, nombre);
+    // ------------------ Eliminar lista completa
+
+    @Operation(summary = "Eliminar una lista",
+            description = "Elimina por completo una lista de un usuario.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista eliminada exitosamente")
+    })
+    @PreAuthorize("hasAuthority('LISTA_ELIMINAR')")
+    @DeleteMapping("/eliminarLista")
+    public ResponseEntity<String> eliminarLista(
+            @Parameter(description = "Nombre de la lista a eliminar", required = true)
+            @RequestParam String nombre
+    ) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        listasService.eliminarLista(usuarioAutenticado.getId(), nombre);
         return ResponseEntity.ok("Lista Eliminada!");
     }
 
-    //buscar lista de otro usuario
-    @GetMapping("/{username}/verListasDeUser")
-    public ResponseEntity<Page<ListaContenidoDTO>> verListas(@PathVariable("username") String username, Pageable pageable){
+    // ------------------ Ver listas de otro usuario
+
+    @Operation(summary = "Ver listas públicas de otro usuario",
+            description = "Devuelve las listas públicas de un usuario específico por su nombre de usuario.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Listas obtenidas correctamente")
+    })
+    @Parameter(name = "username", description = "Nombre de usuario", required = true)
+    @PreAuthorize("hasAuthority('LISTA_VER_PUBLICAS')")
+    @GetMapping("verListasDeUser")
+    public ResponseEntity<Page<ListaContenidoDTO>> verListas(
+            @PathVariable("username") String username,
+            Pageable pageable
+    ) {
         return ResponseEntity.ok(listasService.verListaDeUser(username, pageable));
     }
-
-
 
 
 }

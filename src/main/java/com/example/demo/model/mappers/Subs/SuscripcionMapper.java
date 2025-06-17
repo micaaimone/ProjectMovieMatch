@@ -5,6 +5,7 @@ import com.example.demo.model.DTOs.subs.SuscripcionDTO;
 import com.example.demo.model.entities.subs.PagoEntity;
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 public class SuscripcionMapper {
     private final ModelMapper modelMapper;
 
+    @Autowired
     public SuscripcionMapper(ModelMapper modelMapper) {
         this.modelMapper = modelMapper;
     }

@@ -1,5 +1,6 @@
 package com.example.demo.model.mappers.Contenido;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.DTOs.Contenido.SerieDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.SerieEntity;
@@ -13,9 +14,14 @@ import java.util.stream.Collectors;
 @Component
 public class SerieMapper {
 
+    private final ModelMapper modelMapper;
+    private final ReseniaMapper reseñaMapper;
+
     @Autowired
-    private ModelMapper modelMapper;
-    private ReseniaMapper reseñaMapper;
+    public SerieMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper) {
+        this.modelMapper = modelMapper;
+        this.reseñaMapper = reseñaMapper;
+    }
 
     public SerieDTO convertToDTO(SerieEntity serieEntity)
     {
@@ -37,8 +43,11 @@ public class SerieMapper {
 
     public SerieEntity convertToEntity(SerieDTO serieDTO)
     {
-        SerieEntity entity = modelMapper.map(serieDTO, SerieEntity.class);
 
-        return entity;
+        return modelMapper.map(serieDTO, SerieEntity.class);
+    }
+
+    public SerieEntity convertFromContenidoCompletoToSerieEntity(ContenidoCompletoDTO dto) {
+        return modelMapper.map(dto, SerieEntity.class);
     }
 }

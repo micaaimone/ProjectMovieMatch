@@ -1,5 +1,6 @@
 package com.example.demo.model.Specifications.Contenido;
 
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -21,13 +22,12 @@ public class SerieSpecification {
         );
     }
 
-    public static Specification<SerieEntity> estado(Integer estado)
-    {
-        return ((root, query, criteriaBuilder) ->
-                estado == null ? null :
-                        criteriaBuilder.equal(root.get("estado"), estado)
-        );
+    public static Specification<SerieEntity> activo(Boolean activo) {
+        return (root, query, cb) ->
+                activo == null ? null :
+                        cb.equal(root.get("activo"), activo);
     }
+
 
     public static Specification<SerieEntity> anio(String anio)
     {

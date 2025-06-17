@@ -21,13 +21,12 @@ public class PeliculaSpecification {
         );
     }
 
-    public static Specification<PeliculaEntity> estado(Integer estado)
-    {
-        return ((root, query, criteriaBuilder) ->
-                estado == null ? null :
-                        criteriaBuilder.equal(root.get("estado"), estado)
-        );
+    public static Specification<PeliculaEntity> activo(Boolean activo) {
+        return (root, query, cb) ->
+                activo == null ? null :
+                        cb.equal(root.get("activo"), activo);
     }
+
 
     public static Specification<PeliculaEntity> anio(String anio)
     {

@@ -1,9 +1,11 @@
 package com.example.demo.model.mappers.Contenido;
 
 
+import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.DTOs.Contenido.PeliculaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
+import com.example.demo.model.entities.Contenido.SerieEntity;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,10 +16,14 @@ import java.util.stream.Collectors;
 @Component
 public class PeliculaMapper {
 
+    private final ModelMapper modelMapper;
+    private final ReseniaMapper reseñaMapper;
+
     @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private ReseniaMapper reseñaMapper;
+    public PeliculaMapper(ModelMapper modelMapper, ReseniaMapper reseñaMapper) {
+        this.modelMapper = modelMapper;
+        this.reseñaMapper = reseñaMapper;
+    }
 
     public PeliculaDTO convertToDTO(PeliculaEntity peliculaEntity)
     {
@@ -43,5 +49,9 @@ public class PeliculaMapper {
         PeliculaEntity entity = modelMapper.map(peliculaDTO, PeliculaEntity.class);
 
         return entity;
+    }
+
+    public PeliculaEntity convertFromContenidoCompletoToEntity(ContenidoCompletoDTO dto) {
+        return modelMapper.map(dto, PeliculaEntity.class);
     }
 }

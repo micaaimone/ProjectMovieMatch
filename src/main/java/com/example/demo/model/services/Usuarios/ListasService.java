@@ -1,15 +1,18 @@
 package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.DTOs.user.ListaContenidoDTO;
-import com.example.demo.model.DTOs.user.ListasSinContDTO;
+import com.example.demo.Seguridad.Entities.RoleEntity;
+import com.example.demo.Seguridad.Enum.Role;
+import com.example.demo.Seguridad.repositories.RoleRepository;
+import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
+import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListAlreadyExistsException;
-import com.example.demo.model.exceptions.UsuarioExceptions.ListaNotFoundException;
+import com.example.demo.model.exceptions.ListasExceptions.ListAlreadyExistsException;
+import com.example.demo.model.exceptions.ListasExceptions.ListaNotFoundException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
@@ -18,8 +21,6 @@ import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,12 +29,14 @@ public class ListasService {
     private final ContenidoRepository contenidoRepository;
     private final UsuarioRepository usuarioRepository;
     private final ListasMapper listasMapper;
+    private final RoleRepository roleRepository;
 
-    public ListasService(ListasContenidoRepository listasContenidoRepository, ContenidoRepository contenidoRepository, UsuarioRepository usuarioRepository, ListasMapper listasMapper) {
+    public ListasService(ListasContenidoRepository listasContenidoRepository, ContenidoRepository contenidoRepository, UsuarioRepository usuarioRepository, ListasMapper listasMapper, RoleRepository roleRepository) {
         this.listasContenidoRepository = listasContenidoRepository;
         this.contenidoRepository = contenidoRepository;
         this.usuarioRepository = usuarioRepository;
         this.listasMapper = listasMapper;
+        this.roleRepository = roleRepository;
     }
 
     //crear una lista(con contenido vacio)
@@ -41,14 +44,23 @@ public class ListasService {
         UsuarioEntity usuario = usuarioRepository.findById(idUser)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
-        if(listasContenidoRepository.findByNombre(idUser, list.getNombre()).isPresent()){
-            throw new ListAlreadyExistsException("Lista ya existe");
+        RoleEntity rolPremium = roleRepository.findByRole(Role.ROLE_PREMIUM)
+                .orElseThrow(() -> new RuntimeException("Rol PREMIUM no encontrado"));
+
+
+        if(usuario.getCredencial().getRoles().contains(rolPremium) || 3 > usuario.getListas().size()) {
+
+            if (listasContenidoRepository.findByNombre(idUser, list.getNombre()).isPresent()) {
+                throw new ListAlreadyExistsException("Lista ya existe");
+            }
+
+            ListasContenidoEntity lista = listasMapper.convertToEntitySC(list);
+            lista.setUsuario(usuario);
+
+            listasContenidoRepository.save(lista);
+        }else{
+            throw new ListAlreadyExistsException("Ya cuenta con 3 listas, nuestro plan premium incluye listas ilimitadas!");
         }
-
-        ListasContenidoEntity lista = listasMapper.convertToEntitySC(list);
-        lista.setUsuario(usuario);
-
-        listasContenidoRepository.save(lista);
     }
 
     //agregamos contenido a una lista existente(chequear)

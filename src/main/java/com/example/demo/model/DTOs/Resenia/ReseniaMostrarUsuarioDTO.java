@@ -1,5 +1,6 @@
 package com.example.demo.model.DTOs.Resenia;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -10,10 +11,14 @@ import lombok.*;
 @ToString
 @Builder
 public class ReseniaMostrarUsuarioDTO {
-    @NotBlank(message = "id de usuario es necesario")
-    private Long id_contenido;
+    private Long id;
 
+    @Schema(description = "Nombre del usuario que realizó la reseña", example = "Juan Pérez")
+    private String nombre;
+
+    @Schema(description = "Puntuación que el usuario asignó al contenido", example = "9.0")
     private Double puntuacionU;
 
+    @Schema(description = "Comentario del usuario sobre el contenido", example = "Muy recomendable, gran desarrollo de personajes.")
     private String comentario;
 }

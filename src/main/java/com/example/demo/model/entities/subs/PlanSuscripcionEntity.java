@@ -3,13 +3,13 @@ package com.example.demo.model.entities.subs;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
+@ToString(exclude = "ofertas")
 
 @Entity
 @Table(name = "plan_suscripcion")

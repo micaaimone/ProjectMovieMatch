@@ -1,7 +1,6 @@
 package com.example.demo.model.services.Contenido;
 
-
-
+import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.Contenido.PeliculaEntity;
 import com.example.demo.model.entities.Contenido.SerieEntity;
@@ -56,5 +55,11 @@ public class APIMovieService {
     public void delete(ContenidoEntity dato) {
         contenidoRepository.delete(dato);
     }
+
+    public ContenidoCompletoDTO findContenidoByTitle(String titulo) {
+        String url = apiUrl + "?t=" + titulo + "&apikey=" + apiKey;
+        return restTemplate.getForObject(url, ContenidoCompletoDTO.class);
+    }
+
 }
 

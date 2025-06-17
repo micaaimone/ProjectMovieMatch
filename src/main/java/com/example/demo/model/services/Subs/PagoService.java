@@ -23,8 +23,8 @@ public class PagoService {
         this.pagoMapper = pagoMapper;
     }
 
-    public void anadirPago(SuscripcionEntity suscripcion, BigDecimal monto) {
-        pagoRepository.save(new PagoEntity(null, "mercado pago", LocalDateTime.now(), monto, suscripcion));
+    public void anadirPago(SuscripcionEntity suscripcion, BigDecimal monto, Long idMp) {
+        pagoRepository.save(new PagoEntity(null, "Mercado Pago", LocalDateTime.now(), monto, idMp, suscripcion ));
     }
 
     public Page<PagoDTO> findAll(Pageable pageable) {
@@ -43,4 +43,9 @@ public class PagoService {
 
         return pagoMapper.convertToDTO(pagoEntity);
     }
+
+    public boolean existsByIdMP(Long id) {
+        return pagoRepository.existsByIdMP(id);
+    }
+
 }
