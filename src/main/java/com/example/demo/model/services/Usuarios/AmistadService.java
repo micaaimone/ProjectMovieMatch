@@ -63,9 +63,8 @@ public class AmistadService {
         return solicitud;
     }
 
-    public void save(NewSolicitudAmistadDTO solicitudAmistadDTO) {
+    public void save(NewSolicitudAmistadDTO solicitudAmistadDTO, Long idEmisor) {
 
-        Long idEmisor = solicitudAmistadDTO.getIdEmisor();
         Long idReceptor = solicitudAmistadDTO.getIdReceptor();
 
         // validamos usuarios
@@ -106,6 +105,7 @@ public class AmistadService {
 
         AmistadEntity solicitudNueva = solicitudAmistadMapper.convertToNewEntity(solicitudAmistadDTO);
         solicitudNueva.setEstadoSolicitud(EstadoSolicitud.PENDIENTE);
+        solicitudNueva.setIdEmisor(idEmisor);
 
         solicitudAmistadRepository.save(solicitudNueva);
     }

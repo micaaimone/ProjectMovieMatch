@@ -11,11 +11,6 @@ import lombok.*;
 @ToString
 @Builder
 public class NewSolicitudAmistadDTO {
-
-    @NotNull(message = "El id emisor de ser ingresado")
-    @Positive
-    private Long idEmisor;
-
     @NotNull(message = "El id receptor de ser ingresado")
     @Positive
     private Long idReceptor;
