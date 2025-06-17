@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ContenidoLikeDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
@@ -8,6 +9,7 @@ import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.user.ReseniaLikeMapper;
+import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
 import com.example.demo.model.repositories.Usuarios.ReseniaLikeRepository;
@@ -68,7 +70,8 @@ public class ContenidoLikeService {
         return false;
     }
 
-    public Page<ContenidoLikeDTO> obtenerLikes(Long usuarioId, int page, int size) {
+
+    public Page<ContenidoMostrarDTO> obtenerLikes(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 

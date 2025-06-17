@@ -1,7 +1,9 @@
 package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Contenido.ContenidoService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -23,10 +25,12 @@ import org.springframework.web.bind.annotation.*;
 public class ContenidoController {
 
     private final ContenidoService contenidoService;
+    private final UsuarioService usuarioService;
 
     @Autowired
-    public ContenidoController(ContenidoService contenidoService) {
+    public ContenidoController(ContenidoService contenidoService, UsuarioService usuarioService) {
         this.contenidoService = contenidoService;
+        this.usuarioService = usuarioService;
     }
 
     @Operation(
@@ -132,8 +136,20 @@ public class ContenidoController {
     @PreAuthorize("hasAuthority('BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE')")
     @GetMapping("/contenido/buscar-api")
     public ResponseEntity<ContenidoDTO> buscarContenidoDesdeAPI(@RequestParam String titulo) {
-        System.out.println("pete");
         return ResponseEntity.ok(contenidoService.buscarContenidoPorNombreDesdeAPI(titulo));
     }
 
+
+    @PreAuthorize("hasAuthority('VISUALIZAR_RECOMENDACIONES_POR_LIKES')")
+    @GetMapping("/recomendaciones")
+    public ResponseEntity<Page<ContenidoDTO>> obtenerRecomendacionesPorLikes(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        Page<ContenidoDTO> recomendaciones = contenidoService.obtenerRecomendaciones(usuarioAutenticado.getId(), page, size);
+
+
+        return ResponseEntity.ok(recomendaciones);
+    }
 }

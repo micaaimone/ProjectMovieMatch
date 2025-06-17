@@ -60,7 +60,9 @@ public class RolePermitMapper {
                 Permit.VER_COINCIDENCIAS,
                 Permit.USUARIO_SOLICITAR_SOPORTE,
                 Permit.ELIMINAR_GRUPO,
-                Permit.SUSCRIPCION_CAMBIAR_PLAN
+                Permit.SUSCRIPCION_CAMBIAR_PLAN,
+                Permit.LISTAR_MATCHES,
+                Permit.VISUALIZAR_RECOMENDACIONES_POR_LIKES
         ));
 
         // ROLE_PREMIUM hereda de USER + permisos adicionales
@@ -70,7 +72,6 @@ public class RolePermitMapper {
                 Permit.MODIFICAR_GRUPO,
                 Permit.AGREGAR_USUARIO_A_GRUPO,
                 Permit.ELIMINAR_USUARIO_DE_GRUPO
-
         ));
         rolePermissions.put(Role.ROLE_PREMIUM, Set.copyOf(premiumPermits));
 

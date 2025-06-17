@@ -3,28 +3,46 @@ package com.example.demo.model.services.Contenido;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.UsuarioEntity;
+import com.example.demo.model.enums.Genero;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoYaAgregadoException;
+import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
+import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
+import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
 public class ContenidoService {
 
     private final ContenidoRepository contenidoRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final ContenidoLikeRepository contenidoLikeRepository;
     private final ContenidoMapper contenidoMapper;
     private final APIMovieService apiMovieService;
 
 
     @Autowired
-    public ContenidoService(ContenidoRepository contenidoRepository, ContenidoMapper contenidoMapper, APIMovieService apiMovieService) {
+    public ContenidoService(ContenidoRepository contenidoRepository, UsuarioRepository usuarioRepository, ContenidoLikeRepository contenidoLikeRepository, ContenidoMapper contenidoMapper, APIMovieService apiMovieService) {
         this.contenidoRepository = contenidoRepository;
+        this.usuarioRepository = usuarioRepository;
+        this.contenidoLikeRepository = contenidoLikeRepository;
         this.contenidoMapper = contenidoMapper;
         this.apiMovieService = apiMovieService;
     }
@@ -107,6 +125,52 @@ public class ContenidoService {
         // Guardar en base de datos
         contenidoRepository.save(contenido);
         return contenidoMapper.convertToDTO(contenido);
+    }
+
+    // primeras reco (basarlo en los generos fav)
+
+
+    // una vex likeadas
+    public Page<ContenidoDTO> obtenerRecomendaciones(Long usuarioId, int page, int size) {
+        UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+
+        List<String> generosLikeados = contenidoLikeRepository.obtenerGenerosLikeadosPorUsuario(usuarioId);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<ContenidoEntity> contenidos;
+
+        if (!generosLikeados.isEmpty()) {
+            contenidos = contenidoRepository.recomendarContenidoPorGeneroYEdad(
+                    generosLikeados,
+                    pageable
+            );
+            // si devuelve vacío, muestra segun generos fav
+            if (!contenidos.hasContent()) {
+                contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
+            }
+        } else {
+            contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
+        }
+
+        return contenidos.map(contenidoMapper::convertToDTO);
+    }
+
+    // metodo auxiliar
+    public Page<ContenidoEntity> obtenerFallbackPorGeneroFavorito(UsuarioEntity usuario, Pageable pageable) {
+        List<String> generos = usuario.getGeneros()
+                .stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+
+        if (generos.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return contenidoRepository.recomendarContenidoPorGeneroYEdad(
+                generos,
+                pageable
+        );
     }
 
 
