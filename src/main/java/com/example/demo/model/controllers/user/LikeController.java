@@ -1,6 +1,6 @@
 package com.example.demo.model.controllers.user;
 
-import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
+import com.example.demo.model.DTOs.Resenia.ContenidoLikeDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
@@ -10,8 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -58,15 +56,14 @@ public class LikeController {
         }
     }
 
-    //modificar, tiene que devolver un dto
     @Operation(summary = "Ver likes de contenido")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/contenidosLikeados")
-    public ResponseEntity<Page<ReseniaLikeDTO>> getContenidoLikes(
+    public ResponseEntity<Page<ContenidoLikeDTO>> getContenidoLikes(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        Page<ReseniaLikeDTO> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
+        Page<ContenidoLikeDTO> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
     }
 
@@ -103,18 +100,5 @@ public class LikeController {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         Page<ReseniaLikeDTO> likes = reseniaLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
-    }
-
-    // ------------------- Listar contenido con likes
-    @Operation(summary = "Ver contenidos con like")
-    @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
-    @GetMapping("/likes")
-    public ResponseEntity<Page<ContenidoMostrarDTO>> obtenerLikes(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        Page<ContenidoMostrarDTO> pagina = usuarioService.obtenerLikes(usuarioAutenticado.getId(), pageable);
-        return ResponseEntity.ok(pagina);
     }
 }

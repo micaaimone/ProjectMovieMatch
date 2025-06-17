@@ -1,9 +1,8 @@
 package com.example.demo.model.services.Usuarios;
 
-import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
+import com.example.demo.model.DTOs.Resenia.ContenidoLikeDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
-import com.example.demo.model.entities.User.ReseniaLikeEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.ContenidoExceptions.ContenidoNotFound;
 import com.example.demo.model.exceptions.LikeExceptions.LikeAlreadyExistsException;
@@ -27,14 +26,12 @@ public class ContenidoLikeService {
     private final UsuarioRepository usuarioRepository;
     private final ContenidoRepository contenidoRepository;
     private final ContenidoLikeRepository contenidoLikeRepository;
-    private final ReseniaLikeRepository reseniaLikeRepository;
     private final ReseniaLikeMapper reseniaLikeMapper;
 
-    public ContenidoLikeService(UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoLikeRepository contenidoLikeRepository, ReseniaLikeRepository reseniaLikeRepository, ReseniaLikeMapper reseniaLikeMapper) {
+    public ContenidoLikeService(UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoLikeRepository contenidoLikeRepository, ReseniaLikeMapper reseniaLikeMapper) {
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
         this.contenidoLikeRepository = contenidoLikeRepository;
-        this.reseniaLikeRepository = reseniaLikeRepository;
         this.reseniaLikeMapper = reseniaLikeMapper;
     }
 
@@ -71,19 +68,18 @@ public class ContenidoLikeService {
         return false;
     }
 
-    public Page<ReseniaLikeDTO> obtenerLikes(Long usuarioId, int page, int size) {
+    public Page<ContenidoLikeDTO> obtenerLikes(Long usuarioId, int page, int size) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         Pageable pageable = PageRequest.of(page, size);
 
         // traemos las reseñas que el usuario likéo
-        Page<ReseniaLikeEntity> likesPage = reseniaLikeRepository.findAllByUsuario(usuario, pageable);
+        Page<ContenidoLikeEntity> likesPage = contenidoLikeRepository.findAllByUsuario(usuario, pageable);
 
         // mapeamos a DTOs
-        Page<ReseniaLikeDTO> dtoPage = likesPage.map(reseniaLikeMapper::convertToDTO);
 
-        return dtoPage;
+        return likesPage.map(reseniaLikeMapper::convertToDTO);
     }
 
 

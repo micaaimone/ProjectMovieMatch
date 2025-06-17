@@ -75,7 +75,7 @@ public class ReseniaLikeService {
         return false;
     }
 
-    public Page<ReseniaLikeDTO> obtenerLikes(Long usuarioId,  int page, int size) {
+    public Page<ReseniaLikeDTO> obtenerLikes(Long usuarioId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         if (!usuarioRepository.existsById(usuarioId)) {
             throw new UsuarioNoEncontradoException("Usuario no encontrado");
@@ -83,7 +83,7 @@ public class ReseniaLikeService {
 
         Page<ReseniaLikeEntity> likesPage = reseniaLikeRepository.findAllByUsuarioId(usuarioId, pageable);
 
-        return likesPage.map(reseniaLikeMapper::convertToDTO);
+        return likesPage.map(reseniaLikeMapper::convertToDTOResenia);
     }
 
 
