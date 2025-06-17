@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 @SecurityRequirement(name = "bearerAuth")
 @RestController
-@RequestMapping("/api/v1/contenido")
+@RequestMapping("/contenido")
 public class ContenidoController {
 
     private final ContenidoService contenidoService;
@@ -136,7 +136,7 @@ public class ContenidoController {
     }
 
     @PreAuthorize("hasAuthority('BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE')")
-    @GetMapping("/contenido/buscar-api")
+    @GetMapping("/buscar-api")
     public ResponseEntity<ContenidoCompletoDTO> buscarContenidoDesdeAPI(@RequestParam String titulo) {
         return ResponseEntity.ok(contenidoService.buscarContenidoPorNombreDesdeAPI(titulo));
     }

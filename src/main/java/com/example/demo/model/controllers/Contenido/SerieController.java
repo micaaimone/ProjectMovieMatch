@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @SecurityRequirement(name = "bearerAuth")
 @RestController
-@RequestMapping("/api/v1/series")
+@RequestMapping("/series")
 public class SerieController {
     private final SerieService serieService;
 

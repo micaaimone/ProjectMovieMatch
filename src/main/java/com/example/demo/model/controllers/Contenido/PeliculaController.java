@@ -18,7 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "bearerAuth")
 @RestController
-@RequestMapping("/api/v1/peliculas")
+@RequestMapping("peliculas")
 public class PeliculaController {
 
     private final PeliculaService peliculaService;
