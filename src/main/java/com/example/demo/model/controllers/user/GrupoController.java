@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.user;
 
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
@@ -17,6 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -168,4 +170,25 @@ public class GrupoController {
         grupoService.eliminarGrupo(usuarioAutenticado.getId(), idGrupo);
         return ResponseEntity.ok("Grupo eliminado correctamente");
     }
+
+    @Operation(
+            summary = "Ver coincidencias",
+            description = "Permite ver las coincidencias del grupo según el id del grupo con paginación"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Lista de coincidencias obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "Grupo o usuario no encontrado")
+    })
+    @PreAuthorize("hasAuthority('VER_GRUPO')")
+    @GetMapping("/coincidencias/{idGrupo}")
+    public ResponseEntity<Page<ContenidoMostrarDTO>>coincidencias(@PathVariable Long idGrupo,
+                                                @RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+
+        Page<ContenidoMostrarDTO> resultado = grupoService.mostrarCoincidencias(idGrupo, page, size);
+
+        return ResponseEntity.ok(resultado);
+    }
+
 }

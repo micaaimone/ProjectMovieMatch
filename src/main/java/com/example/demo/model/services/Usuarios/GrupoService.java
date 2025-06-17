@@ -1,24 +1,33 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.Seguridad.Enum.Role;
+import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
+import com.example.demo.model.entities.Contenido.ContenidoEntity;
+import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.GrupoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
 import com.example.demo.model.exceptions.AmistadExceptions.UsuariosNoSonAmigos;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEsAdminException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteException;
+import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.user.GrupoMapper;
 import com.example.demo.model.repositories.Usuarios.GrupoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -27,12 +36,14 @@ public class GrupoService {
     private final GrupoMapper grupoMapper;
     private final GrupoRepository grupoRepository;
     private final UsuarioRepository usuarioRepository;
+    private final ContenidoMapper contenidoMapper;
 
     @Autowired
-    public GrupoService(GrupoMapper grupoMapper, GrupoRepository grupoRepository, UsuarioRepository usuarioRepository) {
+    public GrupoService(GrupoMapper grupoMapper, GrupoRepository grupoRepository, UsuarioRepository usuarioRepository, ContenidoMapper contenidoMapper) {
         this.grupoMapper = grupoMapper;
         this.grupoRepository = grupoRepository;
         this.usuarioRepository = usuarioRepository;
+        this.contenidoMapper = contenidoMapper;
     }
 
     public void save(NewGrupoDTO grupoDTO, Long idUsuario) {
@@ -50,19 +61,18 @@ public class GrupoService {
                 })
                 .collect(Collectors.toSet());
 
-        // 🔽 Acá insertás lo nuevo:
-        GrupoEntity grupo = grupoMapper.convertToEntity(grupoDTO);
-        System.out.println("DEBUG - Grupo mapeado: " + grupo);
+        usuariosValidos.add(admin);
 
-        grupo.setListaUsuarios(usuariosValidos);
+        // crear grupo manualmente
+        GrupoEntity grupo = new GrupoEntity();
+        grupo.setNombre(grupoDTO.getNombre());
+        grupo.setDescripcion(grupoDTO.getDescripcion());
         grupo.setAdministrador(admin);
+        grupo.setListaUsuarios(usuariosValidos);
 
-        System.out.println("DEBUG - Grupo final listo para guardar: " + grupo);
-
+        // guardar
         grupoRepository.save(grupo);
-        System.out.println("DEBUG - Grupo guardado correctamente");
     }
-
 
     public VisualizarGrupoDTO mostrarGrupoPorID(Long idGrupo, Long idUsuario) {
         //traigo al usuario q busca porque sino no puede visualizar el grupo
@@ -139,7 +149,8 @@ public class GrupoService {
         }
 
         //validamos q el q quiere eliminar sea realmente admin
-        if(grupo.getAdministrador().getId().equals(idAdmin))
+        if(grupo.getAdministrador().getId().equals(idAdmin)
+                || esPremium(usuario))
         {
             grupo.getListaUsuarios().removeIf(u -> u.getId().equals(idUsuario));
         } else {
@@ -165,7 +176,9 @@ public class GrupoService {
         }
 
         //validamos q el q sea realmente admin
-        if(grupo.getAdministrador().getId().equals(idAdmin))
+        if(grupo.getAdministrador().getId().equals(idAdmin)
+                || esPremium(usuario))
+
         {
             // validamos que el usuario no esté ya en el grupo
             if (usuarioPerteneceAGrupo(grupo, idUsuario)) {
@@ -182,7 +195,7 @@ public class GrupoService {
 
     public void eliminarGrupo(Long idAdmin, Long idGrupo){
         //validamos usuario
-        UsuarioEntity admin = userExiste(idAdmin);
+        UsuarioEntity usuario = userExiste(idAdmin);
 
         //validamos grupo
         GrupoEntity grupo = grupoExiste(idGrupo);
@@ -193,7 +206,8 @@ public class GrupoService {
         }
 
         //validamos q el q sea realmente admin
-        if(grupo.getAdministrador().getId().equals(idAdmin))
+        if(grupo.getAdministrador().getId().equals(idAdmin)
+                || esPremium(usuario))
         {
             grupoRepository.delete(grupo);
         } else {
@@ -210,7 +224,7 @@ public class GrupoService {
         }
 
         //validamos usuario
-        UsuarioEntity admin = userExiste(idAdmin);
+        UsuarioEntity usuario = userExiste(idAdmin);
 
         //validamos grupo
         GrupoEntity grupo = grupoExiste(idGrupo);
@@ -221,7 +235,8 @@ public class GrupoService {
         }
 
         //validamos q el q sea realmente admin
-        if(grupo.getAdministrador().getId().equals(idAdmin))
+        if(grupo.getAdministrador().getId().equals(idAdmin)
+                || esPremium(usuario))
         {
             if (modificarGrupoDTO.getDescripcion()  != null) {
                 grupo.setDescripcion(modificarGrupoDTO.getDescripcion());
@@ -235,6 +250,64 @@ public class GrupoService {
         }
 
         grupoRepository.save(grupo);
+    }
+
+    public Page<ContenidoMostrarDTO> mostrarCoincidencias(Long idGrupo, int page, int size) {
+        GrupoEntity grupo = grupoRepository.findById(idGrupo)
+                .orElseThrow(() -> new RuntimeException("Grupo no encontrado"));
+
+        Set<UsuarioEntity> usuarios = grupo.getListaUsuarios();
+
+        // Debug: mostrar cantidad usuarios y sus likes
+        System.out.println("Usuarios en grupo: " + usuarios.size());
+        usuarios.forEach(u -> System.out.println("Usuario: " + u.getNombre() + ", likes: " + u.getContenidoLikes().size()));
+
+
+        // Contar likes por contneido
+        Map<ContenidoEntity, Integer> conteoLikes = usuarios.stream()
+                .flatMap(usuario -> usuario.getContenidoLikes().stream()) // o getLikes() pero devuelve entities intermedias
+                .map(ContenidoLikeEntity::getContenido)
+                .collect(Collectors.toMap(
+                        contenido -> contenido,
+                        contenido -> 1,
+                        Integer::sum
+                ));
+
+        // Debug: mostrar conteo de likes por contenido
+        conteoLikes.forEach((contenido, count) -> System.out.println("Contenido: " + contenido.getTitulo() + ", Likes: " + count));
+
+        // Filtrar pelis con al menos 3 likes y ordenar desc
+        List<ContenidoEntity> peliculasConMatch = conteoLikes.entrySet().stream()
+                .filter(entry -> entry.getValue() >= 1)
+                .sorted(Map.Entry.<ContenidoEntity, Integer>comparingByValue().reversed())
+                .map(Map.Entry::getKey)
+                .toList();
+
+        // Verificar si hay algún usuario premium
+        boolean algunoPremium = usuarios.stream().anyMatch(this::esPremium);
+        int limite = algunoPremium ? 10 : 3;
+
+        // Aplicar límite máximo a la lista total de coincidencias
+        List<ContenidoEntity> peliculasLimitadas = peliculasConMatch.stream()
+                .limit(limite)
+                .collect(Collectors.toList());
+
+        // Paginación manual sobre lista limitada
+        int start = page * size;
+        int end = Math.min(start + size, peliculasLimitadas.size());
+        List<ContenidoEntity> paginaPeliculas = start < end ? peliculasLimitadas.subList(start, end) : Collections.emptyList();
+
+        // Mapear a DTO
+        List<ContenidoMostrarDTO> dtos = paginaPeliculas.stream()
+                .map(contenidoMapper::convertToDTOForAdmin)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(dtos, PageRequest.of(page, size), peliculasLimitadas.size());
+    }
+
+    private boolean esPremium(UsuarioEntity usuario) {
+        return usuario.getCredencial().getRoles().stream()
+                .anyMatch(role -> role.equals(Role.ROLE_PREMIUM));
     }
 
 
