@@ -43,7 +43,8 @@ public class AmistadController {
     })
     @PostMapping("/enviarSolicitud")
     public ResponseEntity<String> enviarSolicitud(@Valid @RequestBody NewSolicitudAmistadDTO s) {
-        solicitudAmistadService.save(s);
+        UsuarioEntity user = usuarioService.getUsuarioAutenticado();
+        solicitudAmistadService.save(s, user.getId());
         return ResponseEntity.ok("Solicitud enviada con exito.");
     }
 

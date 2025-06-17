@@ -17,5 +17,7 @@ public class SolicitudAmistadDTO {
     @Positive
     private Long idReceptor;
 
+    private Long idEmisor;
+
     private EstadoSolicitud estadoSolicitud;
 }

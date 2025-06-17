@@ -68,7 +68,8 @@ public class RolePermitMapper {
                 Permit.GENERO_ILIMITADO,
                 Permit.MODIFICAR_GRUPO,
                 Permit.AGREGAR_USUARIO_A_GRUPO,
-                Permit.ELIMINAR_USUARIO_DE_GRUPO
+                Permit.ELIMINAR_USUARIO_DE_GRUPO,
+                Permit.ELIMINAR_GRUPO
         ));
         rolePermissions.put(Role.ROLE_PREMIUM, Set.copyOf(premiumPermits));
 
