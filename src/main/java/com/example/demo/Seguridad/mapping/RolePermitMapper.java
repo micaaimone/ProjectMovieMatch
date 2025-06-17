@@ -34,6 +34,7 @@ public class RolePermitMapper {
                 Permit.LISTA_ELIMINAR_CONTENIDO,
                 Permit.LISTA_ELIMINAR,
                 Permit.LISTA_VER_PUBLICAS,
+                Permit.LISTA_VER_PROPIAS,
                 Permit.SUSCRIPCION_CREAR,
                 Permit.SUSCRIPCION_RENOVAR,
                 Permit.SUSCRIPCION_VER_POR_ID,
