@@ -16,6 +16,7 @@ import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.Contenido.ReseniaMapper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class UsuarioMapper {
     private final GrupoMapper grupoMapper;
 
     @Autowired
-    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper, GrupoMapper grupoMapper) {
+    public UsuarioMapper(ModelMapper modelMapper, ReseniaMapper reseniaMapper, ContenidoMapper contenidoMapper, ListasMapper listasMapper,@Lazy GrupoMapper grupoMapper) {
         this.modelMapper = modelMapper;
         this.reseniaMapper = reseniaMapper;
         this.contenidoMapper = contenidoMapper;
