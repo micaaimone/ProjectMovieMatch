@@ -20,6 +20,7 @@ public interface ContenidoLikeRepository extends JpaRepository<ContenidoLikeEnti
 
     Optional<ContenidoLikeEntity> findByUsuarioAndContenido(UsuarioEntity usuario, ContenidoEntity contenido);
 
+    Page<ContenidoLikeEntity> findAllByContenido(ContenidoEntity contenido, Pageable pageable);
     @Query("SELECT DISTINCT c.contenido.genero FROM ContenidoLikeEntity c WHERE c.usuario.id = :usuarioId")
     List<String> obtenerGenerosLikeadosPorUsuario(@Param("usuarioId") Long usuarioId);
 
