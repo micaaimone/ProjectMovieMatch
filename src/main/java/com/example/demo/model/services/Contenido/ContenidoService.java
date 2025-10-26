@@ -17,11 +17,14 @@ import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -133,36 +136,74 @@ public class ContenidoService {
     // ========================== RECOMENDACIONES ==========================
 
     public Page<ContenidoDTO> obtenerRecomendaciones(Long usuarioId, int page, int size) {
+        // 1. Buscar el usuario con el id, lo encuentra y trae.
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
+        // 2. Obtener géneros de contenidos que le gustaron -
+        // todos los contenidos a los que el usuario le dio like y obtiene sus géneros.
         List<String> generosLikeados = contenidoLikeRepository.obtenerGenerosLikeadosPorUsuario(usuarioId);
-        Pageable pageable = PageRequest.of(page, size);
 
-        Page<ContenidoEntity> contenidos;
+        // 3. Separar los generos que vienen concatenados "Drama, Crime" -> ["Drama", "Crime"]
+        List<String> generosSeparados = generosLikeados.stream()
+                .flatMap(genero -> Arrays.stream(genero.split(",\\s*")))
+                .map(String::trim)
+                .distinct()
+                .collect(Collectors.toList());
 
-        if (!generosLikeados.isEmpty()) {
-            contenidos = contenidoRepository.recomendarContenidoPorGeneroYEdad(generosLikeados, pageable);
-            if (!contenidos.hasContent()) {
-                contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
-            }
-        } else {
-            contenidos = obtenerFallbackPorGeneroFavorito(usuario, pageable);
+        // 4. Si no tiene likes, usar géneros favoritos del perfil, si no este paso se lo salta
+        if (generosSeparados.isEmpty()) {
+            generosSeparados = usuario.getGeneros()
+                    .stream()
+                    .map(Enum::name)
+                    .collect(Collectors.toList());
         }
 
+        // 5. Si aún no tiene géneros, retornar vacío (esto no deberia pasar)
+        if (generosSeparados.isEmpty()) {
+            return Page.empty(PageRequest.of(page, size));
+        }
+
+        // 6. Construir la búsqueda con Specifications
+        // Crea una condición SQL que busca contenidos que tengan AL MENOS UNO de estos géneros: Drama, Action, Sci-Fi, Thriller.
+        Specification<ContenidoEntity> spec = construirSpecificationPorGeneros(generosSeparados);
+
+        // 7. Agregar filtro de clasificación según edad
+        //verifica la edad de nuestro usuario y adapta las recomendaciones a la clasificacion necesaria
+        spec = spec.and(ContenidoSpecification.clasificacionPorEdad(usuario.getEdad()));
+
+        // 8. Solo contenido activo
+        // filtro para que solo muestre películas que no estén dadas de baja logica
+        spec = spec.and(ContenidoSpecification.activo(true));
+
+        // 9. Excluir contenidos que ya le dieron like
+        spec = spec.and(ContenidoSpecification.excluirContenidosConLike(usuarioId));
+
+        // 10. Buscar en la base de datos - trae los resultados paginados
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ContenidoEntity> contenidos = contenidoRepository.findAll(spec, pageable);
+
+        // 11. Convertimos a DTO y retornamos
         return contenidos.map(contenidoMapper::convertToDTO);
     }
 
-    public Page<ContenidoEntity> obtenerFallbackPorGeneroFavorito(UsuarioEntity usuario, Pageable pageable) {
-        List<String> generos = usuario.getGeneros()
-                .stream()
-                .map(Enum::name)
-                .collect(Collectors.toList());
+    // Metodo auxiliar para crear el Specification de géneros
+    private Specification<ContenidoEntity> construirSpecificationPorGeneros(List<String> generos) {
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-        if (generos.isEmpty()) {
-            return Page.empty(pageable);
-        }
+            // Para cada género, crear una condición LIKE
+            for (String genero : generos) {
+                predicates.add(
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("genero")),
+                                "%" + genero.toLowerCase() + "%"
+                        )
+                );
+            }
 
-        return contenidoRepository.recomendarContenidoPorGeneroYEdad(generos, pageable);
+            // Combinar con OR: el contenido debe tener AL MENOS uno de los géneros
+            return criteriaBuilder.or(predicates.toArray(new Predicate[0]));
+        };
     }
 }
