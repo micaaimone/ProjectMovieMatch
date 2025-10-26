@@ -39,8 +39,8 @@ public class ContenidoDTO {
     @Schema(description = "Sinopsis del contenido", example = "Un profesor de química con cáncer terminal comienza a fabricar metanfetamina.")
     private String sinopsis;
 
-    // lo traemos porque nos sirve para la interfaz en un futuro
-    // private String poster;
+    @Schema(description = "URL del póster de la película/serie", example = "https://m.media-amazon.com/images/M/MV5BYmQ4YWMxYjUtNjZmYi00MDQ1LWFjMjMtNjA5ZDdiYjdiODU5XkEyXkFqcGdeQXVyMTMzNDExODE5._V1_SX300.jpg")
+    private String poster;
 
     @Schema(description = "Puntuación de una API externa (por ejemplo, IMDb)", example = "8.9")
     private double puntuacionApi;
