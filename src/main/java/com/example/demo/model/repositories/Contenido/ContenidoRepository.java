@@ -24,11 +24,4 @@ public interface ContenidoRepository extends JpaRepository<ContenidoEntity, Long
             "HAVING COUNT(DISTINCT l.usuario) >= 2")
     Page<ContenidoEntity> obtenerMatchDeGrupo(@Param("grupo") Set<UsuarioEntity> grupo, Pageable pageable);
 
-
-    @Query("SELECT c FROM contenido c " +
-            "WHERE c.genero IN :generosUsuario")
-    Page<ContenidoEntity> recomendarContenidoPorGeneroYEdad(
-            @Param("generosUsuario") List<String> generos,
-            Pageable pageable);
-
 }
