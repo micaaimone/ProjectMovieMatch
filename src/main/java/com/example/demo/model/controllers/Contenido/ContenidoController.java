@@ -44,12 +44,12 @@ public class ContenidoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
     @Parameters({
-            @Parameter(name = "genero", description = "Género del contenido", schema = @Schema(type = "string", example = "Acción")),
-            @Parameter(name = "anio", description = "Año de publicación", schema = @Schema(type = "string", example = "2023")),
-            @Parameter(name = "titulo", description = "Título parcial o completo", schema = @Schema(type = "string", example = "Batman")),
-            @Parameter(name = "puntuacion", description = "Puntuación mínima", schema = @Schema(type = "number", format = "double", example = "8.5")),
-            @Parameter(name = "clasificacion", description = "Clasificación por edad (ej: PG-13)", schema = @Schema(type = "string", example = "PG-13")),
-            @Parameter(name = "id", description = "ID del contenido", schema = @Schema(type = "integer", format = "int64", example = "10")),
+            @Parameter(name = "genero", description = "Género del contenido", schema = @Schema(type = "string")),
+            @Parameter(name = "anio", description = "Año de publicación", schema = @Schema(type = "string")),
+            @Parameter(name = "titulo", description = "Título parcial o completo", schema = @Schema(type = "string")),
+            @Parameter(name = "puntuacion", description = "Puntuación mínima", schema = @Schema(type = "number", format = "double")),
+            @Parameter(name = "clasificacion", description = "Clasificación por edad (ej: PG-13)", schema = @Schema(type = "string")),
+            @Parameter(name = "id", description = "ID del contenido", schema = @Schema(type = "integer", format = "int64")),
             @Parameter(name = "page", description = "Número de página", schema = @Schema(type = "integer", defaultValue = "0")),
             @Parameter(name = "size", description = "Cantidad de elementos por página", schema = @Schema(type = "integer", defaultValue = "10"))
     })
