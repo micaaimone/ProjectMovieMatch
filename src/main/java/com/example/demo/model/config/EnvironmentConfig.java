@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.File;
 import java.util.Objects;
 
 @Configuration
@@ -14,24 +15,43 @@ public class EnvironmentConfig {
     //cargamos las variables de entorno en el .env y las seteamos con properties
     //dsps las leemos con @Value
     static {
-        Dotenv dotenv = Dotenv.configure().load();
+        try {
+            System.out.println("=== INICIANDO CARGA DE .env ===");
+            System.out.println("Working directory actual: " + new File(".").getAbsolutePath());
 
-        System.setProperty("API_KEY",
-                dotenv.get("API_KEY"));
+            File envFile = new File(".env");
+            System.out.println("¿Existe .env en " + envFile.getAbsolutePath() + "? " + envFile.exists());
 
-        System.setProperty("MERCADOPAGO_ACCESS_TOKEN",
-                dotenv.get("MERCADOPAGO_ACCESS_TOKEN"));
+            Dotenv dotenv = Dotenv.configure()
+                    .directory(".")
+                    .load();
 
-        String port = dotenv.get("PORT");
-        System.out.println("Puerto: " + port);
+            System.setProperty("API_KEY",
+                    Objects.requireNonNull(dotenv.get("API_KEY")));
 
-        System.setProperty("MAIL", dotenv.get("MAIL"));
-        System.setProperty("MAIL_PASSWORD", dotenv.get("MAIL_PASSWORD"));
+            System.setProperty("MERCADOPAGO_ACCESS_TOKEN",
+                    Objects.requireNonNull(dotenv.get("MERCADOPAGO_ACCESS_TOKEN")));
 
-        System.setProperty("jwt.secret", Objects.requireNonNull(dotenv.get("JWT_SECRET")));
+            String port = dotenv.get("PORT");
+            System.out.println("Puerto: " + port);
 
+            System.setProperty("MAIL",
+                    Objects.requireNonNull(dotenv.get("MAIL")));
+
+            System.setProperty("MAIL_PASSWORD",
+                    Objects.requireNonNull(dotenv.get("MAIL_PASSWORD")));
+
+            System.setProperty("jwt.secret",
+                    Objects.requireNonNull(dotenv.get("JWT_SECRET")));
+
+            System.out.println("✓ Variables de entorno cargadas correctamente");
+
+        } catch (Exception e) {
+            System.err.println("ERROR al cargar .env:");
+            e.printStackTrace();
+            throw new RuntimeException("No se pudo cargar el archivo .env", e);
+        }
     }
-
     //esto registra el resttemplate para q lo podamos inyectar a donde necesitemos
     @Bean
     public RestTemplate restTemplate() {
