@@ -80,7 +80,6 @@ public class ContenidoController {
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
 
-    //me lo deja ver aunque sea user normal
     @PreAuthorize("hasAuthority('VER_CONTENIDO_BAJA')")
     @GetMapping("/bajados")
     public ResponseEntity<Page<ContenidoDTO>> allDesactivados(
