@@ -41,7 +41,8 @@ public class ReseniaController {
     })
     @PostMapping
     public ResponseEntity<String> crearResenia(@Valid @RequestBody ReseniaDTO reseniaDTO){
-        reseniaService.save(reseniaDTO);
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        reseniaService.save(usuarioAutenticado.getId(), reseniaDTO);
         return ResponseEntity.ok("Reseña agregada correctamente");
     }
 

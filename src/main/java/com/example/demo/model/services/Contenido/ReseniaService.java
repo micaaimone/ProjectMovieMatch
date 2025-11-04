@@ -45,7 +45,7 @@ public class ReseniaService {
 
 
 
-    public void save(ReseniaDTO dto)
+    public void save(Long id_u, ReseniaDTO dto)
     {
         // Obtener usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -57,11 +57,9 @@ public class ReseniaService {
         UsuarioEntity usuarioAutenticado = credencialAutenticada.getUsuario();
 
         // Validar que la reseña la está intentando hacer el mismo usuario autenticado
-        if (!usuarioAutenticado.getId().equals(dto.getId_usuario())) {
+        if (!usuarioAutenticado.getId().equals(id_u)) {
             throw new AccessDeniedException("No tenés permiso para realizar una reseña desde este usuario.");
         }
-
-        UsuarioEntity usuario = existeUsuario(dto);
 
         ContenidoEntity contenido = existeContenido(dto);
 
@@ -70,9 +68,9 @@ public class ReseniaService {
             throw new ContenidoNotFound("No se encontro el contenido con id " + contenido.getId_contenido());
         }
 
-        if (reseniaRepository.findByIDAndContenido(dto.getId_usuario(), dto.getId_contenido()).isEmpty())
+        if (reseniaRepository.findByIDAndContenido(id_u, dto.getId_contenido()).isEmpty())
         {
-            ReseniaEntity resenia = reseniaMapper.convertToEntity(dto, usuario, contenido);
+            ReseniaEntity resenia = reseniaMapper.convertToEntity(dto, usuarioAutenticado, contenido);
 
             reseniaRepository.save(resenia);
         } else
@@ -82,12 +80,12 @@ public class ReseniaService {
 
     }
 
-    public UsuarioEntity existeUsuario(ReseniaDTO dto)
+    /*public UsuarioEntity existeUsuario(ReseniaDTO dto)
     {
 
         return usuarioRepository.findById(dto.getId_usuario())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
-    }
+    }*/
 
     public ContenidoEntity existeContenido(ReseniaDTO dto)
     {
