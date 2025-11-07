@@ -1,6 +1,7 @@
 package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.MailDTO;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
@@ -42,7 +43,7 @@ public class UsuarioController {
     })
     @PreAuthorize("permitAll()")
     @PostMapping("/registrar")
-    public ResponseEntity<String> agregarUsuario(
+    public ResponseEntity<ResponseDTO> agregarUsuario(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos del nuevo usuario",
                     required = true,
@@ -50,7 +51,7 @@ public class UsuarioController {
             )
             @Valid @RequestBody NewUsuarioDTO u) {
         usuarioService.save(u);
-        return ResponseEntity.ok("Usuario creado con exito.");
+        return ResponseEntity.ok(new ResponseDTO("Usuario creado con exito."));
     }
 
     // ------------------- Ver usuario por ID
@@ -84,7 +85,7 @@ public class UsuarioController {
     })
     @PreAuthorize("isAuthenticated()")
     @PutMapping("/modificar")
-    public ResponseEntity<String> modificarUsuario(
+    public ResponseEntity<ResponseDTO> modificarUsuario(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos a modificar del usuario",
                     required = true,
@@ -94,16 +95,16 @@ public class UsuarioController {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
 
         usuarioService.actualizarUsuario(usuarioAutenticado.getId(), usuarioActualizado);
-        return ResponseEntity.ok("Usuario actualizado correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Usuario actualizado correctamente"));
     }
 
     @Operation(summary = "Desactivar usuario")
     @PreAuthorize("isAuthenticated()")
     @PatchMapping("/darmeDeBaja")
-    public ResponseEntity<String> desactivarMiUsuario() {
+    public ResponseEntity<ResponseDTO> desactivarMiUsuario() {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         usuarioService.cambiarEstadoUsuario(usuarioAutenticado.getId(), false);
-        return ResponseEntity.ok("Usuario desactivado.");
+        return ResponseEntity.ok(new ResponseDTO("Usuario desactivado."));
     }
 
 
@@ -113,9 +114,9 @@ public class UsuarioController {
     @Operation(summary = "Activar usuario")
     @PreAuthorize("hasAuthority('USUARIO_REACTIVAR')")
     @PatchMapping("/reactivar/{id}")
-    public ResponseEntity<String> activarUsuario(@PathVariable Long id) {
+    public ResponseEntity<ResponseDTO> activarUsuario(@PathVariable Long id) {
         usuarioService.cambiarEstadoUsuario(id, true);
-        return ResponseEntity.ok("Usuario activado.");
+        return ResponseEntity.ok(new ResponseDTO("Usuario activado."));
     }
 
     // ------------------- Listar usuarios activos / desactivados
@@ -138,22 +139,22 @@ public class UsuarioController {
     @Operation(summary = "Enviar un mail a soporte")
     @PreAuthorize("hasAuthority('USUARIO_SOLICITAR_SOPORTE')")
     @PostMapping("/soporte")
-    public ResponseEntity<String> soporteUsuario( @Valid @RequestBody MailDTO mailDTO) {
+    public ResponseEntity<ResponseDTO> soporteUsuario( @Valid @RequestBody MailDTO mailDTO) {
 
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
 
         usuarioService.soporte(usuarioAutenticado.getId(), mailDTO);
 
-        return ResponseEntity.ok("Mail enviado al soporte");
+        return ResponseEntity.ok(new ResponseDTO("Mail enviado al soporte"));
     }
 
     //enviamos a todos los usuarios activos un mail de aviso de x cosa
     @Operation(summary = "Enviar anuncio a los usuaarios")
     @PreAuthorize("hasAuthority('USUARIO_ENVIAR_ANUNCIO')")
     @PostMapping("/anuncio")
-    public ResponseEntity<String> anuncioUsuario(@Valid @RequestBody MailDTO mailDTO) {
+    public ResponseEntity<ResponseDTO> anuncioUsuario(@Valid @RequestBody MailDTO mailDTO) {
         emailService.SendMailToAll(mailDTO);
-        return ResponseEntity.ok("Anuncio enviado a los usuarios");
+        return ResponseEntity.ok(new ResponseDTO("Anuncio enviado a los usuarios"));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.Subs;
 
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.subs.OfertaDTO;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.services.Subs.OfertaService;
@@ -42,7 +43,7 @@ public class OfertaController {
     })
     @PreAuthorize("hasAuthority('OFERTA_CREAR')")
     @PostMapping("/crear/{tipoPlan}")
-    public ResponseEntity<String> crear(
+    public ResponseEntity<ResponseDTO> crear(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Datos de la oferta a crear",
                     required = true,
@@ -58,7 +59,7 @@ public class OfertaController {
             @PathVariable("tipoPlan") TipoSuscripcion tipoPlan
     ) {
         ofertaService.CrearOferta(ofertaDTO, tipoPlan);
-        return ResponseEntity.ok("Oferta creada correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Oferta creada correctamente"));
     }
 
     @Operation(
@@ -71,7 +72,7 @@ public class OfertaController {
     })
     @PreAuthorize("hasAuthority('OFERTA_RENOVAR')")
     @PatchMapping("/renovar/{id}")
-    public ResponseEntity<String> renovar(
+    public ResponseEntity<ResponseDTO> renovar(
             @Parameter(
                     description = "ID de la oferta a renovar",
                     required = true,
@@ -80,7 +81,7 @@ public class OfertaController {
             @PathVariable Long id
     ) {
         ofertaService.renovarOferta(id);
-        return ResponseEntity.ok("Oferta renovada con exito");
+        return ResponseEntity.ok(new ResponseDTO("Oferta renovada con exito"));
     }
 
     @Operation(

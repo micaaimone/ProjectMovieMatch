@@ -2,6 +2,7 @@ package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Resenia.ContenidoLikeDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaLikeDTO;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ContenidoLikeService;
 import com.example.demo.model.services.Usuarios.ReseniaLikeService;
@@ -36,23 +37,23 @@ public class LikeController {
     @Operation(summary = "Dar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_LIKE')")
     @PostMapping("/contenido/{contenidoId}")
-    public ResponseEntity<String> likeContenido( @PathVariable Long contenidoId) {
+    public ResponseEntity<ResponseDTO> likeContenido(@PathVariable Long contenidoId) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         contenidoLikeService.darLike(usuarioAutenticado.getId(), contenidoId);
-        return ResponseEntity.ok("Like a contenido registrado");
+        return ResponseEntity.ok(new ResponseDTO("Like a contenido registrado"));
     }
 
     @Operation(summary = "Quitar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
     @DeleteMapping("/contenido/{contenidoId}")
-    public ResponseEntity<String> quitarLikeContenido(@PathVariable Long contenidoId) {
+    public ResponseEntity<ResponseDTO> quitarLikeContenido(@PathVariable Long contenidoId) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
 
         boolean eliminado = contenidoLikeService.quitarLike(usuarioAutenticado.getId(), contenidoId);
         if (eliminado) {
-            return ResponseEntity.ok("Like a contenido eliminado");
+            return ResponseEntity.ok(new ResponseDTO("Like a contenido eliminado"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("No se encontró el like para eliminar"));
         }
     }
 
@@ -71,22 +72,22 @@ public class LikeController {
     @Operation(summary = "Dar like a reseña")
     @PreAuthorize("hasAuthority('USUARIO_LIKE')")
     @PostMapping("/resenia/{reseniaId}")
-    public ResponseEntity<String> likeResenia(@PathVariable Long reseniaId) {
+    public ResponseEntity<ResponseDTO> likeResenia(@PathVariable Long reseniaId) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         reseniaLikeService.darLike(usuarioAutenticado.getId(), reseniaId);
-        return ResponseEntity.ok("Like a reseña registrado");
+        return ResponseEntity.ok(new ResponseDTO("Like a reseña registrado"));
     }
 
     @Operation(summary = "Quitar like a reseña")
     @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
     @DeleteMapping("/resenia/{reseniaId}")
-    public ResponseEntity<String> quitarLikeResenia( @PathVariable Long reseniaId) {
+    public ResponseEntity<ResponseDTO> quitarLikeResenia( @PathVariable Long reseniaId) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         boolean eliminado = reseniaLikeService.quitarLike(usuarioAutenticado.getId(), reseniaId);
         if (eliminado) {
-            return ResponseEntity.ok("Like a reseña eliminado");
+            return ResponseEntity.ok(new ResponseDTO("Like a reseña eliminado"));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontró el like para eliminar");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseDTO("No se encontró el like para eliminar"));
         }
     }
 

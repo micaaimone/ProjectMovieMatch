@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.user;
 
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
@@ -46,7 +47,7 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_CREAR')")
     @PostMapping("/crearLista")
-    public ResponseEntity<String> crearLista(
+    public ResponseEntity<ResponseDTO> crearLista(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "DTO con el nombre y estado de privacidad de la lista",
                     required = true,
@@ -55,7 +56,7 @@ public class ListasController {
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.addLista(usuarioAutenticado.getId(), lista);
-        return ResponseEntity.ok("Lista Creada!");
+        return ResponseEntity.ok(new ResponseDTO("Lista Creada!"));
     }
 
     @Operation(summary = "Agregar contenido a una lista",
@@ -65,14 +66,14 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_AGREGAR_CONTENIDO')")
     @PatchMapping("/agregarALista/{idLista}")
-    public ResponseEntity<String> agregarALista(
+    public ResponseEntity<ResponseDTO> agregarALista(
             @Parameter(description = "Nombre del contenido a agregar", required = true)
             @RequestParam String nombre,
             @PathVariable Long idLista
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.agregarContenido(idLista, nombre);
-        return ResponseEntity.ok("Lista Agregada!");
+        return ResponseEntity.ok(new ResponseDTO("Lista Agregada!"));
     }
 
     // mostrar listas con contenido y sin----------------------------------
@@ -123,7 +124,7 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_CAMBIAR_NOMBRE')")
     @PatchMapping("/{nombre}/cambiarNombre")
-    public ResponseEntity<String> cambiarNombre(
+    public ResponseEntity<ResponseDTO> cambiarNombre(
 
             @Parameter(description = "Nombre actual de la lista", required = true)
             @PathVariable("nombre") String nombre,
@@ -133,7 +134,7 @@ public class ListasController {
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.cambiarNombre(usuarioAutenticado.getId(), nombre, newNombre);
-        return ResponseEntity.ok("Nombre cambiado!");
+        return ResponseEntity.ok(new ResponseDTO("Nombre cambiado!"));
     }
 
     // ------------------ Cambiar estado de privacidad
@@ -145,7 +146,7 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_CAMBIAR_ESTADO')")
     @PatchMapping("/{nombre}/cambiarEstado")
-    public ResponseEntity<String> cambiarEstado(
+    public ResponseEntity<ResponseDTO> cambiarEstado(
 
             @Parameter(description = "Nombre de la lista", required = true)
             @PathVariable("nombre") String nombre,
@@ -155,7 +156,7 @@ public class ListasController {
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.cambiarPrivado(usuarioAutenticado.getId(), nombre, newEstado);
-        return ResponseEntity.ok("Privacidad cambiada!");
+        return ResponseEntity.ok(new ResponseDTO("Privacidad cambiada!"));
     }
 
     // ------------------------ borrar contenido o borrar lista completa------------
@@ -167,14 +168,14 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_ELIMINAR_CONTENIDO')")
     @DeleteMapping("/sacarDelista")
-    public ResponseEntity<String> eliminarDeLista(
+    public ResponseEntity<ResponseDTO> eliminarDeLista(
             @Parameter(description = "Nombre de la lista", required = true)
             @RequestParam String nombre,
             @PathVariable Long idLista
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.eliminarContenido(idLista, nombre);
-        return ResponseEntity.ok("Contenido eliminado!");
+        return ResponseEntity.ok(new ResponseDTO("Contenido eliminado!"));
     }
 
     // ------------------ Eliminar lista completa
@@ -186,13 +187,13 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_ELIMINAR')")
     @DeleteMapping("/eliminarLista")
-    public ResponseEntity<String> eliminarLista(
+    public ResponseEntity<ResponseDTO> eliminarLista(
             @Parameter(description = "Nombre de la lista a eliminar", required = true)
             @RequestParam String nombre
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.eliminarLista(usuarioAutenticado.getId(), nombre);
-        return ResponseEntity.ok("Lista Eliminada!");
+        return ResponseEntity.ok(new ResponseDTO("Lista Eliminada!"));
     }
 
     // ------------------ Ver listas de otro usuario

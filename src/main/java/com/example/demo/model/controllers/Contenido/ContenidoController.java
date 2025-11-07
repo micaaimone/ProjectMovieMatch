@@ -2,6 +2,7 @@ package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoCompletoDTO;
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Contenido.ContenidoService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -109,9 +110,9 @@ public class ContenidoController {
 
     @PreAuthorize("hasAuthority('ACTIVAR_CONTENIDO')")
     @PatchMapping("/{id}/activar")
-    public ResponseEntity<String> darDeAlta(@PathVariable Long id) {
+    public ResponseEntity<ResponseDTO> darDeAlta(@PathVariable Long id) {
         contenidoService.darDeAltaContenido(id);
-        return ResponseEntity.ok("Contenido dado de alta correctamente.");
+        return ResponseEntity.ok(new ResponseDTO("Contenido dado de alta correctamente."));
     }
 
     @Operation(
@@ -127,11 +128,11 @@ public class ContenidoController {
 
     @PreAuthorize("hasAuthority('DESACTIVAR_CONTENIDO')")
     @PatchMapping("/{id}/desactivar")
-    public ResponseEntity<String> borrarContenido(@PathVariable long id,
+    public ResponseEntity<ResponseDTO> borrarContenido(@PathVariable long id,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         contenidoService.darDeBajaContenido(id, page, size);
-        return ResponseEntity.ok("Contenido eliminado correctamente.");
+        return ResponseEntity.ok(new ResponseDTO("Contenido eliminado correctamente."));
     }
 
     @PreAuthorize("hasAuthority('BUSCAR_NUEVO_CONTENIDO_POR_NOMBRE')")

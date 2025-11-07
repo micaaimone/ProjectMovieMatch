@@ -4,6 +4,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Amistad.AmigoDTO;
 import com.example.demo.model.DTOs.Amistad.NewSolicitudAmistadDTO;
 import com.example.demo.model.DTOs.Amistad.SolicitudAmistadDTO;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.AmistadService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -42,37 +43,37 @@ public class AmistadController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PostMapping("/enviarSolicitud")
-    public ResponseEntity<String> enviarSolicitud(@Valid @RequestBody NewSolicitudAmistadDTO s) {
+    public ResponseEntity<ResponseDTO> enviarSolicitud(@Valid @RequestBody NewSolicitudAmistadDTO s) {
         UsuarioEntity user = usuarioService.getUsuarioAutenticado();
         solicitudAmistadService.save(s, user.getId());
-        return ResponseEntity.ok("Solicitud enviada con exito.");
+        return ResponseEntity.ok(new ResponseDTO("Solicitud enviada con exito."));
     }
 
     @Operation(summary = "Aceptar solicitud de amistad")
     @ApiResponse(responseCode = "200", description = "Solicitud aceptada")
     @PostMapping("/aceptarSolicitud/{idEmisor}")
-    public ResponseEntity<String> aceptarSolicitud(@PathVariable Long idEmisor) {
+    public ResponseEntity<ResponseDTO> aceptarSolicitud(@PathVariable Long idEmisor) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         solicitudAmistadService.aceptarSolicitud(idEmisor, usuarioAutenticado.getId());
-        return ResponseEntity.ok("Solicitud aceptada");
+        return ResponseEntity.ok(new ResponseDTO("Solicitud aceptada"));
     }
 
     @Operation(summary = "Rechazar solicitud de amistad")
     @ApiResponse(responseCode = "200", description = "Solicitud rechazada")
     @PostMapping("/rechazarSolicitud/{idEmisor}")
-    public ResponseEntity<String> rechazarSolicitud(@PathVariable Long idEmisor) {
+    public ResponseEntity<ResponseDTO> rechazarSolicitud(@PathVariable Long idEmisor) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         solicitudAmistadService.rechazarSolicitud(idEmisor, usuarioAutenticado.getId());
-        return ResponseEntity.ok("Solicitud rechazada");
+        return ResponseEntity.ok(new ResponseDTO("Solicitud rechazada"));
     }
 
     @Operation(summary = "Bloquear solicitud de amistad")
     @ApiResponse(responseCode = "200", description = "Solicitud bloqueada")
     @PostMapping("/bloquear/{idEmisor}")
-    public ResponseEntity<String> bloquear(@PathVariable Long idEmisor) {
+    public ResponseEntity<ResponseDTO> bloquear(@PathVariable Long idEmisor) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         solicitudAmistadService.bloquearSolicitud(idEmisor, usuarioAutenticado.getId());
-        return ResponseEntity.ok("Solicitud bloqueada");
+        return ResponseEntity.ok(new ResponseDTO("Solicitud bloqueada"));
     }
 
     @Operation(summary = "Listar solicitudes enviadas")
@@ -125,10 +126,10 @@ public class AmistadController {
     @Operation(summary = "Eliminar amigo")
     @ApiResponse(responseCode = "200", description = "Amigo eliminado")
     @DeleteMapping("/amigos/{idAmigo}")
-    public ResponseEntity<?> eliminarAmigo(@PathVariable Long idAmigo) {
+    public ResponseEntity<ResponseDTO> eliminarAmigo(@PathVariable Long idAmigo) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         solicitudAmistadService.eliminarAmigo(usuarioAutenticado.getId(), idAmigo);
-        return ResponseEntity.ok("Amigo eliminado");
+        return ResponseEntity.ok(new ResponseDTO("Amigo eliminado"));
     }
 
     @Operation(summary = "Visualizar coincidencias de contenido con un amigo")

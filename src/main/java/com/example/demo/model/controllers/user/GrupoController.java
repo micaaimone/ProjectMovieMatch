@@ -1,6 +1,7 @@
 package com.example.demo.model.controllers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
@@ -42,10 +43,10 @@ public class GrupoController {
     })
     @PreAuthorize("hasAuthority('CREAR_GRUPO')")
     @PostMapping
-    public ResponseEntity<String> crearGrupo(@Valid @RequestBody NewGrupoDTO newGrupoDTO) {
+    public ResponseEntity<ResponseDTO> crearGrupo(@Valid @RequestBody NewGrupoDTO newGrupoDTO) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.save(newGrupoDTO, usuarioAutenticado.getId());
-        return ResponseEntity.ok("Grupo creado correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Grupo creado correctamente"));
     }
 
     @Operation(
@@ -106,12 +107,12 @@ public class GrupoController {
     })
     @PreAuthorize("hasAuthority('MODIFICAR_GRUPO')")
     @PatchMapping("/{idGrupo}")
-    public ResponseEntity<String> modificarGrupo(
+    public ResponseEntity<ResponseDTO> modificarGrupo(
             @PathVariable Long idGrupo,
             @Valid @RequestBody ModificarGrupoDTO dto) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.modificarGrupo(usuarioAutenticado.getId(), idGrupo, dto);
-        return ResponseEntity.ok("Grupo modificado correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Grupo modificado correctamente"));
     }
 
     @Operation(
@@ -124,12 +125,12 @@ public class GrupoController {
     })
     @PreAuthorize("hasAuthority('AGREGAR_USUARIO_A_GRUPO')")
     @PostMapping("/{idGrupo}/usuarios/{idUsuario}")
-    public ResponseEntity<String> agregarUsuarioAGrupo(
+    public ResponseEntity<ResponseDTO> agregarUsuarioAGrupo(
             @PathVariable Long idGrupo,
             @PathVariable Long idUsuario) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.agregarUsuarioAGrupo(idGrupo, usuarioAutenticado.getId(), idUsuario);
-        return ResponseEntity.ok("Usuario agregado al grupo correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Usuario agregado al grupo correctamente"));
     }
 
     @Operation(
@@ -142,12 +143,12 @@ public class GrupoController {
     })
     @PreAuthorize("hasAuthority('ELIMINAR_USUARIO_DE_GRUPO')")
     @DeleteMapping("/{idGrupo}/usuarios/{idUsuario}")
-    public ResponseEntity<String> eliminarUsuarioDeGrupo(
+    public ResponseEntity<ResponseDTO> eliminarUsuarioDeGrupo(
             @PathVariable Long idGrupo,
             @PathVariable Long idUsuario) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.eliminarUsuarioDeGrupo(idGrupo, usuarioAutenticado.getId(), idUsuario);
-        return ResponseEntity.ok("Usuario eliminado del grupo correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Usuario eliminado del grupo correctamente"));
     }
 
     @Operation(
@@ -160,10 +161,10 @@ public class GrupoController {
     })
     @PreAuthorize("hasAuthority('ELIMINAR_GRUPO')")
     @DeleteMapping("/{idGrupo}")
-    public ResponseEntity<String> eliminarGrupo(@PathVariable Long idGrupo) {
+    public ResponseEntity<ResponseDTO> eliminarGrupo(@PathVariable Long idGrupo) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         grupoService.eliminarGrupo(usuarioAutenticado.getId(), idGrupo);
-        return ResponseEntity.ok("Grupo eliminado correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Grupo eliminado correctamente"));
     }
 
     @Operation(

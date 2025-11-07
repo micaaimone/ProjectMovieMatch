@@ -121,7 +121,7 @@ public class StarterDatabase {
 
 
     public void initUsers() {
-        crearUsuarioSiNoExiste("lautaA", "Lautaro", "Martínez", 28, "1123456789", "lau9araya@gmail.com", Role.ROLE_USER);
+        crearUsuarioSiNoExiste("lautaA", "Lautaro", "Martínez", 28, "1123456789", "lau@gmail.com", Role.ROLE_USER);
         crearUsuarioSiNoExiste("meliR", "Melina", "Rodríguez", 25, "1123456790", "meli@gmail.com", Role.ROLE_PREMIUM);
         crearUsuarioSiNoExiste("tomiG", "Tomás", "Gómez", 30, "1123456791", "tomi@gmail.com", Role.ROLE_ADMIN);
         crearUsuarioSiNoExiste("sofiP", "Sofía", "Pérez", 27, "1123456792", "sofi@gmail.com", Role.ROLE_USER);

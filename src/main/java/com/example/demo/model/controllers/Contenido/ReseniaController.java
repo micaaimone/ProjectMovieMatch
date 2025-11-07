@@ -2,6 +2,7 @@ package com.example.demo.model.controllers.Contenido;
 
 import com.example.demo.model.DTOs.Resenia.ReseniaDTO;
 import com.example.demo.model.DTOs.Resenia.ReseniaModificarDTO;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Contenido.ReseniaService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -40,10 +41,10 @@ public class ReseniaController {
             @ApiResponse(responseCode = "500", description = "Error del servidor")
     })
     @PostMapping
-    public ResponseEntity<String> crearResenia(@Valid @RequestBody ReseniaDTO reseniaDTO){
+    public ResponseEntity<ResponseDTO> crearResenia(@Valid @RequestBody ReseniaDTO reseniaDTO){
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         reseniaService.save(usuarioAutenticado.getId(), reseniaDTO);
-        return ResponseEntity.ok("Reseña agregada correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Reseña agregada correctamente"));
     }
 
     @PreAuthorize("hasAuthority('ELIMINAR_RESENIA')")
@@ -53,11 +54,11 @@ public class ReseniaController {
             @ApiResponse(responseCode = "404", description = "Reseña no encontrada")
     })
     @DeleteMapping("/eliminarReseniaByUserAndIDContenido/{id_contenido}")
-    public ResponseEntity<String> eliminarReseniaByUsuarioYContenido(@PathVariable("id_contenido") Long id_contenido)
+    public ResponseEntity<ResponseDTO> eliminarReseniaByUsuarioYContenido(@PathVariable("id_contenido") Long id_contenido)
     {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         reseniaService.delete(usuarioAutenticado.getId(), id_contenido);
-        return ResponseEntity.ok("Reseña eliminada correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Reseña eliminada correctamente"));
     }
 
     @PreAuthorize("hasAuthority('VER_RESENIAS_POR_USUARIO')")
@@ -82,13 +83,13 @@ public class ReseniaController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PatchMapping("/{id_contenido}")
-    public ResponseEntity<String> modificar (@PathVariable("id_contenido") Long id_contenido,
+    public ResponseEntity<ResponseDTO> modificar (@PathVariable("id_contenido") Long id_contenido,
                                              @Valid @RequestBody ReseniaModificarDTO dto)
     {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         reseniaService.modificarResenia(usuarioAutenticado.getId(), id_contenido, dto);
 
-        return ResponseEntity.ok("Reseña modificada correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Reseña modificada correctamente"));
     }
 
     //--------------------metodos solo para admin
@@ -99,10 +100,10 @@ public class ReseniaController {
             @ApiResponse(responseCode = "404", description = "Reseña no encontrada")
     })
     @DeleteMapping("/eliminarReseniaaByID/{id}")
-    public ResponseEntity<String> eliminarReseniaPorId(@PathVariable("id") Long id)
+    public ResponseEntity<ResponseDTO> eliminarReseniaPorId(@PathVariable("id") Long id)
     {
         reseniaService.delete(id);
-        return ResponseEntity.ok("Reseña eliminada correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Reseña eliminada correctamente"));
     }
 
 

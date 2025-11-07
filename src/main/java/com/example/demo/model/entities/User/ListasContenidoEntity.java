@@ -26,7 +26,7 @@ public class ListasContenidoEntity {
     private UsuarioEntity usuario;
     private boolean privado;
 
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "listasXcontenido",
             joinColumns = @JoinColumn(name = "id_lista_contenido"),

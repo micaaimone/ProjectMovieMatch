@@ -5,6 +5,7 @@ import com.example.demo.Seguridad.DTO.AuthResponse;
 import com.example.demo.Seguridad.DTO.RefreshTokenRequest;
 import com.example.demo.Seguridad.services.AuthService;
 import com.example.demo.Seguridad.services.JwtService;
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.user.RecuperarPassDTO;
 import com.example.demo.model.services.Usuarios.UsuarioService;
 import com.example.demo.Seguridad.services.TokenBlacklistService;
@@ -50,9 +51,9 @@ public class AuthController {
 
 
     @PostMapping("/forgotPassword")
-    public ResponseEntity<String> forgotPassword(@Valid @RequestBody RecuperarPassDTO recuperarPassDTO){
+    public ResponseEntity<ResponseDTO> forgotPassword(@Valid @RequestBody RecuperarPassDTO recuperarPassDTO){
         usuarioService.recuperarPassword(recuperarPassDTO);
-        return ResponseEntity.ok("Mail con nueva contraseña enviado!");
+        return ResponseEntity.ok(new ResponseDTO("Mail con nueva contraseña enviado!"));
     }
 
     @Operation(
@@ -78,7 +79,7 @@ public class AuthController {
         return ResponseEntity.badRequest().build();
     }
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<ResponseDTO> logout(@RequestHeader("Authorization") String accessToken,
                                          @RequestBody RefreshTokenRequest refreshTokenRequest) {
         if (accessToken != null && accessToken.startsWith("Bearer ")) {
             String token = accessToken.substring(7);
@@ -90,7 +91,7 @@ public class AuthController {
             blacklistService.blacklist(refreshToken); // invalida el refresh
         }
 
-        return ResponseEntity.ok("Sesión cerrada correctamente.");
+        return ResponseEntity.ok(new ResponseDTO("Sesión cerrada correctamente."));
     }
 
 }

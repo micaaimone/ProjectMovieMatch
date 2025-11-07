@@ -63,7 +63,7 @@ public class ListasService {
         }
     }
 
-    //agregamos contenido a una lista existente(chequear)
+    //agregamos contenido a una lista existente
     public void agregarContenido(Long idLista, String nombre) {
         ListasContenidoEntity lista = listasContenidoRepository.findById(idLista)
                 .orElseThrow();
@@ -106,13 +106,13 @@ public class ListasService {
                 .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
     }
 
-    //ver lista de otro usuario si es publica
+    //ver lista de otro usuario si es publica------------
     public Page<ListaContenidoDTO> verListaDeUser(String username, Pageable pageable) {
         return listasContenidoRepository.listaOtroUser(username, pageable)
                 .map(listasMapper::convertToDTO);
     }
 
-    //elimina un contenido de una lista existente
+    //elimina un contenido de una lista existente ------------------
     public void eliminarContenido(Long idLista, String nombre) {
         ListasContenidoEntity lista = listasContenidoRepository.findById(idLista).orElseThrow();
 
@@ -141,6 +141,7 @@ public class ListasService {
         }
     }
 
+    //cambiar visibilidad de la lista
     public void cambiarPrivado(Long idUsuario, String nombre, boolean privado) {
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUsuario, nombre)
                         .orElseThrow(()-> new ListaNotFoundException("Lista no encontrada"));

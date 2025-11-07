@@ -1,5 +1,6 @@
 package com.example.demo.model.controllers.Subs;
 
+import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.subs.PlanDTO;
 import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.services.Subs.PlanService;
@@ -75,11 +76,11 @@ public class PlanController {
     })
     @PreAuthorize("hasAuthority('PLAN_EDITAR')")
     @PatchMapping("/{tipoPlan}/cambiarPrecio")
-    public ResponseEntity<String> actualizarPlan(
+    public ResponseEntity<ResponseDTO> actualizarPlan(
             @PathVariable("tipoPlan") TipoSuscripcion tipoPlan,
             @RequestParam float precio
     ) {
         planService.cambiarMontoPlan(tipoPlan, precio);
-        return ResponseEntity.ok("Plan actualizado correctamente");
+        return ResponseEntity.ok(new ResponseDTO("Plan actualizado correctamente"));
     }
 }
