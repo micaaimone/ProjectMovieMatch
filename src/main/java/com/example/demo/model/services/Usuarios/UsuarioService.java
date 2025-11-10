@@ -119,6 +119,33 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
+    public void saveAdmin(NewUsuarioDTO usuarioDTO) {
+
+        validarUsuarioExistente(usuarioDTO);
+
+        UsuarioEntity usuario = usuarioMapper.convertToNewEntity(usuarioDTO);
+
+        CredentialsEntity credencial = new CredentialsEntity();
+        credencial.setEmail(usuarioDTO.getEmail());
+        credencial.setPassword(passwordEncoder.encode(usuarioDTO.getPassword()));
+        credencial.setUsuario(usuario);
+
+        // Buscar el rol ADMIN
+        RoleEntity roleAdmin = roleRepository.findByRole(Role.ROLE_ADMIN)
+                .orElseThrow(() -> new RuntimeException("No se encontró el rol ADMIN"));
+
+        // Asignar rol ADMIN
+        Set<RoleEntity> roles = new HashSet<>();
+        roles.add(roleAdmin);
+        credencial.setRoles(roles);
+
+        // Vincular credencial al usuario
+        usuario.setCredencial(credencial);
+
+        // Guardar usuario con sus credenciales
+        usuarioRepository.save(usuario);
+    }
+
     public UsuarioDTO mostrarMiPerfil(UsuarioEntity usuarioEntity)
     {
         if(usuarioEntity.getActivo())

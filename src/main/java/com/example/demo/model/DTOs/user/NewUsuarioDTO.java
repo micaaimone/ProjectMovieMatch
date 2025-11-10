@@ -51,7 +51,7 @@ public class NewUsuarioDTO {
     @Length(min = 6, message = "La contraseña debe tener un mínimo de 6 caracteres")
     private String password;
 
-    @Schema(description = "Géneros preferidos del usuario (mínimo 1, máximo 3)", example = "[\"ACCION\", \"COMEDIA\"]")
+    @Schema(description = "Géneros preferidos del usuario (mínimo 1, máximo 3)", example = "[\"Action\", \"Comedy\"]")
     @NotNull(message = "Debe elegir al menos dos géneros")
     @Size(min = 1, max = 3, message = "Debes elegir mínimo 1 género y máximo 3")
     private Set<Genero> generos;

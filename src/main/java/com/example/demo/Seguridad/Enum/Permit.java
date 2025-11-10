@@ -3,6 +3,7 @@ package com.example.demo.Seguridad.Enum;
 public enum Permit {
     // --- USUARIO CONTROLLER ---
     USUARIO_VER,
+    USUARIO_CREAR_ADMIN,
     USUARIO_MODIFICAR,
     USUARIO_REACTIVAR,
     USUARIO_DESACTIVAR,

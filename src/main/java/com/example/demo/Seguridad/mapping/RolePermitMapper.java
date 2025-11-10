@@ -77,6 +77,7 @@ public class RolePermitMapper {
         rolePermissions.put(Role.ROLE_PREMIUM, Set.copyOf(premiumPermits));
 
         rolePermissions.put(Role.ROLE_ADMIN, Set.of(
+                Permit.USUARIO_CREAR_ADMIN,
                 Permit.SERIES_READ,
                 Permit.SERIES_WRITE,
                 Permit.VER_PELICULAS,

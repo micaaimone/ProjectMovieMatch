@@ -26,6 +26,7 @@ import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.services.Contenido.APIMovieService;
 import com.example.demo.model.services.Email.EmailService;
 import com.example.demo.model.services.Subs.SuscripcionService;
+import com.example.demo.model.services.Usuarios.UsuarioService;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.annotation.Configuration;
@@ -56,13 +57,14 @@ public class StarterDatabase {
     private final PasswordEncoder passwordEncoder;
     private final CredentialsRepository credentialsRepository;
     private final EmailService emailService;
+    private final UsuarioService usuarioService;
 
     public StarterDatabase(APIMovieService apiMovieService, RatingRepository ratingRepository,
                            PeliculaRepository peliculaRepository, SerieRepository serieRepository,
                            PlanRepository planRepository, SuscripcionService suscripcionService,
                            UsuarioRepository usuarioRepository, ReseniaRepository reseñaRepository,
                            ContenidoRepository contenidoRepository, RoleRepository roleRepository,
-                           PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository, EmailService emailService) {
+                           PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository, EmailService emailService, UsuarioService usuarioService) {
         this.apiMovieService = apiMovieService;
         this.ratingRepository = ratingRepository;
         this.peliculaRepository = peliculaRepository;
@@ -76,6 +78,7 @@ public class StarterDatabase {
         this.passwordEncoder = passwordEncoder;
         this.credentialsRepository = credentialsRepository;
         this.emailService = emailService;
+        this.usuarioService = usuarioService;
     }
 
 

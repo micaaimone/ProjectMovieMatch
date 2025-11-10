@@ -118,6 +118,28 @@ public class UsuarioController {
         return ResponseEntity.ok("Usuario activado.");
     }
 
+    // ------------------- Crear un nuevo administrador
+    @Operation(summary = "Crear nuevo administrador", description = "Permite a un administrador crear otro usuario con rol ADMIN.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Administrador creado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos o usuario existente", content = @Content),
+            @ApiResponse(responseCode = "403", description = "Acceso denegado", content = @Content)
+    })
+    @PreAuthorize("hasAuthority('USUARIO_CREAR_ADMIN')") // solo quienes tengan este permiso
+    @PostMapping("/crearAdmin")
+    public ResponseEntity<String> crearAdmin(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "Datos del nuevo administrador",
+                    required = true,
+                    content = @Content(schema = @Schema(implementation = NewUsuarioDTO.class))
+            )
+            @Valid @RequestBody NewUsuarioDTO usuarioDTO) {
+
+        usuarioService.saveAdmin(usuarioDTO);
+        return ResponseEntity.ok("Administrador creado correctamente.");
+    }
+
+
     // ------------------- Listar usuarios activos / desactivados
     @Operation(summary = "Listar usuarios activos")
     @PreAuthorize("hasAuthority('USUARIO_LISTAR')")
