@@ -37,7 +37,7 @@ public class PeliculaMapper {
                     .stream()
                     .map(reseñaMapper::convertToDTO)
                     .collect(Collectors.toList());
-            dto.setReseña(reseñasDTO);
+            dto.setResenia(reseñasDTO);
         }
 
 

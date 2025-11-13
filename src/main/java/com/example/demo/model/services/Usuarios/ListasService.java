@@ -5,6 +5,7 @@ import com.example.demo.Seguridad.Enum.Role;
 import com.example.demo.Seguridad.repositories.RoleRepository;
 import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaResumenDTO;
 import com.example.demo.model.Specifications.Contenido.ContenidoSpecification;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
@@ -87,13 +88,13 @@ public class ListasService {
 
 
     //muestra solo las listas creadas, sin los contenidos
-    public Page<ListasSinContDTO> getListas(Long idUser, Pageable pageable) {
+    public Page<ListaResumenDTO> getListas(Long idUser, Pageable pageable) {
         UsuarioEntity user = usuarioRepository.findById(idUser)
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
 
         return listasContenidoRepository.findByIdUser(idUser, pageable)
-                .map(listasMapper::convertToDTOSC);
+                .map(listasMapper::convertToDTOResumen);
     }
 
     //Muestra el contenido de una lista ya existente

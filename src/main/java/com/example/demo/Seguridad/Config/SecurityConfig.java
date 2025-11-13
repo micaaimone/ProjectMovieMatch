@@ -112,7 +112,7 @@ public class SecurityConfig {
                 // Aplicamos la configuracion a *TODOS* los endpoints (/**)
                 registry.addMapping("/**")
                         .allowedOrigins("http://localhost:4200")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                         .allowedHeaders("*") // Añadido para permitir Content-Type, Authorization, etc.
                         .allowCredentials(true);
             }

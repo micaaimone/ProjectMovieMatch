@@ -47,7 +47,7 @@ public class ContenidoDTO {
 
     // hace falta crear un atributo para puntuación de nuestros usuarios
     @Schema(description = "Lista de reseñas hechas por los usuarios")
-    private List<ReseniaDTO> reseña;
+    private List<ReseniaDTO> resenia;
 
     @Schema(description = "Promedio de puntuaciones dadas por los usuarios registrados", example = "9.1")
     private double promedioPuntuacionUsuario;

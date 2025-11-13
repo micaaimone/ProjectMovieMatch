@@ -3,6 +3,7 @@ package com.example.demo.model.entities.User;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import com.example.demo.model.enums.TipoReaccion;
 
 import java.time.LocalDateTime;
 
@@ -29,4 +30,6 @@ public class ContenidoLikeEntity {
     @Column(nullable = false)
     private LocalDateTime fechaLike = LocalDateTime.now();
 
+    @Enumerated(EnumType.STRING)
+    private TipoReaccion tipo; // LIKE o DISLIKE (esto en un futuro podemos poner algo como me encanta o cosas asi)
 }

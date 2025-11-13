@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.enums.TipoReaccion;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ContenidoLikeDTO;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
@@ -44,21 +45,68 @@ public class ContenidoLikeService {
         ContenidoEntity contenido = contenidoRepository.findById(contenidoId)
                 .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
 
-        if(!contenido.isActivo())
-        {
+        if (!contenido.isActivo()) {
             throw new ContenidoNotFound("Contenido no encontrado");
         }
 
-        if (contenidoLikeRepository.existsByUsuarioAndContenido(usuario, contenido)) {
-            throw new LikeAlreadyExistsException("Ya diste like a este contenido");
+        // Buscamos si ya existe una reacción (like o dislike)
+        Optional<ContenidoLikeEntity> reaccionOpt =
+                contenidoLikeRepository.findByUsuarioAndContenido(usuario, contenido);
+
+        if (reaccionOpt.isPresent()) {
+            ContenidoLikeEntity reaccion = reaccionOpt.get();
+
+            if (reaccion.getTipo() == TipoReaccion.LIKE) {
+                throw new LikeAlreadyExistsException("Ya diste like a este contenido");
+            }
+
+            // Si antes era dislike, lo actualizamos a like
+            reaccion.setTipo(TipoReaccion.LIKE);
+            reaccion.setFechaLike(LocalDateTime.now());
+            contenidoLikeRepository.save(reaccion);
+        } else {
+            // Si no había reacción previa, creamos una nueva
+            ContenidoLikeEntity like = new ContenidoLikeEntity();
+            like.setUsuario(usuario);
+            like.setContenido(contenido);
+            like.setTipo(TipoReaccion.LIKE);
+            like.setFechaLike(LocalDateTime.now());
+            contenidoLikeRepository.save(like);
+        }
+    }
+
+
+    public void dislike(Long usuarioId, Long contenidoId) {
+        UsuarioEntity usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+
+        ContenidoEntity contenido = contenidoRepository.findById(contenidoId)
+                .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
+
+        if (!contenido.isActivo()) {
+            throw new ContenidoNotFound("Contenido no encontrado");
         }
 
-        ContenidoLikeEntity like = new ContenidoLikeEntity();
-        like.setUsuario(usuario);
-        like.setContenido(contenido);
-        like.setFechaLike(LocalDateTime.now());
-        contenidoLikeRepository.save(like);
+        // Verificar si ya existe una reacción
+        Optional<ContenidoLikeEntity> reaccionOpt =
+                contenidoLikeRepository.findByUsuarioAndContenido(usuario, contenido);
+
+        if (reaccionOpt.isPresent()) {
+            ContenidoLikeEntity reaccion = reaccionOpt.get();
+            reaccion.setTipo(TipoReaccion.DISLIKE);
+            reaccion.setFechaLike(LocalDateTime.now());
+            contenidoLikeRepository.save(reaccion);
+        } else {
+            ContenidoLikeEntity dislike = new ContenidoLikeEntity();
+            dislike.setUsuario(usuario);
+            dislike.setContenido(contenido);
+            dislike.setTipo(TipoReaccion.DISLIKE);
+            dislike.setFechaLike(LocalDateTime.now());
+            contenidoLikeRepository.save(dislike);
+        }
     }
+
+
 
     public boolean quitarLike(Long usuarioId, Long contenidoId) {
         UsuarioEntity usuario = usuarioRepository.findById(usuarioId)

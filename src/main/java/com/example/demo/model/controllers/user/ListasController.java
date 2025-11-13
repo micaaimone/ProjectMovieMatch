@@ -3,6 +3,7 @@ package com.example.demo.model.controllers.user;
 import com.example.demo.model.DTOs.ResponseDTO;
 import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
+import com.example.demo.model.DTOs.user.Listas.ListaResumenDTO;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.services.Usuarios.ListasService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
@@ -73,7 +74,7 @@ public class ListasController {
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.agregarContenido(idLista, nombre);
-        return ResponseEntity.ok(new ResponseDTO("Lista Agregada!"));
+        return ResponseEntity.ok(new ResponseDTO("Contenido agregado!"));
     }
 
     // mostrar listas con contenido y sin----------------------------------
@@ -89,7 +90,7 @@ public class ListasController {
     })
     @PreAuthorize("hasAuthority('LISTA_VER_PROPIAS')")
     @GetMapping("/verListas")
-    public ResponseEntity<Page<ListasSinContDTO>> verListas(
+    public ResponseEntity<Page<ListaResumenDTO>> verListas(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size
     ) {

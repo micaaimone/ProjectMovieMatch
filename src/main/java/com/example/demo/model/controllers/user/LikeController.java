@@ -43,6 +43,15 @@ public class LikeController {
         return ResponseEntity.ok(new ResponseDTO("Like a contenido registrado"));
     }
 
+    @Operation(summary = "Dar dislike a contenido")
+    @PreAuthorize("hasAuthority('USUARIO_LIKE')")
+    @PostMapping("/dislike/contenido/{contenidoId}")
+    public ResponseEntity<String> dislikeContenido( @PathVariable Long contenidoId) {
+        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+        contenidoLikeService.dislike(usuarioAutenticado.getId(), contenidoId);
+        return ResponseEntity.ok("Dislike a contenido registrado");
+    }
+
     @Operation(summary = "Quitar like a contenido")
     @PreAuthorize("hasAuthority('USUARIO_QUITAR_LIKE')")
     @DeleteMapping("/contenido/{contenidoId}")
@@ -57,6 +66,7 @@ public class LikeController {
         }
     }
 
+
     @Operation(summary = "Ver likes de contenido")
     @PreAuthorize("hasAuthority('USUARIO_VER_LIKES')")
     @GetMapping("/contenidosLikeados")
@@ -67,6 +77,7 @@ public class LikeController {
         Page<ContenidoLikeDTO> likes = contenidoLikeService.obtenerLikes(usuarioAutenticado.getId(), page, size);
         return ResponseEntity.ok(likes);
     }
+
 
     // ------------------- Likes a reseñas
     @Operation(summary = "Dar like a reseña")

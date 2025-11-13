@@ -46,7 +46,7 @@ public class ContenidoMapper {
                     .stream()
                     .map(reseñaMapper::convertToDTO)
                     .collect(Collectors.toList());
-            dto.setReseña(reseñasDTO);
+            dto.setResenia(reseñasDTO);
 
             //saco el promedio de cada peli
             double promedioReseña= contenidoEntity.getReseña()
