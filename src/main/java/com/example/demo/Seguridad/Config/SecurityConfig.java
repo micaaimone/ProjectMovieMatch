@@ -59,6 +59,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/auth").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                 .requestMatchers(HttpMethod.POST, "/auth/forgotPassword").permitAll()
+                .requestMatchers(HttpMethod.POST, "/usuarios/registrar").permitAll()
 
                 // ---- MERCADOPAGO NOTIFICATIONS ----
                 .requestMatchers(HttpMethod.POST, "/mp/notification").permitAll()
