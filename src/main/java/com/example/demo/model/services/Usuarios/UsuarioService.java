@@ -11,6 +11,7 @@ import com.example.demo.model.DTOs.user.NewUsuarioDTO;
 import com.example.demo.model.DTOs.user.RecuperarPassDTO;
 import com.example.demo.model.DTOs.user.UsuarioDTO;
 import com.example.demo.model.DTOs.user.UsuarioModificarDTO;
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.entities.User.UsuarioEntity;
 import com.example.demo.model.exceptions.UsuarioExceptions.EstadoInvalidoException;
 import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioNoEncontradoException;
@@ -18,6 +19,7 @@ import com.example.demo.model.exceptions.UsuarioExceptions.UsuarioYaExisteExcept
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.mappers.user.UsuarioMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
+import com.example.demo.model.repositories.Usuarios.ListasContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import com.example.demo.model.Specifications.UsuarioSpecification;
 
@@ -47,11 +49,12 @@ public class UsuarioService {
     private final CredentialsRepository credentialsRepository;
     private final ContenidoMapper contenidoMapper;
     private final EmailService emailService;
+    private final ListasContenidoRepository listasContenidoRepository;
 
 
     public UsuarioService(UsuarioMapper usuarioMapper, UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository,
                           RoleRepository roleRepository, PasswordEncoder passwordEncoder, CredentialsRepository credentialsRepository,
-                          ContenidoMapper contenidoMapper, EmailService emailService) {
+                          ContenidoMapper contenidoMapper, EmailService emailService, ListasContenidoRepository listasContenidoRepository) {
         this.usuarioMapper = usuarioMapper;
         this.usuarioRepository = usuarioRepository;
         this.roleRepository = roleRepository;
@@ -59,6 +62,7 @@ public class UsuarioService {
         this.credentialsRepository = credentialsRepository;
         this.contenidoMapper = contenidoMapper;
         this.emailService = emailService;
+        this.listasContenidoRepository = listasContenidoRepository;
     }
 
     public void validarUsuarioExistente(NewUsuarioDTO usuarioDTO)
@@ -117,6 +121,12 @@ public class UsuarioService {
         usuario.setCredencial(credencial);
 
         usuarioRepository.save(usuario);
+        // ====== CREAR LISTA "FAVORITOS" AUTOMÁTICAMENTE ======
+        ListasContenidoEntity listaFavoritos = new ListasContenidoEntity();
+        listaFavoritos.setNombre("Favoritos");
+        listaFavoritos.setUsuario(usuario);
+        listaFavoritos.setPrivado(false);
+        listasContenidoRepository.save(listaFavoritos);
     }
 
     public UsuarioDTO mostrarMiPerfil(UsuarioEntity usuarioEntity)

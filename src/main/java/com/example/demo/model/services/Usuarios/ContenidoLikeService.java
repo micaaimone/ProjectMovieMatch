@@ -1,5 +1,6 @@
 package com.example.demo.model.services.Usuarios;
 
+import com.example.demo.model.entities.User.ListasContenidoEntity;
 import com.example.demo.model.enums.TipoReaccion;
 import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Resenia.ContenidoLikeDTO;
@@ -13,6 +14,7 @@ import com.example.demo.model.mappers.user.ReseniaLikeMapper;
 import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ContenidoLikeRepository;
+import com.example.demo.model.repositories.Usuarios.ListasContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ReseniaLikeRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
 import org.springframework.data.domain.Page;
@@ -30,12 +32,14 @@ public class ContenidoLikeService {
     private final ContenidoRepository contenidoRepository;
     private final ContenidoLikeRepository contenidoLikeRepository;
     private final ReseniaLikeMapper reseniaLikeMapper;
+    private final ListasContenidoRepository listasContenidoRepository;
 
-    public ContenidoLikeService(UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoLikeRepository contenidoLikeRepository, ReseniaLikeMapper reseniaLikeMapper) {
+    public ContenidoLikeService(UsuarioRepository usuarioRepository, ContenidoRepository contenidoRepository, ContenidoLikeRepository contenidoLikeRepository, ReseniaLikeMapper reseniaLikeMapper, ListasContenidoRepository listasContenidoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.contenidoRepository = contenidoRepository;
         this.contenidoLikeRepository = contenidoLikeRepository;
         this.reseniaLikeMapper = reseniaLikeMapper;
+        this.listasContenidoRepository = listasContenidoRepository;
     }
 
     public void darLike(Long usuarioId, Long contenidoId) {
@@ -73,6 +77,32 @@ public class ContenidoLikeService {
             like.setFechaLike(LocalDateTime.now());
             contenidoLikeRepository.save(like);
         }
+        // ====== AGREGAR A LISTA "FAVORITOS" AUTOMÁTICAMENTE ======
+        agregarAFavoritos(usuario, contenido);
+    }
+
+    private void agregarAFavoritos(UsuarioEntity usuario, ContenidoEntity contenido) {
+        // Buscar la lista "Favoritos" del usuario
+        Optional<ListasContenidoEntity> favoritosOpt =
+                listasContenidoRepository.findByNombre(usuario.getId(), "Favoritos");
+
+        if (favoritosOpt.isPresent()) {
+            ListasContenidoEntity favoritos = favoritosOpt.get();
+
+            // Solo agregar si no está ya en la lista
+            if (!favoritos.getContenidos().contains(contenido)) {
+                favoritos.getContenidos().add(contenido);
+                listasContenidoRepository.save(favoritos);
+            }
+        } else {
+            // ====== CREAR LISTA "FAVORITOS" AUTOMÁTICAMENTE ======
+            ListasContenidoEntity listaFavoritos = new ListasContenidoEntity();
+            listaFavoritos.setNombre("Favoritos");
+            listaFavoritos.setUsuario(usuario);
+            listaFavoritos.setPrivado(false);
+            listasContenidoRepository.save(listaFavoritos);
+        }
+
     }
 
 
