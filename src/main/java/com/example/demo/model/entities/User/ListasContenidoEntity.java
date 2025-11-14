@@ -28,7 +28,7 @@ public class ListasContenidoEntity {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-            name = "listasXcontenido",
+            name = "listas_xcontenido",
             joinColumns = @JoinColumn(name = "id_lista_contenido"),
             inverseJoinColumns = @JoinColumn(name = "id_contenido"))
     private List<ContenidoEntity> contenidos;

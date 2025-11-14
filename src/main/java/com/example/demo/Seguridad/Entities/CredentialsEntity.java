@@ -44,16 +44,17 @@ public class CredentialsEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<GrantedAuthority> authorities = new HashSet<>();
+        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
-        for (RoleEntity roleEntity : roles) {
-            authorities.add(new SimpleGrantedAuthority(roleEntity.getRole().name()));
+        for (RoleEntity role : roles) {
+            // Spring Security lo requiere así:
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole().name()));
 
-            for (PermitEntity permit : roleEntity.getPermits()) {
+            // Agregar permisos individuales
+            for (PermitEntity permit : role.getPermits()) {
                 authorities.add(new SimpleGrantedAuthority(permit.getPermit().name()));
             }
         }
-
         return authorities;
     }
 

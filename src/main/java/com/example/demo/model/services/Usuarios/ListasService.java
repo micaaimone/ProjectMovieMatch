@@ -155,10 +155,14 @@ public class ListasService {
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombreLista)
                 .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
 
-        //eliminamos de la bdd la tabla intermedia
+        // 1) Borrar filas de tabla intermedia
+        listasContenidoRepository.eliminarAsociaciones(lista.getIdListaContenido());
+
+        // 2) Limpiar la lista en memoria (importante!)
         lista.getContenidos().clear();
         listasContenidoRepository.save(lista);
 
+        // 3) Eliminar la lista
         listasContenidoRepository.delete(lista);
     }
 

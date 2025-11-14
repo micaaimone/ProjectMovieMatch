@@ -162,27 +162,34 @@ public class ListasController {
 
     // ------------------------ borrar contenido o borrar lista completa------------
 
-    @Operation(summary = "Eliminar contenido de una lista",
-            description = "Quita un contenido de la lista especificada por nombre.")
+    @Operation(
+            summary = "Eliminar contenido de una lista",
+            description = "Quita un contenido de la lista especificada por nombre."
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Contenido eliminado de la lista")
     })
     @PreAuthorize("hasAuthority('LISTA_ELIMINAR_CONTENIDO')")
-    @DeleteMapping("/sacarDelista")
+    @DeleteMapping("/sacarDelista/{idLista}")
     public ResponseEntity<ResponseDTO> eliminarDeLista(
-            @Parameter(description = "Nombre de la lista", required = true)
-            @RequestParam String nombre,
-            @PathVariable Long idLista
+            @Parameter(description = "ID de la lista", required = true)
+            @PathVariable Long idLista,
+
+            @Parameter(description = "Nombre del contenido", required = true)
+            @RequestParam String nombre
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.eliminarContenido(idLista, nombre);
+
         return ResponseEntity.ok(new ResponseDTO("Contenido eliminado!"));
     }
 
     // ------------------ Eliminar lista completa
 
-    @Operation(summary = "Eliminar una lista",
-            description = "Elimina por completo una lista de un usuario.")
+    @Operation(
+            summary = "Eliminar una lista",
+            description = "Elimina por completo una lista de un usuario."
+    )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lista eliminada exitosamente")
     })
@@ -194,8 +201,10 @@ public class ListasController {
     ) {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
         listasService.eliminarLista(usuarioAutenticado.getId(), nombre);
+
         return ResponseEntity.ok(new ResponseDTO("Lista Eliminada!"));
     }
+
 
     // ------------------ Ver listas de otro usuario
 
@@ -206,7 +215,7 @@ public class ListasController {
     })
     @Parameter(name = "username", description = "Nombre de usuario", required = true)
     @PreAuthorize("hasAuthority('LISTA_VER_PUBLICAS')")
-    @GetMapping("verListasDeUser")
+    @GetMapping("/verListasDeUser/{username}")
     public ResponseEntity<Page<ListaContenidoDTO>> verListas(
             @PathVariable("username") String username,
             Pageable pageable

@@ -1,6 +1,7 @@
 package com.example.demo.model.mappers.user;
 
 import com.example.demo.model.DTOs.Contenido.ContenidoDTO;
+import com.example.demo.model.mappers.Contenido.ContenidoMapper;
 import com.example.demo.model.DTOs.user.Listas.ListaContenidoDTO;
 import com.example.demo.model.DTOs.user.Listas.ListasSinContDTO;
 import com.example.demo.model.DTOs.user.Listas.ListaResumenDTO;
@@ -15,27 +16,31 @@ import java.util.List;
 @Component
 public class ListasMapper {
     private final ModelMapper modelMapper;
+    private final ContenidoMapper contenidoMapper;
 
     @Autowired
-    public ListasMapper(ModelMapper modelMapper) {
+    public ListasMapper(ModelMapper modelMapper, ContenidoMapper contenidoMapper) {
         this.modelMapper = modelMapper;
+        this.contenidoMapper = contenidoMapper;
     }
 
     //dto con contenido
     public ListaContenidoDTO convertToDTO(ListasContenidoEntity entity) {
-        ListaContenidoDTO dto = new ListaContenidoDTO();
-        dto = modelMapper.map(entity, ListaContenidoDTO.class);
+        ListaContenidoDTO dto = modelMapper.map(entity, ListaContenidoDTO.class);
 
-        if(dto.getContenidos() != null) {
+        if(entity.getContenidos() != null) {
+
             List<ContenidoDTO> dtos = entity.getContenidos()
                     .stream()
-                    .map(contenidoEntity -> modelMapper.map(contenidoEntity, ContenidoDTO.class))
+                    .map(contenidoMapper::convertToDTO)  // <-- USAR TU MAPPER, NO MODEL MAPPER
                     .toList();
-            dto.setContenidos(dtos);
 
+            dto.setContenidos(dtos);
         }
+
         return dto;
     }
+
     //entity con ocntenido
     public ListasContenidoEntity convertToEntity(ListaContenidoDTO dto) {
         ListasContenidoEntity entity = new ListasContenidoEntity();

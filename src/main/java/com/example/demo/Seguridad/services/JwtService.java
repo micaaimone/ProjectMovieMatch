@@ -14,6 +14,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,13 +32,34 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
 
-        claims.put("roles", userDetails.getAuthorities()
-                .stream()
+        // Extraer solo roles
+        Set<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()));
+                .filter(a -> a.startsWith("ROLE_"))
+                .map(a -> a.substring(5)) // quitar "ROLE_"
+                .collect(Collectors.toSet());
 
-        return buildToken(claims, userDetails, jwtExpiration);
+        // Extraer permisos
+        Set<String> permits = userDetails.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(a -> !a.startsWith("ROLE_"))
+                .collect(Collectors.toSet());
 
+        claims.put("roles", roles);
+        claims.put("permits", permits);
+
+        return createToken(claims, userDetails.getUsername());
+    }
+
+    private String createToken(Map<String, Object> claims, String subject) {
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(subject)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
+                .signWith(SignatureAlgorithm.HS256, jwtSecretKey)
+                .compact();
     }
 
     private <T> T extractClaim(String token, Function<Claims, T>
