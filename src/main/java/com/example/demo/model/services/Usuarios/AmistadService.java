@@ -32,6 +32,7 @@ public class AmistadService {
     private final ContenidoMapper contenidoMapper;
     private final AmistadMapper amistadMapper;
 
+
     public AmistadService(AmistadRepository solicitudAmistadRepository, UsuarioRepository usuarioRepository, AmistadMapper solicitudAmistadMapper, ContenidoMapper contenidoMapper, AmistadMapper amistadMapper) {
         this.solicitudAmistadRepository = solicitudAmistadRepository;
         this.usuarioRepository = usuarioRepository;
@@ -281,6 +282,9 @@ public class AmistadService {
         if (eliminadoDeUsuario && eliminadoDeAmigo) {
             usuarioRepository.save(emisor);
             usuarioRepository.save(receptor);
+
+            // ---- BORRAR LA AMISTAD EN LA TABLA ----
+            solicitudAmistadRepository.deleteAmistadBidireccional(idEmisor, idReceptor);
         } else {
             throw new RuntimeException("No existe la relación de amistad entre los usuarios.");
         }
