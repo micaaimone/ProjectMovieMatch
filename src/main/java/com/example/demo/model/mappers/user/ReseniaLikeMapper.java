@@ -22,6 +22,7 @@ public class ReseniaLikeMapper {
         return ContenidoLikeDTO.builder()
                 .id(contenidoLikeEntity.getId())
                 .idUsuario(contenidoLikeEntity.getUsuario().getId())
+                .poster(contenidoLikeEntity.getContenido().getPoster())
                 .username(contenidoLikeEntity.getUsuario().getUsername())
                 .titulo(contenidoLikeEntity.getContenido().getTitulo())
                 .idContenido(contenidoLikeEntity.getContenido().getId_contenido())
@@ -38,6 +39,7 @@ public class ReseniaLikeMapper {
                 .idResenia(reseniaLikeEntity.getResenia().getId_resenia())
                 .titulo(reseniaLikeEntity.getResenia().getContenido().getTitulo())
                 .puntuacion(reseniaLikeEntity.getResenia().getPuntuacionU())
+                .mensaje(reseniaLikeEntity.getResenia().getComentario())
                 .fechaLike(reseniaLikeEntity.getFechaLike())
                 .build();
     }

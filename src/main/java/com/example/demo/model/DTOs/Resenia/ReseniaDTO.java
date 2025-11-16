@@ -12,6 +12,7 @@ import lombok.*;
 @Builder
 
 public class ReseniaDTO {
+    private Long id;
     private Long id_usuario;
 
     @NotNull(message = "id de contenido es necesario")

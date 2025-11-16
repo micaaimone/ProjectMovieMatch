@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 public class ContenidoLikeDTO {
     private Long id;
 
+    private String poster;
+
     private Long idUsuario;
 
     private String username;

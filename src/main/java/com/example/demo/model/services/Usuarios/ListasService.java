@@ -19,6 +19,7 @@ import com.example.demo.model.mappers.user.ListasMapper;
 import com.example.demo.model.repositories.Contenido.ContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.ListasContenidoRepository;
 import com.example.demo.model.repositories.Usuarios.UsuarioRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -139,13 +140,14 @@ public class ListasService {
         listasContenidoRepository.save(lista);
     }
 
+    @Transactional
     public void eliminarLista(Long idUser, String nombreLista) {
         ListasContenidoEntity lista = listasContenidoRepository.findByNombre(idUser, nombreLista)
                 .orElseThrow(() -> new ListaNotFoundException("Lista no encontrada"));
 
-        listasContenidoRepository.eliminarAsociaciones(lista.getIdListaContenido());
         lista.getContenidos().clear();
         listasContenidoRepository.save(lista);
+
         listasContenidoRepository.delete(lista);
     }
 }
