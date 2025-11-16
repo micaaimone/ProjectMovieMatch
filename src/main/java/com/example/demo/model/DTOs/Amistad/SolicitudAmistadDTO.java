@@ -20,4 +20,5 @@ public class SolicitudAmistadDTO {
     private Long idEmisor;
 
     private EstadoSolicitud estadoSolicitud;
+    private String username;
 }

@@ -25,6 +25,8 @@ public class AmistadEntity {
 
     private long idReceptor;
 
+    private String username;
+
     private EstadoSolicitud estadoSolicitud;
 
 

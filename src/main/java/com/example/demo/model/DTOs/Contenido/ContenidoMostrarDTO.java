@@ -18,4 +18,6 @@ public class ContenidoMostrarDTO {
 
     @Schema(description = "Tipo de contenido (Pelicula o Serie)", example = "Pelicula")
     private String tipo;
+
+    private String poster;
 }

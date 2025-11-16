@@ -52,6 +52,8 @@ public class AmistadService {
         return usuario;
     }
 
+
+
     public AmistadEntity validarSolicitud(Long idEmisor, Long idReceptor) {
         AmistadEntity solicitud = solicitudAmistadRepository
                 .findByIdEmisorAndIdReceptor(idEmisor, idReceptor)

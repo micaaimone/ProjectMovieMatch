@@ -30,6 +30,7 @@ public class ContenidoMapper {
                 .id(contenidoEntity.getId_contenido())
                 .titulo(contenidoEntity.getTitulo())
                 .tipo(contenidoEntity.getTipo())
+                .poster(contenidoEntity.getPoster())
                 .build();
     }
 

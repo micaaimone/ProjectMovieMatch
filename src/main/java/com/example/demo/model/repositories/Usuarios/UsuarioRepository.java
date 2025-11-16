@@ -30,4 +30,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Long>, J
 
     @Query("SELECT u.likes FROM UsuarioEntity u JOIN u.likes WHERE u.id = :usuarioId")
     Page<ContenidoEntity> findLikes(@Param("usuarioId")Long usuarioId, Pageable pageable);
+
+    // Buscar usuarios activos por nombre parcial
+    Page<UsuarioEntity> findByUsernameContainingIgnoreCaseAndActivoTrue(String username, Pageable pageable);
 }
