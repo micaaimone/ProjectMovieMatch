@@ -59,7 +59,7 @@ public class ReseniaLikeService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
 
         ReseniaEntity resenia = reseniaRepository.findById(reseniaId)
-                .orElseThrow(() -> new ContenidoNotFound("Contenido no encontrado"));
+                .orElseThrow(() -> new ReseniaNotFound("Reseña no encontrada"));
 
         Optional<ReseniaLikeEntity> likeOpt = reseniaLikeRepository.findByUsuarioAndResenia(usuario, resenia);
         if (likeOpt.isPresent()) {

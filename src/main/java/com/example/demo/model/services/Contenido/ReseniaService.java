@@ -165,9 +165,9 @@ public class ReseniaService {
         Page<ReseniaEntity> page = reseniaRepository.findAllById(id_usuario, pageable);
 
 
-        if (page.getContent().isEmpty()) {
-            throw new ReseniaNotFound("No se encontraron reseñas para este usuario.");
-        }
+//        if (page.getContent().isEmpty()) {
+//            throw new ReseniaNotFound("No se encontraron reseñas para este usuario.");
+//        }
 
         return page.map(reseniaMapper::convertToDTO);
     }
