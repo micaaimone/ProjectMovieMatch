@@ -38,6 +38,8 @@ Tipo destino: la clase a la que querés transformar esos datos (ejemplo, Resenia
                     mapper.map(src -> src.getContenido().getId_contenido(), ReseniaDTO::setId_contenido);
                     mapper.map(ReseniaEntity::getPuntuacionU, ReseniaDTO::setPuntuacionU);
                     mapper.map(ReseniaEntity::getComentario, ReseniaDTO::setComentario);
+                    mapper.map(src -> src.getUsuario().getUsername(), ReseniaDTO::setUsername);
+                    mapper.map(src -> src.getContenido().getTitulo(), ReseniaDTO::setTitulo);
                 });
 
         modelMapper.createTypeMap(ReseniaEntity.class, ReseniaMostrarUsuarioDTO.class)
