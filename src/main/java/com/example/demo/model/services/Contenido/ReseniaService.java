@@ -25,6 +25,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class ReseniaService {
 
@@ -121,7 +123,7 @@ public class ReseniaService {
     }
 
     @Transactional
-    public void delete(Long id_u, Long id_c)
+    public void delete(Long id_u, Long id_r)
     {
         // Obtener usuario autenticado
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -137,9 +139,11 @@ public class ReseniaService {
             throw new AccessDeniedException("No tenés permiso para realizar una reseña desde este usuario.");
         }
 
+        ReseniaEntity resenia = reseniaRepository.findById(id_r)
+                .orElseThrow(() -> new ReseniaNotFound("reseña no encontrada"));
 
-        ReseniaEntity resenia = reseniaRepository.findByIDAndContenido(id_u, id_c)
-                .orElseThrow(() -> new ReseniaNotFound("Reseña no encontrada"));
+//        ReseniaEntity resenia = reseniaRepository.findByIDAndContenido(id_u, id_c)
+//                .orElseThrow(() -> new ReseniaNotFound("Reseña no encontrada"));
 
         //los tengo q borrar manualmente xq reseñas es "el hijo"
         UsuarioEntity usuario = resenia.getUsuario();
