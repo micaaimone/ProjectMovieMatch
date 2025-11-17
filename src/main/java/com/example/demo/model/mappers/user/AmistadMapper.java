@@ -26,7 +26,6 @@ public class AmistadMapper {
     {
         return AmistadEntity.builder()
                 .idReceptor(newSolicitudAmistadDTO.getIdReceptor())
-                .username(newSolicitudAmistadDTO.getUsername())
                 .build();
     }
 

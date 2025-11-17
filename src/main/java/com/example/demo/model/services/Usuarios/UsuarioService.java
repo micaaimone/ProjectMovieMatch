@@ -169,23 +169,20 @@ public class UsuarioService {
             throw new AccessDeniedException("No tenés permiso para modificar datos este usuario.");
         }
 
-        if (nuevosDatos.getTelefono() != null) {
+        if (nuevosDatos.getTelefono() != null && !nuevosDatos.getTelefono().isBlank()) {
             existente.setTelefono(nuevosDatos.getTelefono());
         }
-        if (nuevosDatos.getUsername() != null) {
+        if (nuevosDatos.getUsername() != null && !nuevosDatos.getUsername().isBlank()) {
             existente.setUsername(nuevosDatos.getUsername());
         }
-        if(nuevosDatos.getPassword() != null)
-        {
+        if(nuevosDatos.getPassword() != null && !nuevosDatos.getPassword().isBlank()) {
             existente.getCredencial().setPassword(passwordEncoder.encode(nuevosDatos.getPassword()));
         }
-        if(nuevosDatos.getGeneros() != null)
-        {
-            nuevosDatos.getGeneros()
-                            .forEach(g -> existente.getGeneros().add(g));
+        if(nuevosDatos.getGeneros() != null) {
+            existente.getGeneros().clear(); // Limpiamos los géneros existentes
+            existente.getGeneros().addAll(nuevosDatos.getGeneros()); // Agregamos los nuevos
         }
-        if(nuevosDatos.getEmail() != null)
-        {
+        if(nuevosDatos.getEmail() != null && !nuevosDatos.getEmail().isBlank()) {
             existente.setEmail(nuevosDatos.getEmail());
         }
 
