@@ -12,11 +12,16 @@ import lombok.*;
 @Builder
 
 public class ReseniaDTO {
+    private Long id;
     private Long id_usuario;
+
+    private String username;
 
     @NotNull(message = "id de contenido es necesario")
     @Schema(description = "ID del contenido al que pertenece la reseña", example = "12")
     private Long id_contenido;
+
+    private String titulo;
 
     @Min(value = 0, message = "La puntuacion no puede ser menor a 0")
     @Max(value = 10, message = "La puntuacion no puede ser mayor a 10")

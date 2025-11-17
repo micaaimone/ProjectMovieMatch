@@ -27,6 +27,14 @@ public class ContenidoDTO {
     @Schema(description = "Clasificación por edad", example = "TV-MA")
     private String clasificacion;
 
+    private String idioma;
+
+    private String pais;
+
+    private String premios;
+
+    private String guionista;
+
     @Schema(description = "Duración del contenido (en minutos o formato hh:mm)", example = "47m")
     private String duracion;
 

@@ -23,5 +23,7 @@ public class ReseniaLikeDTO {
 
     private Double puntuacion;
 
+    private String mensaje;
+
     private LocalDateTime fechaLike;
 }

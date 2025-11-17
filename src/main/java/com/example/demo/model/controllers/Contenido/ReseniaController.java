@@ -47,17 +47,18 @@ public class ReseniaController {
         return ResponseEntity.ok(new ResponseDTO("Reseña agregada correctamente"));
     }
 
+    //lo modifico un poco unicamente para el front
     @PreAuthorize("hasAuthority('ELIMINAR_RESENIA')")
     @Operation(summary = "Eliminar reseña hecha por usuario, eliminando por id contenido", description = "Elimina una reseña según el ID del usuario y del contenido")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Reseña eliminada correctamente"),
             @ApiResponse(responseCode = "404", description = "Reseña no encontrada")
     })
-    @DeleteMapping("/eliminarReseniaByUserAndIDContenido/{id_contenido}")
-    public ResponseEntity<ResponseDTO> eliminarReseniaByUsuarioYContenido(@PathVariable("id_contenido") Long id_contenido)
+    @DeleteMapping("/eliminarReseniaByUserAndIDContenido/{id_resenia}")
+    public ResponseEntity<ResponseDTO> eliminarReseniaByUsuarioYContenido(@PathVariable("id_resenia") Long id_resenia)
     {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        reseniaService.delete(usuarioAutenticado.getId(), id_contenido);
+        reseniaService.delete(usuarioAutenticado.getId(), id_resenia);
         return ResponseEntity.ok(new ResponseDTO("Reseña eliminada correctamente"));
     }
 
