@@ -32,6 +32,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -221,9 +222,9 @@ public class StarterDatabase {
 
     public void initPlan() {
         if (planRepository.count() == 0) {
-            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, 3000, null));
-            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.SEMESTRAL, 15000, null));
-            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, 25000, null));
+            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.MENSUAL, BigDecimal.valueOf(3000), null));
+            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.SEMESTRAL, BigDecimal.valueOf(15000), null));
+            planRepository.save(new PlanSuscripcionEntity(TipoSuscripcion.ANUAL, BigDecimal.valueOf(25000), null));
         }
     }
 

@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import java.util.HashSet;
@@ -96,7 +97,7 @@ public class SuscripcionService {
         //todaia no esta activada hasta que se concrete el pago
         suscripcion.setEstado(false);
 
-        float precioFinal = oferta
+        BigDecimal precioFinal = oferta
                 .map(ofertaEntity -> planService.precioFinal(plan.getPrecio(), ofertaEntity.getDescuento()))
                 .orElse(plan.getPrecio());
 
@@ -219,7 +220,7 @@ public class SuscripcionService {
         //buscamos oferta activa
         Optional<OfertaEntity> oferta = planService.getOfertaActiva(plan);
 
-        float precioFinal = oferta
+        BigDecimal precioFinal = oferta
                 .map(ofertaEntity -> planService.precioFinal(plan.getPrecio(), ofertaEntity.getDescuento()))
                 .orElse(plan.getPrecio());
 
