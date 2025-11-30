@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ public class PlanService {
                 .findFirst();
     }
 
-    public void cambiarMontoPlan(TipoSuscripcion tipo, float montoNuevo){
+    public void cambiarMontoPlan(TipoSuscripcion tipo, BigDecimal montoNuevo){
         PlanSuscripcionEntity plan = planRepository.findByTipo(tipo)
                 .orElseThrow(() -> new PlanNotFoundException("Plan no encontrado"));
 
@@ -47,11 +48,16 @@ public class PlanService {
         planRepository.save(plan);
     }
 
-    public float precioFinal (float monto, float desc){
-        if(desc != 0){
-            float extra=(monto * desc)/100;
-            monto-=extra;
+    public BigDecimal precioFinal (BigDecimal monto, BigDecimal desc){
+        if (desc.compareTo(BigDecimal.ZERO) > 0) {
+
+            BigDecimal extra = monto
+                    .multiply(desc)
+                    .divide(BigDecimal.valueOf(100));
+
+            monto = monto.subtract(extra);
         }
+
         return monto;
     }
 }

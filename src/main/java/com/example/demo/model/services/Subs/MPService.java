@@ -38,8 +38,6 @@ public class MPService {
 
         //RECORDAR CAMBIAR LA URL EN NOTIFICACIONES EN LA WEB DE MP
         String ngrokUrl = "https://239f-2803-9800-9995-6e65-8044-d227-7b7c-a113.ngrok-free.app";
-        //el monto en la api de mp es bigDecimal
-        BigDecimal pf = BigDecimal.valueOf(sub.getMonto());
 
         MercadoPagoConfig.setAccessToken(MERCADOPAGO_ACCESS_TOKEN);
         PreferenceClient preferenceClient = new PreferenceClient();
@@ -51,7 +49,7 @@ public class MPService {
                         .title("Suscripcion :" + sub.getPlan().getTipo().name().toLowerCase())
                         .description("Gracias por suscribirse a Movie-Match")
                         .quantity(1)
-                        .unitPrice(pf)
+                        .unitPrice(sub.getMonto())
                         .currencyId("ARS")
                         .build();
         List<PreferenceItemRequest> items = new ArrayList<>();

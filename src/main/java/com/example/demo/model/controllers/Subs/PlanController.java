@@ -20,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 @SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/planes")
@@ -78,7 +80,7 @@ public class PlanController {
     @PatchMapping("/{tipoPlan}/cambiarPrecio")
     public ResponseEntity<ResponseDTO> actualizarPlan(
             @PathVariable("tipoPlan") TipoSuscripcion tipoPlan,
-            @RequestParam float precio
+            @RequestParam BigDecimal precio
     ) {
         planService.cambiarMontoPlan(tipoPlan, precio);
         return ResponseEntity.ok(new ResponseDTO("Plan actualizado correctamente"));

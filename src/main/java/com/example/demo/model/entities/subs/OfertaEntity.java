@@ -4,6 +4,7 @@ package com.example.demo.model.entities.subs;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -20,7 +21,7 @@ public class OfertaEntity {
     private Long id_oferta;
 
     private String descripcion;
-    private float descuento;
+    private BigDecimal descuento;
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;
 

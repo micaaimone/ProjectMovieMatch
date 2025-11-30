@@ -4,6 +4,7 @@ import com.example.demo.model.entities.User.UsuarioEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class SuscripcionEntity {
     private LocalDate fecha_inicio;
     private LocalDate fecha_fin;
     private boolean estado;
-    private float monto;
+    private BigDecimal monto;
 
     @ManyToOne
     private PlanSuscripcionEntity plan;
