@@ -44,7 +44,7 @@ public class MPController {
             )
             @RequestBody Map<String, Object> body
     ) {
-        mpService.recibirPago(body);
+        mpService.handleWebhook(body);
         return ResponseEntity.ok().build();
     }
 

@@ -2,6 +2,7 @@ package com.example.demo.model.services.Subs;
 
 import com.example.demo.model.entities.subs.SuscripcionEntity;
 import com.example.demo.model.services.Email.EmailService;
+import com.example.demo.model.services.payments.IPayment;
 import com.mercadopago.MercadoPagoConfig;
 import com.mercadopago.client.payment.PaymentClient;
 import com.mercadopago.client.preference.*;
@@ -17,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 @Service
-public class MPService {
+public class MPService implements IPayment {
     private RestTemplate restTemplate;
     @Value("${MERCADOPAGO_ACCESS_TOKEN}")
     private String MERCADOPAGO_ACCESS_TOKEN;
@@ -33,9 +34,8 @@ public class MPService {
         this.emailService = emailService;
     }
 
-
-    public String crearPreferencia(SuscripcionEntity sub) throws MPException, MPApiException {
-
+    @Override
+    public String createPayment(SuscripcionEntity sub) throws MPException, MPApiException {
         //RECORDAR CAMBIAR LA URL EN NOTIFICACIONES EN LA WEB DE MP
         String ngrokUrl = "https://239f-2803-9800-9995-6e65-8044-d227-7b7c-a113.ngrok-free.app";
 
@@ -90,18 +90,17 @@ public class MPService {
         Preference preference = preferenceClient.create(preferenceRequest);
 
         return preference.getInitPoint();
-
     }
 
     //recibimos el body de mp al realizar el pago
-    public void recibirPago( Map<String, Object> body){
-
+    @Override
+    public void handleWebhook(Map<String, Object> body) {
         try {
             if ("payment".equals(body.get("type"))) {
                 Map<String, Object> data = (Map<String, Object>) body.get("data");
                 if (data != null && data.get("id") != null) {
                     Long paymentId = Long.valueOf(data.get("id").toString());
-                    procesarPago(paymentId);
+                    processPayment(paymentId);
                 }
             }
         } catch (Exception e) {
@@ -110,7 +109,8 @@ public class MPService {
     }
 
     //actuvamos la sub, creamos el registro de pago y enviamos mail de configuracion
-    public void procesarPago(Long id){
+    @Override
+    public void processPayment(Long id) {
         try{
             //MP puede enviar varias notificaciones (200, 201, 202) y crear registros duplicados
             //por eso verificamos q no exista el pago segun la id original de mp
@@ -144,8 +144,13 @@ public class MPService {
         } catch (MPApiException e) {
             throw new RuntimeException(e);
         }
-
     }
+
+    @Override
+    public String getName() {
+        return "mercadoPago";
+    }
+
 
     public void enviarMail(String mail, String nombre){
         String asunto= "Pago exitoso";

@@ -6,6 +6,7 @@ import com.example.demo.model.entities.subs.TipoSuscripcion;
 import com.example.demo.model.services.Subs.MPService;
 import com.example.demo.model.services.Subs.SuscripcionService;
 import com.example.demo.model.services.Usuarios.UsuarioService;
+import com.example.demo.model.services.payments.PaymentService;
 import com.mercadopago.exceptions.MPApiException;
 import com.mercadopago.exceptions.MPException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,25 +30,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/suscripciones")
 public class SuscripcionController {
     private final SuscripcionService suscripcionService;
-    private final MPService mpService;
+    private final PaymentService paymentService;
     private final UsuarioService usuarioService;
 
     @Autowired
-    public SuscripcionController(SuscripcionService suscripcionService, MPService mpService, UsuarioService usuarioService) {
+    public SuscripcionController(SuscripcionService suscripcionService, PaymentService paymentService, UsuarioService usuarioService) {
         this.suscripcionService = suscripcionService;
-        this.mpService = mpService;
+        this.paymentService = paymentService;
         this.usuarioService = usuarioService;
     }
 
-    /* ----esquema de como funciona
-    Controller llama a MPService para generar link de pago → MpService llama a Subservice para crear una base de subEntity
-                                ↓
-    Nos dirigimos al link de pago y concretamos el pago, la api redirige a mpController/notification
-                                ↓
-    en notification recibimos el body del pago y verificamos q el status sea aprobado en recibir pago
-                                ↓
-    llamamos a gestion pago donde terminamos de armar la sub del paso 1 y enviamos el mail de confirmacion del pago
-    */
 
     @Operation(
             summary = "Crear una suscripción",
@@ -55,11 +47,11 @@ public class SuscripcionController {
                 Crea una nueva suscripción para el usuario especificado y devuelve la URL para iniciar el proceso de pago.
 
                 **Flujo completo del proceso:**
-                1. Controller llama a `MPService` para generar un link de pago.
-                2. `MPService` llama a `SuscripcionService` para crear una base de subEntity.
-                3. El usuario completa el pago y la API redirige a `/mp/notification`.
-                4. En `notification`, se recibe el cuerpo del pago y se verifica que el estado sea 'aprobado'.
-                5. Se llama a `gestionPago`, donde se finaliza la suscripción iniciada y se envía el mail de confirmación.
+                1. Controller llama a `PaymentService` para generar un link de pago.
+                2. `PaymentService` llama a `SuscripcionService` para crear una base de subEntity.
+                3. El usuario completa el pago y la API redirige a `/payments/webhook`.
+                4. En `webhook`, se recibe el cuerpo del pago y se verifica que el estado sea 'aprobado'.
+                5. Se llama a `processPayment`, donde se finaliza la suscripción iniciada y se envía el mail de confirmación.
             """
     )
     @ApiResponses(value = {
@@ -72,38 +64,40 @@ public class SuscripcionController {
     })
     @PreAuthorize("hasAuthority('SUSCRIPCION_CREAR')")
     @PostMapping("/crear")
-    public ResponseEntity<String> crearSuscripcion(@RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
+    public ResponseEntity<String> crearSuscripcion(@RequestParam TipoSuscripcion tipo,
+                                                   @RequestParam String provider) throws MPException, MPApiException {
         UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        String init = mpService.crearPreferencia(suscripcionService.save(usuarioAutenticado.getId(), tipo));
+
+        String init = paymentService.crearPago(provider, suscripcionService.save(usuarioAutenticado.getId(), tipo));
         return ResponseEntity.ok(init);
     }
 
-    //cambiar plan
-    @Operation(summary = "Cambiar Plan")
-    @PreAuthorize("hasAuthority('SUSCRIPCION_CAMBIAR_PLAN')")
-    @PostMapping("/cambiarPlan")
-    public ResponseEntity<String> cambiarPlan(@RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
-        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        String init = mpService.crearPreferencia(suscripcionService.cambiarPlan(usuarioAutenticado, tipo));
-        return ResponseEntity.ok(init);
-    }
-
-    @Operation(
-            summary = "Renovar una suscripción",
-            description = "Renueva la suscripción activa del usuario y devuelve la URL para iniciar el proceso de pago."
-    )
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Suscripción renovada exitosamente"),
-            @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
-    })
-    @Parameter(name = "idUsuario", description = "ID del usuario que renueva la suscripción", required = true, schema = @Schema(type = "integer", example = "5"))
-    @PreAuthorize("hasAuthority('SUSCRIPCION_RENOVAR')")
-    @PostMapping("/renovar")
-    public ResponseEntity<String> renovarSuscripcion() throws MPException, MPApiException {
-        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
-        String init = mpService.crearPreferencia(suscripcionService.renovar(usuarioAutenticado.getId()));
-        return ResponseEntity.ok(init);
-    }
+//    //cambiar plan
+//    @Operation(summary = "Cambiar Plan")
+//    @PreAuthorize("hasAuthority('SUSCRIPCION_CAMBIAR_PLAN')")
+//    @PostMapping("/cambiarPlan")
+//    public ResponseEntity<String> cambiarPlan(@RequestParam TipoSuscripcion tipo) throws MPException, MPApiException {
+//        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+//        String init = mpService.crearPreferencia(suscripcionService.cambiarPlan(usuarioAutenticado, tipo));
+//        return ResponseEntity.ok(init);
+//    }
+//
+//    @Operation(
+//            summary = "Renovar una suscripción",
+//            description = "Renueva la suscripción activa del usuario y devuelve la URL para iniciar el proceso de pago."
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Suscripción renovada exitosamente"),
+//            @ApiResponse(responseCode = "404", description = "Suscripción no encontrada", content = @Content)
+//    })
+//    @Parameter(name = "idUsuario", description = "ID del usuario que renueva la suscripción", required = true, schema = @Schema(type = "integer", example = "5"))
+//    @PreAuthorize("hasAuthority('SUSCRIPCION_RENOVAR')")
+//    @PostMapping("/renovar")
+//    public ResponseEntity<String> renovarSuscripcion() throws MPException, MPApiException {
+//        UsuarioEntity usuarioAutenticado = usuarioService.getUsuarioAutenticado();
+//        String init = mpService.crearPreferencia(suscripcionService.renovar(usuarioAutenticado.getId()));
+//        return ResponseEntity.ok(init);
+//    }
 
     @Operation(
             summary = "Listar todas las suscripciones",

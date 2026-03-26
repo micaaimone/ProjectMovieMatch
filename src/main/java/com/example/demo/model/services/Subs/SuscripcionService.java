@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -91,22 +92,20 @@ public class SuscripcionService {
         //buscamos oferta activa
         Optional<OfertaEntity> oferta = planService.getOfertaActiva(plan);
 
-
-        //creamos la sub
-        SuscripcionEntity suscripcion = new SuscripcionEntity();
-        //todaia no esta activada hasta que se concrete el pago
-        suscripcion.setEstado(false);
-
         BigDecimal precioFinal = oferta
                 .map(ofertaEntity -> planService.precioFinal(plan.getPrecio(), ofertaEntity.getDescuento()))
                 .orElse(plan.getPrecio());
 
+        //creamos la sub
+        SuscripcionEntity suscripcion = SuscripcionEntity.builder()
+                        .estado(false)
+                        .monto(precioFinal)
+                        .plan(plan)
+                        .usuario(usuario)
+                        .fecha_inicio(LocalDate.now())
+                        .fecha_fin(LocalDate.now())
+                        .build();
 
-        suscripcion.setMonto(precioFinal);
-        suscripcion.setPlan(plan);
-        suscripcion.setUsuario(usuario);
-        suscripcion.setFecha_inicio(LocalDate.now());
-        suscripcion.setFecha_fin(LocalDate.now());
         suscripcionRepository.save(suscripcion);
         usuario.setSuscripcion(suscripcion);
         return suscripcion;
