@@ -20,6 +20,7 @@ public class ChatMessageMapper {
 
         dto.setChatRoomId(entity.getChatRoom().getId());
         dto.setSenderId(entity.getSender().getId());
+        dto.setSenderUsername(entity.getSender().getUsername());
 
         return dto;
     }

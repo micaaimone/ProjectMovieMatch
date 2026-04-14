@@ -31,8 +31,9 @@ public class GrupoMapper {
                 .descripcion(grupoEntity.getDescripcion())
                 .admin(usuarioMapper.convertUsuarioGrupoDTO(grupoEntity.getAdministrador()))
                 .usuarios(grupoEntity.getListaUsuarios().stream()
-                        .map(usuarioMapper::convertUsuarioGrupoDTO) // convertís cada UsuarioEntity a DTO
+                        .map(usuarioMapper::convertUsuarioGrupoDTO)
                         .collect(Collectors.toSet()))
+                .chatRoomId(grupoEntity.getChatRoom() != null ? grupoEntity.getChatRoom().getId() : null)
                 .build();
     }
 
