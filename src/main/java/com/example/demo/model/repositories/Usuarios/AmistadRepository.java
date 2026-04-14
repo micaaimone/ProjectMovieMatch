@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -21,6 +22,9 @@ public interface AmistadRepository extends JpaRepository<AmistadEntity, Long> {
     Page<AmistadEntity> findAllByIdEmisor(Long idEmisor, Pageable pageable);
 
     Page<AmistadEntity> findAllByIdReceptorAndEstadoSolicitud(Long idReceptor, EstadoSolicitud estadoSolicitud, Pageable pageable);
+
+    @Query("SELECT a FROM solicitudes a WHERE (a.idEmisor = :idUsuario OR a.idReceptor = :idUsuario) AND a.estadoSolicitud = :estado")
+    List<AmistadEntity> findAmistadesByUsuario(@Param("idUsuario") Long idUsuario, @Param("estado") EstadoSolicitud estado);
 
     @Transactional
     @Modifying
