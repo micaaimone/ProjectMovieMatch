@@ -1,10 +1,8 @@
 package com.example.demo.model.entities.User;
 
+import com.example.demo.model.entities.Chats.ChatRoomEntity;
 import com.example.demo.model.enums.EstadoSolicitud;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -20,7 +18,6 @@ public class AmistadEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id_solicitud;
 
-
     private long idEmisor;
 
     private long idReceptor;
@@ -29,5 +26,8 @@ public class AmistadEntity {
 
     private EstadoSolicitud estadoSolicitud;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoomEntity chatRoom;
 
 }

@@ -47,8 +47,8 @@ public class CredentialsEntity implements UserDetails {
         Set<SimpleGrantedAuthority> authorities = new HashSet<>();
 
         for (RoleEntity role : roles) {
-            // Spring Security lo requiere así:
-            authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getRole().name()));
+            // El enum ya incluye el prefijo ROLE_ (ROLE_USER, ROLE_ADMIN, ROLE_PREMIUM)
+            authorities.add(new SimpleGrantedAuthority(role.getRole().name()));
 
             // Agregar permisos individuales
             for (PermitEntity permit : role.getPermits()) {

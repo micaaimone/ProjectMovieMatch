@@ -1,4 +1,5 @@
 package com.example.demo.model.entities.User;
+import com.example.demo.model.entities.Chats.ChatRoomEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -38,4 +39,9 @@ public class GrupoEntity {
     public Set<UsuarioEntity> getListaUsuarios() {
         return listaUsuarios;
     }
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoomEntity chatRoom;
 }
