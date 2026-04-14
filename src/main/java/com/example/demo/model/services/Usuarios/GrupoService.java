@@ -5,6 +5,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.user.Grupo.ModificarGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.NewGrupoDTO;
 import com.example.demo.model.DTOs.user.Grupo.VisualizarGrupoDTO;
+import com.example.demo.model.entities.Chats.ChatRoomEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
 import com.example.demo.model.entities.User.GrupoEntity;
@@ -70,6 +71,11 @@ public class GrupoService {
         grupo.setAdministrador(admin);
         grupo.setListaUsuarios(usuariosValidos);
 
+        ChatRoomEntity chatRoom = new ChatRoomEntity();
+        chatRoom.setName(grupoDTO.getNombre());
+        chatRoom.setIsGroup(true);
+        grupo.setChatRoom(chatRoom);
+
         // guardar
         grupoRepository.save(grupo);
     }
@@ -92,12 +98,22 @@ public class GrupoService {
     }
 
     public Page<VisualizarGrupoDTO> visualizarGrupoPorUsuario(Long idUsuario, int page, int size) {
-        // buscamos al user
         userExiste(idUsuario);
 
         Pageable pageable = PageRequest.of(page, size);
 
         Page<GrupoEntity> grupos = grupoRepository.findAllByListaUsuarios_Id(idUsuario, pageable);
+
+        // Auto-crear ChatRoom para grupos que no tienen uno (datos anteriores al feature de chat)
+        grupos.forEach(grupo -> {
+            if (grupo.getChatRoom() == null) {
+                ChatRoomEntity chatRoom = new ChatRoomEntity();
+                chatRoom.setName(grupo.getNombre());
+                chatRoom.setIsGroup(true);
+                grupo.setChatRoom(chatRoom);
+                grupoRepository.save(grupo);
+            }
+        });
 
         return grupos.map(grupoMapper::convertToVisualizarGrupo);
     }
