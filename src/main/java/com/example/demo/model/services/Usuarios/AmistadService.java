@@ -4,6 +4,7 @@ import com.example.demo.model.DTOs.Contenido.ContenidoMostrarDTO;
 import com.example.demo.model.DTOs.Amistad.AmigoDTO;
 import com.example.demo.model.DTOs.Amistad.NewSolicitudAmistadDTO;
 import com.example.demo.model.DTOs.Amistad.SolicitudAmistadDTO;
+import com.example.demo.model.entities.Chats.ChatRoomEntity;
 import com.example.demo.model.entities.Contenido.ContenidoEntity;
 import com.example.demo.model.entities.User.AmistadEntity;
 import com.example.demo.model.entities.User.ContenidoLikeEntity;
@@ -127,6 +128,11 @@ public class AmistadService {
 
         solicitud.setEstadoSolicitud(EstadoSolicitud.ACEPTADA);
 
+        ChatRoomEntity chatRoom = new ChatRoomEntity();
+        chatRoom.setName("Chat privado");
+        chatRoom.setIsGroup(false);
+        solicitud.setChatRoom(chatRoom);
+
         solicitudAmistadRepository.save(solicitud);
 
         // agregar amigos mutuos
@@ -135,6 +141,7 @@ public class AmistadService {
 
         emisor.getAmigos().add(receptor);
         receptor.getAmigos().add(emisor);
+
 
         usuarioRepository.save(emisor);
         usuarioRepository.save(receptor);
@@ -293,17 +300,38 @@ public class AmistadService {
     }
 
     public Page<AmigoDTO> mostrarMisAmigos(Long idEmisor, Pageable pageable) {
-        // validamos usuario
-        UsuarioEntity emisor = validarUsuario(idEmisor);
+        validarUsuario(idEmisor);
 
-        List<UsuarioEntity> amigos = emisor.getAmigos();
+        List<AmistadEntity> amistades = solicitudAmistadRepository
+                .findAmistadesByUsuario(idEmisor, EstadoSolicitud.ACEPTADA);
 
-        List<AmigoDTO> amigosDTOs = amigos.stream()
-                .map(amistadMapper::convertToAmigoDTO)
+        List<AmigoDTO> amigosDTOs = amistades.stream()
+                .map(amistad -> {
+                    long amigoId = amistad.getIdEmisor() == idEmisor.longValue()
+                            ? amistad.getIdReceptor()
+                            : amistad.getIdEmisor();
+
+                    UsuarioEntity amigo = usuarioRepository.findById(amigoId)
+                            .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado: " + amigoId));
+
+                    if (amistad.getChatRoom() == null) {
+                        ChatRoomEntity chatRoom = new ChatRoomEntity();
+                        chatRoom.setName("Chat privado");
+                        chatRoom.setIsGroup(false);
+                        amistad.setChatRoom(chatRoom);
+                        solicitudAmistadRepository.save(amistad);
+                    }
+                    Long chatRoomId = amistad.getChatRoom().getId();
+
+                    return AmigoDTO.builder()
+                            .id(amigo.getId())
+                            .username(amigo.getUsername())
+                            .chatRoomId(chatRoomId)
+                            .build();
+                })
                 .toList();
 
         return new PageImpl<>(amigosDTOs, pageable, amigosDTOs.size());
-
     }
 
 
