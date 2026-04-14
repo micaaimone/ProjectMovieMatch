@@ -30,8 +30,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         //es la "puerta" donde se abre la conexion WebSocket
         registry.addEndpoint("/chat-socket")
-                .setAllowedOrigins("*") //permite que el front se conecte en cualquier puerto
-                .withSockJS(); //es una librería que asegura compatibilidad para cuando un navegador NO soporta WebSocket puro
+                .setAllowedOriginPatterns("*")
+                .withSockJS(); //es una librería que asegura compatibilidad para cuando un navegador NO soporta WebSocket pur
     }
 
     //| `/chat-socket`              ->  La puerta física donde entran al edificio |
