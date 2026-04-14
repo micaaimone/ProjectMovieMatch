@@ -39,4 +39,7 @@ public class VisualizarGrupoDTO {
             description = "Conjunto de usuarios que pertenecen al grupo"
     )
     private Set<UsuarioGrupoDTO> usuarios;
+
+    @Schema(description = "ID del chat room asociado al grupo")
+    private Long chatRoomId;
 }

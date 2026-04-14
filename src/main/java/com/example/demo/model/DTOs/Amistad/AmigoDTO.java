@@ -11,4 +11,5 @@ import lombok.*;
 public class AmigoDTO {
     private Long id;
     private String username;
+    private Long chatRoomId;
 }
